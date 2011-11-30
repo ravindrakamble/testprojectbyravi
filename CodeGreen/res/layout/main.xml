@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:background="#FFFFFF">
+		<RelativeLayout android:id="@+id/onionTitle" 
+			android:layout_width="fill_parent" android:layout_height="40dip">
+			<TextView android:layout_width="wrap_content" android:layout_centerVertical="true" android:gravity="center"
+				android:layout_height="fill_parent" android:layout_centerInParent="true"
+				android:text="Code Green" />
+		</RelativeLayout>
+		<RelativeLayout android:id="@+id/LinearLayout01"
+			android:layout_width="wrap_content" android:layout_alignParentLeft="true"
+			android:layout_below="@+id/onionTitle" android:orientation="horizontal"
+			android:layout_height="40dip">
+			<LinearLayout android:id="@+id/LinearLayout02" style="@android:style/ButtonBar"
+				android:layout_width="wrap_content" android:layout_height="fill_parent">
+				<Button android:background="@drawable/scrollbutton"
+					android:layout_weight="1" android:text="Text"
+					android:layout_height="wrap_content" android:layout_width="0dip"></Button>
+				<Button android:background="@drawable/scrollbutton"
+					android:layout_weight="1" android:text="Image"
+					android:layout_height="wrap_content" android:layout_width="0dip"></Button>
+				<Button android:background="@drawable/scrollbutton"
+					android:layout_weight="1" android:text="Audio"
+					android:layout_height="wrap_content" android:layout_width="0dip"></Button>
+				<Button android:background="@drawable/scrollbutton"
+					android:layout_weight="1" android:text="Vedio"
+					android:layout_height="wrap_content" android:layout_width="0dip"></Button>
+			</LinearLayout>
+		</RelativeLayout>
+		<ListView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_alignParentLeft="true"
+			android:layout_below="@+id/LinearLayout01" android:clickable="true"
+			android:scrollbarDefaultDelayBeforeFade="100" android:fadeScrollbars="true"
+			android:layout_above="@+id/relativeLayout1" android:id="@android:id/list"></ListView>
+		<RelativeLayout android:layout_width="fill_parent"
+			android:id="@+id/relativeLayout1" android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true">
+		</RelativeLayout>
+	</RelativeLayout>
+</FrameLayout>
