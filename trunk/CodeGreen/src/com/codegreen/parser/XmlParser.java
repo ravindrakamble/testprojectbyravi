@@ -43,6 +43,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 	 * This method at starting of the document. 
 	 * @see org.xml.sax.helpers.DefaultHandler#startDocument()
 	 */
+	@Override
 	public void startDocument() throws SAXException {
 		switch(requestID){
 		case Constants.REQ_GETARTICLESBYTYPE:
@@ -64,6 +65,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 	 * This method calls at the end of the document parsing.
 	 * @see org.xml.sax.helpers.DefaultHandler#endDocument()
 	 */
+	@Override
 	public void endDocument() throws SAXException {
 		parseMessage = Constants.PARSING.COMPLETED;
 		super.endDocument();
@@ -72,6 +74,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 	 * This method is called when parsing starts from the first node
 	 * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
 	 */
+	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
 
@@ -101,6 +104,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 	/**
 	 * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void endElement(String uri, String localName, String qName)
 	throws SAXException {
 		if (localName == null) {
@@ -142,6 +146,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 	/**
 	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
 	 */
+	@Override
 	public void characters(char[] ch, int start, int length)
 	throws SAXException {
 		parsedData = new String(ch, start, length);

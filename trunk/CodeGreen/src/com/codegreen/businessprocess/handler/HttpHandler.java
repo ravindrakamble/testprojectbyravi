@@ -2,10 +2,9 @@ package com.codegreen.businessprocess.handler;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
+import android.webkit.CacheManager;
 import com.codegreen.listener.Updatable;
 import com.codegreen.parser.XmlParser;
 import com.codegreen.services.WebServiceFacade;
@@ -90,7 +89,8 @@ public class HttpHandler implements Handler {
 				if(updatable != null){
 					switch (callID) {
 					case Constants.REQ_GETARTICLESBYTYPE:
-						updatable.update(ddXmlParser.getArticles());
+						com.codegreen.common.CacheManager.getInstance().store(Constants.C_ARTICLES, ddXmlParser.getArticles());
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
 						break;
 					case Constants.REQ_GETARTICLEDETAILS:
 						break;

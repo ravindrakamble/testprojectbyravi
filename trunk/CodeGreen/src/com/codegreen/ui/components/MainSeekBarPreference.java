@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ public class MainSeekBarPreference extends Preference implements OnSeekBarChange
 	}
 	
 	
+	@Override
 	protected View onCreateView(ViewGroup parent){
 		
 		RelativeLayout layout = new RelativeLayout(getContext());
@@ -44,7 +46,7 @@ public class MainSeekBarPreference extends Preference implements OnSeekBarChange
 		titletext.setTextSize(18);
 		titletext.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
 		//titletext.setGravity(Gravity.LEFT);
-		RelativeLayout.LayoutParams titleDimensionParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams titleDimensionParam = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		titleDimensionParam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		titletext.setLayoutParams(titleDimensionParam);
 		layout.addView(titletext);
@@ -53,7 +55,7 @@ public class MainSeekBarPreference extends Preference implements OnSeekBarChange
 		bar.setId(2);
 		bar.setMax(maximum);
 		bar.setProgress((int)this.oldValue);
-		RelativeLayout.LayoutParams seekbarDimensionParam = new RelativeLayout.LayoutParams(150,RelativeLayout.LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams seekbarDimensionParam = new RelativeLayout.LayoutParams(150,LayoutParams.WRAP_CONTENT);
 		seekbarDimensionParam.addRule(RelativeLayout.BELOW,titletext.getId());
 		seekbarDimensionParam.addRule(RelativeLayout.CENTER_IN_PARENT);
 		bar.setLayoutParams(seekbarDimensionParam);
@@ -63,7 +65,7 @@ public class MainSeekBarPreference extends Preference implements OnSeekBarChange
 		
 		TextView minText = new TextView(getContext());
 		minText.setId(3);
-		RelativeLayout.LayoutParams textDimensionParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams textDimensionParam = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		minText.setText("min");
 		minText.setTextSize(14);
 		minText.setPadding(0, 0, 10, 0);
@@ -76,7 +78,7 @@ public class MainSeekBarPreference extends Preference implements OnSeekBarChange
 		
 		TextView maxText = new TextView(getContext());
 		maxText.setId(4);
-		RelativeLayout.LayoutParams textDimensionParam2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams textDimensionParam2 = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		maxText.setText("max");
 		maxText.setTextSize(14);
 		maxText.setPadding(10, 0, 0, 0);

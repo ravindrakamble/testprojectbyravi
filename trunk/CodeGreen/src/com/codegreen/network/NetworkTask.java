@@ -138,7 +138,7 @@ public class NetworkTask extends Task {
 				handler.handleCallback(null, requestId, ERROR_CODE);
 				return;
 			} else if (respCode == 200) {
-				int responseLength = (int) connection.getContentLength();
+				int responseLength = connection.getContentLength();
 				byte[] responseGot = null;
 				if (responseLength > 0) {
 					InputStream dataInputStream = connection.getInputStream();
