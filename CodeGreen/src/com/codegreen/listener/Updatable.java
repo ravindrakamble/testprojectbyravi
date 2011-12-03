@@ -1,5 +1,7 @@
 package com.codegreen.listener;
 
+import com.codegreen.util.Constants.ENUM_PARSERRESPONSE;
+
 public interface Updatable {
 	
 	/**
@@ -14,6 +16,6 @@ public interface Updatable {
 	 * Update the UI with provided data
 	 * @param updateData
 	 */
-	public  void update(Object updateData);
+	public  void update(ENUM_PARSERRESPONSE PARSERRESPONSE_FAILURE);
 
 }

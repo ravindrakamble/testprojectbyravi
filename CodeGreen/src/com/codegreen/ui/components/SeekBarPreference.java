@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -37,25 +38,26 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
 	}
 	
 	
+	@Override
 	protected View onCreateView(ViewGroup parent){
 	
 		LinearLayout layout = new LinearLayout(getContext());
 		
 		LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
-		             LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+		             LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		params1.gravity = Gravity.LEFT;
 		params1.weight  = 1.0f;
 		
 		
 		LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
 		              80,
-		              LinearLayout.LayoutParams.WRAP_CONTENT);
+		              LayoutParams.WRAP_CONTENT);
 		params2.gravity = Gravity.RIGHT;
 		
 		
 		LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(
 		             30,
-		             LinearLayout.LayoutParams.WRAP_CONTENT);
+		             LayoutParams.WRAP_CONTENT);
 		params3.gravity = Gravity.CENTER;
 		
 		
@@ -117,9 +119,10 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
 	
 	
 	 
+	@Override
 	protected Object onGetDefaultValue(TypedArray ta,int index){
 	
-		int dValue = (int)ta.getInt(index,50);
+		int dValue = ta.getInt(index,50);
 		return validateValue(dValue);
 	}
 	

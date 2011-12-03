@@ -1,5 +1,8 @@
 package com.codegreen.businessprocess.objects;
 
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+
 public class ArticleDAO {
 
 	private String type;
@@ -12,7 +15,21 @@ public class ArticleDAO {
 	private String url;
 	private String publishedDate;
 	private String createdDate;
+	private ImageView imagedrawable = null;
+	private Bitmap downloadedImage = null;
 	
+	public Bitmap getDownloadedImage() {
+		return downloadedImage;
+	}
+	public void setDownloadedImage(Bitmap downloadedImage) {
+		this.downloadedImage = downloadedImage;
+	}
+	public ImageView getImagedrawable() {
+		return imagedrawable;
+	}
+	public void setImagedrawable(ImageView imagedrawable) {
+		this.imagedrawable = imagedrawable;
+	}
 	public String getType() {
 		return type;
 	}

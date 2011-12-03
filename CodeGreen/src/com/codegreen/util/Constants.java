@@ -47,4 +47,13 @@ public interface Constants {
 	//HTTP request status
 	public static enum HTTPREQUEST{STARTED,INPROGRESS,COMPLETED};
 	
+	public static final String ARTICAL_TYPE_IMAGE = "IMAGE";
+	public static final String ARTICAL_TYPE_AUDIO = "AUDIO";
+	public static final String ARTICAL_TYPE_VEDIO = "VEDIO";
+	public static final String ARTICAL_TYPE_TEXT = "TEXT";
+	public static final String C_ARTICLES= "ARTICLES";
+	
+	public static enum ENUM_PARSERRESPONSE{PARSERRESPONSE_SUCCESS,PARSERRESPONSE_FAILURE  						//Used as return value for any function, when failed. 
+		 };
+	
 }

@@ -93,7 +93,7 @@ public class RequestBuilder {
 	 * Creates get articles by type request and returns the request string.
 	 * Note : Header is pre-appended with the return String.
 	 * 
-	 * @param param : Object with data
+	 * @param param
 	 * @return
 	 */
 	private String getArticlesByType(Object params){
