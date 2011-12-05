@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import android.webkit.CacheManager;
 import com.codegreen.listener.Updatable;
 import com.codegreen.parser.XmlParser;
 import com.codegreen.services.WebServiceFacade;
@@ -14,8 +13,23 @@ public class HttpHandler implements Handler {
 
 	//Request Status
 	private Constants.HTTPREQUEST requestStatus;
+	
 	//Updatable screen
 	private Updatable updatable;
+	
+	private static HttpHandler mSelf = null;
+	
+	private HttpHandler(){
+		
+	}
+	
+	public static synchronized HttpHandler getInstance(){
+		if(mSelf == null){
+			mSelf = new HttpHandler();
+		} 
+		return mSelf;
+	}
+	
 	@Override
 	public byte handleEvent(Object eventObject, byte callID, Updatable updatable) {
 		this.updatable = updatable;
@@ -93,6 +107,8 @@ public class HttpHandler implements Handler {
 						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
 						break;
 					case Constants.REQ_GETARTICLEDETAILS:
+						com.codegreen.common.CacheManager.getInstance().store(Constants.C_ARTICLE_DETAILS, ddXmlParser.getArticles());
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
 						break;
 					case Constants.REQ_GETREVEWS:
 						break;

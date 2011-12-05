@@ -115,10 +115,11 @@ public class RequestBuilder {
 		ArticleDAO articleDAO = (ArticleDAO)params;
 		sb.append(header);
 		sb.append("<soap:Body>");
-		sb.append("<GetArticlesByType xmlns=\"http://tempuri.org/\">");
-		sb.append("<type>" + articleDAO.getType() + "</type>");
-		sb.append("<lastArticlePublishingDate>" + articleDAO.getLastArticlePublishingDate() +"</lastArticlePublishingDate>");
-		sb.append("</GetArticlesByType>");
+		sb.append("<GetArticleDetails xmlns=\"http://tempuri.org/\">");
+		sb.append("<articleID>" + articleDAO.getType() + "</articleID>");
+		sb.append("<type>" + articleDAO.getLastArticlePublishingDate() +"</type>");
+		sb.append("<categoryID>" + articleDAO.getLastArticlePublishingDate() +"</categoryID>");
+		sb.append("</GetArticleDetails>");
 		sb.append("</soap:Body>");
 		sb.append("</soap:Envelope>");
 		return sb.toString().trim();
