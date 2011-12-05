@@ -21,4 +21,10 @@ public interface ParserConstants {
 	public String THUMBURL = "ThumbnailURL";
 	public String URL = "URL";
 	public String PUBLISHEDDATE = "PublishingDate";
+	public String CATEGORYID = "CategoryID";
+	public String USERNAME = "Username";
+	public String REVIEWCOMMENTS = "ReviewComments";
+	public String REVIEW = "Review";
+	public String SUBMITREVIEW = "SubmitReview";
+	public String SUBMITREVIEWMESSAGE = "Message";
 }

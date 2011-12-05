@@ -82,7 +82,7 @@ public class WebServiceFacade {
 	 * http://3embed.com.iis2003.shared-servers.com/CodeGreenService.asmx?op=GetArticlesByType
 	 */
 	public void getReviews(Object params, Handler handler){
-		SOAPRequest request = RequestBuilder.getInstance().createRequest(Constants.REQ_GETREVEWS, params);
+		SOAPRequest request = RequestBuilder.getInstance().createRequest(Constants.REQ_GETREVIEWS, params);
 		NetworkTask reviewTask = new NetworkTask(request,handler);
 		taskExecutor.execute(reviewTask);
 	}

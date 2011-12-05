@@ -33,7 +33,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private void getArticleDetails(){
 		HttpHandler httpHandler =  HttpHandler.getInstance();
 		ArticleDAO articleDAO = new ArticleDAO();
-	    articleDAO.setArtcleID(strSelectedArticleID);
+	    articleDAO.setArticleID(strSelectedArticleID);
 		articleDAO.setType(strSelectedArticleType);
 		articleDAO.setCategoryID(Constants.CURRENT_CATEGORY_TYPE);
 		httpHandler.handleEvent(articleDAO, Constants.REQ_GETARTICLEDETAILS, this);

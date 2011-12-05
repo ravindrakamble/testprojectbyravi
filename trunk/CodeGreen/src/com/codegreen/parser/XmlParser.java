@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.codegreen.businessprocess.objects.ArticleDAO;
+import com.codegreen.businessprocess.objects.ReviewDAO;
 import com.codegreen.util.Constants;
 
 
@@ -33,7 +34,10 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 	private String endTagName;
 
 	private List<ArticleDAO> articles;
+	private List<ReviewDAO> reviews;
 	private ArticleDAO articleDAO;
+	private ReviewDAO reviewDAO;
+	private String reviewMessage;
 	private Constants.PARSING parseMessage;
 
 	public XmlParser(byte reqID){
@@ -47,14 +51,16 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 	public void startDocument() throws SAXException {
 		switch(requestID){
 		case Constants.REQ_GETARTICLESBYTYPE:
+		case Constants.REQ_SEARCHARTICLES:
 			articles = new ArrayList<ArticleDAO>();
 			break;
 		case Constants.REQ_GETARTICLEDETAILS:
+			articleDAO  = new ArticleDAO();
 			break;
-		case Constants.REQ_GETREVEWS:
+		case Constants.REQ_GETREVIEWS:
+			reviews = new ArrayList<ReviewDAO>();
 			break;
-		case Constants.REQ_SEARCHARTICLES:
-			break;
+		
 		case Constants.REQ_SUBMITREVIEW:
 			break;
 		}
@@ -86,16 +92,19 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 
 		switch(requestID){
 		case Constants.REQ_GETARTICLESBYTYPE:
+		case Constants.REQ_SEARCHARTICLES:
+		case Constants.REQ_GETARTICLEDETAILS:
 			if(startTagName.equalsIgnoreCase(ARTICLE)){
 				articleDAO = new ArticleDAO();
 			}
 			break;
-		case Constants.REQ_GETARTICLEDETAILS:
+			
+		case Constants.REQ_GETREVIEWS:
+			if(startTagName.equalsIgnoreCase(REVIEW)){
+				reviewDAO = new ReviewDAO();
+			}
 			break;
-		case Constants.REQ_GETREVEWS:
-			break;
-		case Constants.REQ_SEARCHARTICLES:
-			break;
+		
 		case Constants.REQ_SUBMITREVIEW:
 			break;
 		}
@@ -114,8 +123,10 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 		endTagName = localName;
 		switch(requestID){
 		case Constants.REQ_GETARTICLESBYTYPE:
+		case Constants.REQ_GETARTICLEDETAILS:
+		case Constants.REQ_SEARCHARTICLES:
 			if(endTagName.equalsIgnoreCase(IMAGEARTICLEID)){
-				articleDAO.setArtcleID(parsedData);
+				articleDAO.setArticleID(parsedData);
 			}else if(endTagName.equalsIgnoreCase(TITLE)){
 				articleDAO.setTitle(parsedData);
 			}else if(endTagName.equalsIgnoreCase(SHORTDESCIPTION)){
@@ -128,17 +139,28 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 				articleDAO.setUrl(parsedData);
 			}else if(endTagName.equalsIgnoreCase(PUBLISHEDDATE)){
 				articleDAO.setPublishedDate(parsedData);
+			}else if(endTagName.equalsIgnoreCase(CATEGORYID)){
+				articleDAO.setCategoryID(parsedData);
 			}else if(endTagName.equalsIgnoreCase(ARTICLE)){
+				if(requestID != Constants.REQ_GETARTICLEDETAILS){
 				articles.add(articleDAO);
+				}
 			}
 			break;
-		case Constants.REQ_GETARTICLEDETAILS:
-			break;
-		case Constants.REQ_GETREVEWS:
-			break;
-		case Constants.REQ_SEARCHARTICLES:
+		
+		case Constants.REQ_GETREVIEWS:
+			if(endTagName.equalsIgnoreCase(USERNAME)){
+				reviewDAO.setUserName(parsedData);
+			}else if(endTagName.equalsIgnoreCase(REVIEWCOMMENTS)){
+				reviewDAO.setReviewComments(parsedData);
+			}else if(endTagName.equalsIgnoreCase(REVIEW)){
+				reviews.add(reviewDAO);
+			}
 			break;
 		case Constants.REQ_SUBMITREVIEW:
+			if(endTagName.equalsIgnoreCase(SUBMITREVIEWMESSAGE)){
+				reviewMessage = parsedData;
+			}
 			break;
 		}
 	}
@@ -165,6 +187,22 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 	public void setArticles(List<ArticleDAO> articles) {
 		this.articles = articles;
 	}
-	
-	
+	public List<ReviewDAO> getReviews() {
+		return reviews;
+	}
+	public void setReviews(List<ReviewDAO> reviews) {
+		this.reviews = reviews;
+	}
+	public String getReviewMessage() {
+		return reviewMessage;
+	}
+	public void setReviewMessage(String reviewMessage) {
+		this.reviewMessage = reviewMessage;
+	}
+	public ArticleDAO getArticleDAO() {
+		return articleDAO;
+	}
+	public void setArticleDAO(ArticleDAO articleDAO) {
+		this.articleDAO = articleDAO;
+	}
 }

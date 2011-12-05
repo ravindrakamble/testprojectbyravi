@@ -9,6 +9,7 @@
 package com.codegreen.services;
 
 import com.codegreen.businessprocess.objects.ArticleDAO;
+import com.codegreen.businessprocess.objects.ReviewDAO;
 import com.codegreen.util.Constants;
 
 
@@ -70,7 +71,7 @@ public class RequestBuilder {
 			request.setSoapMethodName(Constants.GETARTICLEDETAILS);
 			request.setSoapRequest(getArticleDetails(params));
 			break;
-		case Constants.REQ_GETREVEWS:
+		case Constants.REQ_GETREVIEWS:
 			request.setRequestID(reqID);
 			request.setSoapMethodName(Constants.GETREVEWS);
 			request.setSoapRequest(getReviews(params));
@@ -118,36 +119,39 @@ public class RequestBuilder {
 		sb.append("<GetArticleDetails xmlns=\"http://tempuri.org/\">");
 		sb.append("<articleID>" + articleDAO.getType() + "</articleID>");
 		sb.append("<type>" + articleDAO.getLastArticlePublishingDate() +"</type>");
-		sb.append("<categoryID>" + articleDAO.getLastArticlePublishingDate() +"</categoryID>");
+		sb.append("<categoryID>" + articleDAO.getCategoryID() +"</categoryID>");
 		sb.append("</GetArticleDetails>");
 		sb.append("</soap:Body>");
 		sb.append("</soap:Envelope>");
 		return sb.toString().trim();
 	}
 		
+	
 	private String getSearchArticles(Object params){
 		StringBuffer sb = new StringBuffer();
 		ArticleDAO articleDAO = (ArticleDAO)params;
 		sb.append(header);
 		sb.append("<soap:Body>");
-		sb.append("<GetArticlesByType xmlns=\"http://tempuri.org/\">");
+		sb.append("<SearchArticles xmlns=\"http://tempuri.org/\">");
+		sb.append("<searchString>" + articleDAO.getTitle() + "</searchString>");
 		sb.append("<type>" + articleDAO.getType() + "</type>");
-		sb.append("<lastArticlePublishingDate>" + articleDAO.getLastArticlePublishingDate() +"</lastArticlePublishingDate>");
-		sb.append("</GetArticlesByType>");
+		sb.append("<categoryID>" +articleDAO.getCategoryID() +"</categoryID>");
+		sb.append("</SearchArticles>");
 		sb.append("</soap:Body>");
 		sb.append("</soap:Envelope>");
 		return sb.toString().trim();
 	}
 	
+	
 	private String getReviews(Object params){
 		StringBuffer sb = new StringBuffer();
-		ArticleDAO articleDAO = (ArticleDAO)params;
+		ReviewDAO reviewDAO = (ReviewDAO)params;
 		sb.append(header);
 		sb.append("<soap:Body>");
-		sb.append("<GetArticlesByType xmlns=\"http://tempuri.org/\">");
-		sb.append("<type>" + articleDAO.getType() + "</type>");
-		sb.append("<lastArticlePublishingDate>" + articleDAO.getLastArticlePublishingDate() +"</lastArticlePublishingDate>");
-		sb.append("</GetArticlesByType>");
+		sb.append("<GetReviews xmlns=\"http://tempuri.org/\">");
+		sb.append("<articleID>" + reviewDAO.getArticleID() + "</articleID>");
+		sb.append("<type>" + reviewDAO.getArticleType() +"</type>");
+		sb.append("</GetReviews>");
 		sb.append("</soap:Body>");
 		sb.append("</soap:Envelope>");
 		return sb.toString().trim();
@@ -155,13 +159,15 @@ public class RequestBuilder {
 	
 	private String getSubmitReviews(Object params){
 		StringBuffer sb = new StringBuffer();
-		ArticleDAO articleDAO = (ArticleDAO)params;
+		ReviewDAO reviewDAO = (ReviewDAO)params;
 		sb.append(header);
 		sb.append("<soap:Body>");
-		sb.append("<GetArticlesByType xmlns=\"http://tempuri.org/\">");
-		sb.append("<type>" + articleDAO.getType() + "</type>");
-		sb.append("<lastArticlePublishingDate>" + articleDAO.getLastArticlePublishingDate() +"</lastArticlePublishingDate>");
-		sb.append("</GetArticlesByType>");
+		sb.append("<SubmitReview xmlns=\"http://tempuri.org/\">");
+		sb.append("<articleID>" + reviewDAO.getArticleID() + "</articleID>");
+		sb.append("<type>" + reviewDAO.getArticleType() +"</type>");
+		sb.append("<username>" + reviewDAO.getUserName() + "</username>");
+		sb.append("<reviewComments>"+ reviewDAO.getReviewComments() +"</reviewComments>");
+		sb.append("</SubmitReview>");
 		sb.append("</soap:Body>");
 		sb.append("</soap:Envelope>");
 		return sb.toString().trim();

@@ -7,6 +7,8 @@ public class ReviewDAO {
 	private String articleType;
 	private String reviewComments;
 	private String reviewDate;
+	private String userName;
+	
 	public String getReviewID() {
 		return reviewID;
 	}
@@ -36,6 +38,12 @@ public class ReviewDAO {
 	}
 	public void setReviewDate(String reviewDate) {
 		this.reviewDate = reviewDate;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 	
