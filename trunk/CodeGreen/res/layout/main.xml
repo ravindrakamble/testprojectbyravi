@@ -17,17 +17,17 @@
 			android:layout_height="40dip">
 			<LinearLayout android:id="@+id/LinearLayout02" style="@android:style/ButtonBar"
 				android:layout_width="wrap_content" android:layout_height="fill_parent">
-				<Button android:background="@drawable/scrollbutton"
+				<Button android:background="@drawable/scrollbutton" android:id="@+id/text_btn"
 					android:layout_weight="1" android:text="Text"
 					android:layout_height="wrap_content" android:layout_width="0dip"></Button>
 				<Button android:background="@drawable/scrollbutton"
-					android:layout_weight="1" android:text="Image"
+					android:layout_weight="1" android:text="Image" android:id="@+id/image_btn"
 					android:layout_height="wrap_content" android:layout_width="0dip"></Button>
 				<Button android:background="@drawable/scrollbutton"
-					android:layout_weight="1" android:text="Audio"
+					android:layout_weight="1" android:text="Audio" android:id="@+id/audio_btn"
 					android:layout_height="wrap_content" android:layout_width="0dip"></Button>
 				<Button android:background="@drawable/scrollbutton"
-					android:layout_weight="1" android:text="Vedio"
+					android:layout_weight="1" android:text="Vedio" android:id="@+id/vedio_btn"
 					android:layout_height="wrap_content" android:layout_width="0dip"></Button>
 			</LinearLayout>
 		</RelativeLayout>
