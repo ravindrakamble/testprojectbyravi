@@ -17,7 +17,14 @@ public class ArticleDAO {
 	private String createdDate;
 	private ImageView imagedrawable = null;
 	private Bitmap downloadedImage = null;
+	private String categoryID = "";
 	
+	public String getCategoryID() {
+		return categoryID;
+	}
+	public void setCategoryID(String categoryID) {
+		this.categoryID = categoryID;
+	}
 	public Bitmap getDownloadedImage() {
 		return downloadedImage;
 	}
