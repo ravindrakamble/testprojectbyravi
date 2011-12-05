@@ -122,18 +122,18 @@ public class NetworkTask extends Task {
 
 			// Abort Check Point 4
 			if (abort) {
-				ERROR_CODE = 0;
+				ERROR_CODE = Constants.ERR_TASK_CANCELLED;
 				return;
 			}
 
 			int respCode = connection.getResponseCode();
 
 			if (respCode == 400) { // Client Error
-				ERROR_CODE = 0;
+				ERROR_CODE = Constants.ERR_NETWORK_FAILURE;
 				handler.handleCallback(null, requestId, ERROR_CODE);
 				return;
 			} else if (respCode == 500) { // Server Error
-				ERROR_CODE = 0;
+				ERROR_CODE = Constants.ERR_NETWORK_FAILURE;
 				
 				handler.handleCallback(null, requestId, ERROR_CODE);
 				return;
@@ -175,7 +175,9 @@ public class NetworkTask extends Task {
 					} finally {
 						out = null;
 					}
-					handler.handleCallback(responseGot, requestId, ERROR_CODE);
+					if (!abort) {
+						handler.handleCallback(responseGot, requestId, ERROR_CODE);
+					}
 					responseGot = null;
 				}
 			}

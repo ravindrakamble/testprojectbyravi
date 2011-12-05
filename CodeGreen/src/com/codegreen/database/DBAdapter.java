@@ -125,7 +125,7 @@ public class DBAdapter
 	 */
 	boolean insertVideoArticle(ArticleDAO articleDAO){
 		ContentValues initialValues = new ContentValues();
-		initialValues.put("_videoArticleID", articleDAO.getArtcleID());
+		initialValues.put("_videoArticleID", articleDAO.getArticleID());
 		
 		insertArticle(initialValues, "VIDEOARTICLES", articleDAO);
 		
@@ -146,7 +146,7 @@ public class DBAdapter
 	}
 	
 	public boolean deleteVideoArticle(ArticleDAO articleDAO){
-		return db.delete("VIDEOARTICLES", articleDAO.getArtcleID() , null) > 0;
+		return db.delete("VIDEOARTICLES", articleDAO.getArticleID() , null) > 0;
 	}
 	
 	public List<ArticleDAO> getVideoArticles(){
@@ -161,7 +161,7 @@ public class DBAdapter
 	 */
 	boolean insertImageArticle(ArticleDAO articleDAO){
 		ContentValues initialValues = new ContentValues();
-		initialValues.put("_imageArticleID", articleDAO.getArtcleID());
+		initialValues.put("_imageArticleID", articleDAO.getArticleID());
 		
 		insertArticle(initialValues, "IMAGEARTICLES", articleDAO);
 		
@@ -181,7 +181,7 @@ public class DBAdapter
 	}
 	
 	public boolean deleteImageArticle(ArticleDAO articleDAO){
-		return db.delete("IMAGEARTICLES", articleDAO.getArtcleID() , null) > 0;
+		return db.delete("IMAGEARTICLES", articleDAO.getArticleID() , null) > 0;
 	}
 	
 	public List<ArticleDAO> getImageArticles(){
@@ -194,7 +194,7 @@ public class DBAdapter
 	 */
 	boolean insertTextArticle(ArticleDAO articleDAO){
 		ContentValues initialValues = new ContentValues();
-		initialValues.put("_textArticleID", articleDAO.getArtcleID());
+		initialValues.put("_textArticleID", articleDAO.getArticleID());
 		
 		insertArticle(initialValues, "TEXTARTICLES", articleDAO);
 		
@@ -215,7 +215,7 @@ public class DBAdapter
 	}
 	
 	public boolean deleteTextArticle(ArticleDAO articleDAO){
-		return db.delete("TEXTARTICLES", articleDAO.getArtcleID() , null) > 0;
+		return db.delete("TEXTARTICLES", articleDAO.getArticleID() , null) > 0;
 	}
 	
 	public List<ArticleDAO> getTextArticles(){
@@ -228,7 +228,7 @@ public class DBAdapter
 	 */
 	boolean insertAudioArticle(ArticleDAO articleDAO){
 		ContentValues initialValues = new ContentValues();
-		initialValues.put("_audioArticleID", articleDAO.getArtcleID());
+		initialValues.put("_audioArticleID", articleDAO.getArticleID());
 		
 		insertArticle(initialValues, "AUDIOARTICLES", articleDAO);
 		
@@ -248,7 +248,7 @@ public class DBAdapter
 	}
 	
 	public boolean deleteAudioArticle(ArticleDAO articleDAO){
-		return db.delete("AUDIOARTICLES", articleDAO.getArtcleID() , null) > 0;
+		return db.delete("AUDIOARTICLES", articleDAO.getArticleID() , null) > 0;
 	}
 	
 	public List<ArticleDAO> getAudioArticles(){
@@ -285,7 +285,7 @@ public class DBAdapter
 		if(articles != null){
 			while(articles.moveToNext()){
 				articleDAO = new ArticleDAO();
-				articleDAO.setArtcleID(articles.getString(0));
+				articleDAO.setArticleID(articles.getString(0));
 				articleDAO.setTitle(articles.getString(1));
 				articleDAO.setShortDescription(articles.getString(2));
 				articleDAO.setDetailedDescription(articles.getString(3));

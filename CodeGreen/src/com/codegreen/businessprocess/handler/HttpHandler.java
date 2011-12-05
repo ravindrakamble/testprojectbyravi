@@ -4,6 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import com.codegreen.common.CacheManager;
+import com.codegreen.common.TaskExecutor;
 import com.codegreen.listener.Updatable;
 import com.codegreen.parser.XmlParser;
 import com.codegreen.services.WebServiceFacade;
@@ -46,7 +49,7 @@ public class HttpHandler implements Handler {
 			webServiceFacade.getArticleDetails(eventObject, this);
 			break;
 			
-		case Constants.REQ_GETREVEWS:
+		case Constants.REQ_GETREVIEWS:
 			//Retrieve article reviews
 			webServiceFacade.getReviews(eventObject, this);
 			break;
@@ -103,18 +106,24 @@ public class HttpHandler implements Handler {
 				if(updatable != null){
 					switch (callID) {
 					case Constants.REQ_GETARTICLESBYTYPE:
-						com.codegreen.common.CacheManager.getInstance().store(Constants.C_ARTICLES, ddXmlParser.getArticles());
+						CacheManager.getInstance().store(Constants.C_ARTICLES, ddXmlParser.getArticles());
 						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
 						break;
 					case Constants.REQ_GETARTICLEDETAILS:
-						com.codegreen.common.CacheManager.getInstance().store(Constants.C_ARTICLE_DETAILS, ddXmlParser.getArticles());
+						CacheManager.getInstance().store(Constants.C_ARTICLE_DETAILS, ddXmlParser.getArticleDAO());
 						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
 						break;
-					case Constants.REQ_GETREVEWS:
+					case Constants.REQ_GETREVIEWS:
+						CacheManager.getInstance().store(Constants.C_REVIEWS, ddXmlParser.getReviews());
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
 						break;
 					case Constants.REQ_SEARCHARTICLES:
+						CacheManager.getInstance().store(Constants.C_SEARCH_ARTICLES, ddXmlParser.getArticles());
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
 						break;
 					case Constants.REQ_SUBMITREVIEW:
+						CacheManager.getInstance().store(Constants.C_SUBMITREVIEW, ddXmlParser.getReviewMessage());
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
 						break;
 					}
 				}
@@ -131,5 +140,9 @@ public class HttpHandler implements Handler {
 
 	public void setRequestStatus(Constants.HTTPREQUEST requestStatus) {
 		this.requestStatus = requestStatus;
+	}
+	
+	public void cancelRequest(){
+		TaskExecutor.getInstance().cancelAllTask();
 	}
 }

@@ -7,7 +7,7 @@ public class ArticleDAO {
 
 	private String type;
 	private String lastArticlePublishingDate;
-	private String artcleID;
+	private String articleID;
 	private String title;
 	private String shortDescription;
 	private String detailedDescription;
@@ -49,11 +49,11 @@ public class ArticleDAO {
 	public void setLastArticlePublishingDate(String lastArticlePublishingDate) {
 		this.lastArticlePublishingDate = lastArticlePublishingDate;
 	}
-	public String getArtcleID() {
-		return artcleID;
+	public String getArticleID() {
+		return articleID;
 	}
-	public void setArtcleID(String artcleID) {
-		this.artcleID = artcleID;
+	public void setArticleID(String artcleID) {
+		this.articleID = artcleID;
 	}
 	public String getTitle() {
 		return title;
