@@ -127,6 +127,16 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 		case Constants.REQ_SEARCHARTICLES:
 			if(endTagName.equalsIgnoreCase(IMAGEARTICLEID)){
 				articleDAO.setArticleID(parsedData);
+				articleDAO.setType(Constants.ARTCLETYPE_IMAGE);
+			}else if(endTagName.equalsIgnoreCase(TEXTARTICLEID)){
+				articleDAO.setArticleID(parsedData);
+				articleDAO.setType(Constants.ARTCLETYPE_TEXT);
+			}else if(endTagName.equalsIgnoreCase(AUDIOARTICLEID)){
+				articleDAO.setArticleID(parsedData);
+				articleDAO.setType(Constants.ARTCLETYPE_AUDIO);
+			}else if(endTagName.equalsIgnoreCase(VIDEOARTICLEID)){
+				articleDAO.setArticleID(parsedData);
+				articleDAO.setType(Constants.ARTCLETYPE_VIDEO);
 			}else if(endTagName.equalsIgnoreCase(TITLE)){
 				articleDAO.setTitle(parsedData);
 			}else if(endTagName.equalsIgnoreCase(SHORTDESCIPTION)){

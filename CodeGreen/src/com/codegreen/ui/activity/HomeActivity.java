@@ -6,12 +6,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
@@ -26,14 +27,20 @@ public class HomeActivity extends ListActivity implements Updatable{
 	private static String CurrentTabSelected = Constants.ARTCLETYPE_TEXT;
 
 	private ProgressBar progressBar;
+
+	private static final int MENU_OPTION_SAVED = 0x01;
+	private static final int MENU_OPTION_SEARCH = 0x02;
+	private static final int MENU_OPTION_SHARE = 0x03;
+	private static final int MENU_OPTION_INFO = 0x04;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+
 		progressBar = (ProgressBar)findViewById(R.id.header_progress_circular);
 		initWidgets();
-		getArticleData(Constants.ARTICAL_TYPE_IMAGE); 
+		getArticleData(Constants.ARTICAL_TYPE_TEXT); 
 	}
 
 
@@ -91,13 +98,14 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 			//Start progressbar
 			progressBar.setVisibility(View.VISIBLE);
-			
+
 			//Prepare data for new request
 			ArticleDAO articleDAO = new ArticleDAO();
 			articleDAO.setType(articleType);
-			articleDAO.setLastArticlePublishingDate("11/25/2011");
+			articleDAO.setLastArticlePublishingDate("12/8/2011");
 
 			//Send request
+			httpHandler.setApplicationContext(getApplicationContext());
 			httpHandler.handleEvent(articleDAO, Constants.REQ_GETARTICLESBYTYPE, this);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -109,22 +117,72 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 	}
 
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		try{
+			menu.removeGroup(0);
+			menu.add(0, MENU_OPTION_SAVED,0 , "Saved Items").setIcon(android.R.drawable.ic_menu_gallery);
+			menu.add(0, MENU_OPTION_SEARCH,0 , "Search").setIcon(android.R.drawable.ic_menu_search);
+			menu.add(0, MENU_OPTION_SHARE,0 , "Share").setIcon(android.R.drawable.ic_menu_share);
+			menu.add(0, MENU_OPTION_INFO,0 , "Info").setIcon(android.R.drawable.ic_menu_help);
+			return true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case MENU_OPTION_SAVED:
+			break;
+		case MENU_OPTION_SEARCH:
+			break;
+
+		case MENU_OPTION_SHARE:
+			break;
+
+		case MENU_OPTION_INFO:
+			break;
+
+		default:
+			break;
+		}
+		return false;
+	}
+
+
 	@Override
 	public void update(Constants.ENUM_PARSERRESPONSE updateData) {
 
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
-			if(mAdapter == null){ 
-				mAdapter = new HomeScreenAdapter(this);
-				setListAdapter(mAdapter);
+			if(mAdapter == null){
+				runOnUiThread(new Runnable() { 
+					@Override
+					public void run() {
+						mAdapter = new HomeScreenAdapter(HomeActivity.this);
+						setListAdapter(mAdapter); 
+					}
+				});
+
 			}else{
-				mAdapter.notifyDataSetChanged();
-				mAdapter.notifyDataSetInvalidated();
+				runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						mAdapter.notifyDataSetChanged();
+						mAdapter.notifyDataSetInvalidated();
+					}
+				});
 			}
 		}else
 			Log.e(TAG, "--------Response Received-------ENUM_PARSERRESPONSE.PARSERRESPONSE_FAILURE");
-		
+
 		//Send message to remove progress bar
 		Message msg = new Message();
 		msg.what = Constants.PROGRESS_INVISIBLE;
@@ -134,6 +192,13 @@ public class HomeActivity extends ListActivity implements Updatable{
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
+		
+		if(articleEntry != null){
+			Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+			PlayerActivity.streamUrl = articleEntry.getUrl();
+			startActivity(intent);
+			return;
+		}
 		// Launch details screen
 		Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -148,7 +213,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 			case Constants.PROGRESS_VISIBLE:
 				progressBar.setVisibility(View.VISIBLE);
 				break;
-				
+
 			case Constants.PROGRESS_INVISIBLE:
 				progressBar.setVisibility(View.INVISIBLE);
 				break;

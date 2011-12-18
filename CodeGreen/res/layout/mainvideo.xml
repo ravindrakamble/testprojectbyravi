@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="vertical" android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		<ProgressBar android:id="@+id/progressBar1"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			android:layout_centerInParent="true"></ProgressBar>
+
+		<VideoView android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:id="@+id/vid"
+			android:layout_gravity="center_vertical|fill_horizontal"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentRight="true" android:layout_alignParentTop="true"
+			android:layout_alignParentBottom="true"></VideoView>
+	</RelativeLayout>
+	<ImageView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:background="@drawable/orn_os4"
+		android:layout_gravity="center" android:id="@+id/audioImg"></ImageView>
+	<RelativeLayout android:id="@+id/relativeLayout1"
+		android:layout_width="fill_parent" android:layout_height="fill_parent">
+		<LinearLayout android:id="@+id/admarvel"
+			android:layout_height="wrap_content" android:layout_width="fill_parent"
+			android:layout_alignParentBottom="true"></LinearLayout>
+	</RelativeLayout>
+</FrameLayout>

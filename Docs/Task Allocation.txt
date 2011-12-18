@@ -1,0 +1,15 @@
+Splash Screen Rupali : 90
+Home screen UI : Rupali
+Home screen listing of news : Rupali: 50
+Search Screen UI and functionality ;  Rupali
+News details-Audio Ravi
+News details-Video Ravi
+News detais-Image Rupali
+News detais-Text Rupali
+News sharing : Ravi
+Saved article UI : Ravi
+Reviews UI and functionality Ravi
+Network handler, parser and exception handling: Rupali/Ravi : 40
+Local database design : Ravi : 50
+About screen : Rupali
+Integration of ads. : Ravi

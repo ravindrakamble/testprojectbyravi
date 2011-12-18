@@ -5,8 +5,11 @@ import java.io.IOException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import android.content.Context;
+
 import com.codegreen.common.CacheManager;
 import com.codegreen.common.TaskExecutor;
+import com.codegreen.database.DBAdapter;
 import com.codegreen.listener.Updatable;
 import com.codegreen.parser.XmlParser;
 import com.codegreen.services.WebServiceFacade;
@@ -21,6 +24,8 @@ public class HttpHandler implements Handler {
 	private Updatable updatable;
 	
 	private static HttpHandler mSelf = null;
+	
+	private Context applicationContext;
 	
 	private HttpHandler(){
 		
@@ -107,6 +112,10 @@ public class HttpHandler implements Handler {
 					switch (callID) {
 					case Constants.REQ_GETARTICLESBYTYPE:
 						CacheManager.getInstance().store(Constants.C_ARTICLES, ddXmlParser.getArticles());
+						
+						//Update the articles into database
+						DBAdapter dbAdapter = DBAdapter.getInstance(applicationContext);
+						//dbAdapter.insertArticles(ddXmlParser.getArticles());
 						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
 						break;
 					case Constants.REQ_GETARTICLEDETAILS:
@@ -145,4 +154,14 @@ public class HttpHandler implements Handler {
 	public void cancelRequest(){
 		TaskExecutor.getInstance().cancelAllTask();
 	}
+
+	public Context getApplicationContext() {
+		return applicationContext;
+	}
+
+	public void setApplicationContext(Context applicationContext) {
+		this.applicationContext = applicationContext;
+	}
+	
+	
 }
