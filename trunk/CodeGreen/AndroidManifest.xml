@@ -11,7 +11,7 @@
             </intent-filter>
         </activity>
 
-    <activity android:name=".ui.activity.HomeActivity"></activity>
+    <activity android:name=".ui.activity.HomeActivity" android:alwaysRetainTaskState="true" android:allowTaskReparenting="true" android:configChanges="orientation|keyboardHidden"></activity>
     <activity android:name=".ui.activity.ArticleDetailsActivity"></activity>
     <activity android:name=".ui.activity.PlayerActivity"></activity>
 </application>

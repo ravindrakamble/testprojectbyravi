@@ -2,6 +2,7 @@ package com.codegreen.ui.activity;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -102,7 +103,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 			//Prepare data for new request
 			ArticleDAO articleDAO = new ArticleDAO();
 			articleDAO.setType(articleType);
-			articleDAO.setLastArticlePublishingDate("12/8/2011");
+			articleDAO.setLastArticlePublishingDate("12/20/2011");
 
 			//Send request
 			httpHandler.setApplicationContext(getApplicationContext());
@@ -197,6 +198,11 @@ public class HomeActivity extends ListActivity implements Updatable{
 			Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
 			PlayerActivity.streamUrl = articleEntry.getUrl();
 			startActivity(intent);
+			
+			/*Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
+		    Uri data = Uri.parse(articleEntry.getUrl());
+		    intent.setDataAndType(data, "video/mp4");
+		    startActivity(intent);*/
 			return;
 		}
 		// Launch details screen

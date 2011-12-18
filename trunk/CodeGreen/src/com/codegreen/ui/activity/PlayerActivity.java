@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.VideoView;
 
 
@@ -18,12 +19,15 @@ public class PlayerActivity extends Activity {
 	public static boolean isAudio=false;
 	public static String streamUrl;
 
+	private ProgressBar progressBar;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.mainvideo);
 
+		progressBar = (ProgressBar)findViewById(R.id.progressBar1);
+		progressBar.setVisibility(View.VISIBLE);
 		ImageView audioImg=(ImageView)findViewById(R.id.audioImg);
 		if(isAudio==true)
 		{
@@ -51,7 +55,7 @@ public class PlayerActivity extends Activity {
 		if(true){
 			try{
 				videoHolder.start();
-
+				progressBar.setVisibility(View.INVISIBLE);
 			}
 			catch (Exception e) {
 				// TODO: handle exception
