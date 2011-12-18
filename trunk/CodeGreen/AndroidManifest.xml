@@ -12,6 +12,8 @@
         </activity>
 
     <activity android:name=".ui.activity.HomeActivity"></activity>
+    <activity android:name=".ui.activity.ArticleDetailsActivity"></activity>
+    <activity android:name=".ui.activity.PlayerActivity"></activity>
 </application>
 <uses-permission android:name="android.permission.INTERNET" />
 

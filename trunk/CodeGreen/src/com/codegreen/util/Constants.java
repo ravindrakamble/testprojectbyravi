@@ -21,6 +21,7 @@ public interface Constants {
 	public static final byte REQ_GETREVIEWS = 3;
 	public static final byte REQ_SEARCHARTICLES = 4;
 	public static final byte REQ_SUBMITREVIEW = 5;
+	public static final byte REQ_GETCATEGOIRES = 6;
 
 	//Article types
 	public static final String ARTCLETYPE_IMAGE = "IMAGE";
@@ -39,6 +40,7 @@ public interface Constants {
 	public static final String GETREVEWS = "GetReviews";
 	public static final String SEARCHARTICLES = "SearchArticles";
 	public static final String SUBMITREVIEW = "SubmitReview";
+	public static final String GETCATEGOIRES ="";
 
 	//Callback constant
 	public static byte OK = 0;

@@ -15,6 +15,9 @@ package com.codegreen.parser;
 public interface ParserConstants {
 	public String ARTICLE = "Article";
 	public String IMAGEARTICLEID = "IMAGEArticleID";
+	public String VIDEOARTICLEID = "videoArticleID";
+	public String TEXTARTICLEID = "textArticleID";
+	public String AUDIOARTICLEID = "audioArticleID";
 	public String TITLE = "Title";
 	public String SHORTDESCIPTION = "ShortDescription";
 	public String DETAILEDDESC = "DetailedDescription";

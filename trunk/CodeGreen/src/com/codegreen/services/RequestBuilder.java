@@ -86,6 +86,11 @@ public class RequestBuilder {
 			request.setSoapMethodName(Constants.SUBMITREVIEW);
 			request.setSoapRequest(getSubmitReviews(params));
 			break;
+		case Constants.REQ_GETCATEGOIRES:
+			request.setRequestID(reqID);
+			//request.setSoapMethodName(Constants.);
+			request.setSoapRequest(getSubmitReviews(params));
+			break;
 		}
 		return request;
 	}
@@ -117,8 +122,8 @@ public class RequestBuilder {
 		sb.append(header);
 		sb.append("<soap:Body>");
 		sb.append("<GetArticleDetails xmlns=\"http://tempuri.org/\">");
-		sb.append("<articleID>" + articleDAO.getType() + "</articleID>");
-		sb.append("<type>" + articleDAO.getLastArticlePublishingDate() +"</type>");
+		sb.append("<articleID>" + articleDAO.getArticleID() + "</articleID>");
+		sb.append("<type>" + articleDAO.getType() +"</type>");
 		sb.append("<categoryID>" + articleDAO.getCategoryID() +"</categoryID>");
 		sb.append("</GetArticleDetails>");
 		sb.append("</soap:Body>");

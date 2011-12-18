@@ -398,15 +398,7 @@ public class Utils {
 	public static String getCurrentDateNTime(){
 		Calendar calendar = Calendar.getInstance();
 
-		int defaultOffset = TimeZone.getDefault().getRawOffset();
-
-		TimeZone serverTimezone = TimeZone.getTimeZone("GMT-7");
-		int serverOffset = serverTimezone.getRawOffset();
-		// Get the GMT Time Zone of server("GMT-7" is the server timezone"
-		calendar.set(Calendar.MILLISECOND, serverOffset - defaultOffset);
-
 		StringBuffer endDate = new StringBuffer();
-
 
 		//Create the current date
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss");

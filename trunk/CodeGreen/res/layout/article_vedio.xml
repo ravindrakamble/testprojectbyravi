@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+
+
+	<ImageView android:id="@+id/mainImage" android:layout_width="fill_parent"
+		android:layout_centerInParent="true" android:layout_height="200dip"/>
+
+	<TextView android:id="@+id/titleText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerHorizontal="true" android:gravity="center_vertical|center_horizontal" android:textStyle="bold" android:layout_alignParentBottom="true" android:text="Hello" android:layout_marginBottom="70dip"></TextView>
+	<TextView android:textStyle="bold" android:id="@+id/TextView01" android:layout_height="wrap_content" android:layout_width="wrap_content" android:gravity="center_vertical|center_horizontal" android:text="Click to play" android:layout_centerHorizontal="true" android:layout_above="@+id/mainImage"></TextView>
+	<RelativeLayout android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true" android:layout_width="wrap_content"
+		android:id="@+id/relativeLayout2"  android:visibility="gone">
+		<Button android:id="@+id/navButton1"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_centerVertical="true" android:layout_toLeftOf="@+id/navButton2">
+		</Button>
+
+		<Button android:layout_alignParentRight="true"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_centerVertical="true" android:id="@+id/navButton2"
+			android:layout_marginRight="5dip">
+		</Button>
+	</RelativeLayout>
+<LinearLayout android:layout_width="fill_parent" android:id="@+id/admarvel" android:layout_alignParentBottom="true" android:layout_height="50dip">
+		<TextView android:id="@+id/textView1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Potentially Life saving advertisement is loading..." android:layout_marginTop="10dip" android:textStyle="bold" android:layout_marginLeft="5dip"></TextView>
+
+	</LinearLayout>
+</RelativeLayout>
