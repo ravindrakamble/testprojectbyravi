@@ -51,7 +51,7 @@ public interface Constants {
 
 	public static final String ARTICAL_TYPE_IMAGE = "IMAGE";
 	public static final String ARTICAL_TYPE_AUDIO = "AUDIO";
-	public static final String ARTICAL_TYPE_VEDIO = "VEDIO";
+	public static final String ARTICAL_TYPE_VEDIO = "VIDEO";
 	public static final String ARTICAL_TYPE_TEXT = "TEXT";
 	public static final String C_ARTICLES = "ARTICLES";
 	public static final String C_ARTICLE_DETAILS = "ART_DTLS";

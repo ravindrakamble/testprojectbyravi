@@ -6,6 +6,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.codegreen.common.CacheManager;
 import com.codegreen.common.TaskExecutor;
@@ -108,6 +109,7 @@ public class HttpHandler implements Handler {
 			Constants.PARSING parsedMessage = ddXmlParser.getParseMessage();
 
 			if(parsedMessage == Constants.PARSING.COMPLETED){
+				Log.e("No of records found;" , "" + ddXmlParser.getArticles().size());
 				if(updatable != null){
 					switch (callID) {
 					case Constants.REQ_GETARTICLESBYTYPE:
