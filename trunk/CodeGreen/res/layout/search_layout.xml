@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:orientation="horizontal" android:background="#C0C0C0"
+	android:paddingTop="1dip" android:paddingRight="8dip" 
+	android:paddingLeft="8dip" android:paddingBottom="0dip">
+
+	<EditText android:id="@+id/search_editview" android:hint="Enter title to search..."
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_weight="0.1" />
+
+	<ImageView android:id="@+id/search_imageview" android:layout_gravity="center_vertical"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:background="@android:drawable/ic_menu_search"
+		/> 
+</LinearLayout>

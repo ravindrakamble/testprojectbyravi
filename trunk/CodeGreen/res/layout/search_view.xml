@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical" android:background="#FFFFFF">
+	
+	<include android:id="@+id/search_view1" layout="@layout/search_layout" />
+	
+	<ListView android:layout_width="wrap_content" android:layout_below="@+id/search_view1"
+		android:layout_height="wrap_content" android:layout_alignParentLeft="true"
+		android:clickable="true" android:layout_weight="1" 
+		android:scrollbarDefaultDelayBeforeFade="100" android:fadeScrollbars="true"
+		android:id="@android:id/list"></ListView>
+		
+	<TextView android:id="@+id/android:empty" android:gravity="center"
+		android:layout_gravity="center_horizontal|center_vertical"
+		android:textStyle="bold" android:layout_width="fill_parent" android:visibility="gone"
+		android:layout_height="fill_parent" />
+		
+	
+	<LinearLayout  android:id="@+id/progreeView" android:visibility="gone" android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerInParent="true">
+		<ProgressBar android:layout_width="wrap_content"
+			android:layout_height="wrap_content" style="@android:style/Widget.ProgressBar.Small"
+			android:layout_marginRight="5dp" />
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Loading..." />
+	</LinearLayout>
+	
+</RelativeLayout>
