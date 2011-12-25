@@ -71,5 +71,18 @@ public interface Constants {
 	
 	public static final byte PROGRESS_VISIBLE = 1;
 	public static final byte PROGRESS_INVISIBLE = 2;
+	
+	// CodeGreen 7  catagories
+	public static final String GREEN_BASICS = "Green Basics";
+	public static final String DESIGN_AND_ARCHITECTURE = "Design and Architecture";
+	public static final String SCIENCE_ANDECHNOLOGY = "Science and Technology";
+	public static final String TRANSPORT = "Transport and travel";
+	public static final String BUSINESS = "Business/Investment";
+	public static final String POLITICS = "Politics/Policies";
+	public static final String FOOD_AND_HEALTH = "Food and Health";
+	
+	
+	
+	
 
 }

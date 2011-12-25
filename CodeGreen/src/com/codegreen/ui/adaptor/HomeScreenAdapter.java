@@ -34,6 +34,18 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 			e.printStackTrace();
 		}
 	}
+	
+	public HomeScreenAdapter(Context context,String filterString) {
+		try {
+			mContext = context;
+			mLayoutInflator  =  LayoutInflater.from(mContext); 
+			mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES);
+			imageLoader=new FetchImage(mContext);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public int getCount() {

@@ -1,51 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent">
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		android:background="#FFFFFF">
-		<RelativeLayout android:id="@+id/onionTitle"
-			android:layout_width="fill_parent" android:layout_height="40dip">
-			<TextView android:layout_width="wrap_content"
-				android:layout_centerVertical="true" android:gravity="center"
-				android:layout_height="fill_parent" android:layout_centerInParent="true"
-				android:text="Code Green" />
-			<ProgressBar android:id="@+id/header_progress_circular"
-				style="?android:attr/progressBarStyleSmallTitle"
-				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:layout_toLeftOf="@+id/grid_view_btn"
-				android:layout_marginRight="18dip" android:layout_centerVertical="true"
-				android:visibility="invisible" android:max="10000" android:layout_alignParentRight="true"/>
-		</RelativeLayout>
-		<RelativeLayout android:id="@+id/LinearLayout01"
-			android:layout_width="wrap_content" android:layout_alignParentLeft="true"
-			android:layout_below="@+id/onionTitle" android:orientation="horizontal"
-			android:layout_height="40dip">
-			<LinearLayout android:id="@+id/LinearLayout02" style="@android:style/ButtonBar"
-				android:layout_width="wrap_content" android:layout_height="fill_parent">
-				<Button android:background="@drawable/scrollbutton"
-					android:id="@+id/text_btn" android:layout_weight="1" android:text="Text"
-					android:layout_height="wrap_content" android:layout_width="0dip"></Button>
-				<Button android:background="@drawable/scrollbutton"
-					android:layout_weight="1" android:text="Image" android:id="@+id/image_btn"
-					android:layout_height="wrap_content" android:layout_width="0dip"></Button>
-				<Button android:background="@drawable/scrollbutton"
-					android:layout_weight="1" android:text="Audio" android:id="@+id/audio_btn"
-					android:layout_height="wrap_content" android:layout_width="0dip"></Button>
-				<Button android:background="@drawable/scrollbutton"
-					android:layout_weight="1" android:text="Vedio" android:id="@+id/vedio_btn"
-					android:layout_height="wrap_content" android:layout_width="0dip"></Button>
-			</LinearLayout>
-		</RelativeLayout>
-		<ListView android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:layout_alignParentLeft="true"
-			android:layout_below="@+id/LinearLayout01" android:clickable="true"
-			android:scrollbarDefaultDelayBeforeFade="100" android:fadeScrollbars="true"
-			android:layout_above="@+id/relativeLayout1" android:id="@android:id/list"></ListView>
-		<RelativeLayout android:layout_width="fill_parent"
-			android:id="@+id/relativeLayout1" android:layout_height="wrap_content"
-			android:layout_alignParentBottom="true">
-		</RelativeLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical" android:background="#FFFFFF">
+	<RelativeLayout android:id="@+id/codegreenTitle"
+		android:layout_width="fill_parent" android:layout_height="40dip"
+		android:layout_gravity="center">
+		<TextView android:text="CodeGreen" android:textColor="#000000"
+			android:textStyle="bold" android:layout_height="wrap_content"
+			android:gravity="center" android:layout_centerInParent="true"
+			android:textSize="20dip" android:layout_width="wrap_content"></TextView>
 	</RelativeLayout>
-</FrameLayout>
+
+	<LinearLayout android:visibility="gone" android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerInParent="true">
+		<ProgressBar android:layout_width="wrap_content"
+			android:layout_height="wrap_content" style="@android:style/Widget.ProgressBar.Small"
+			android:layout_marginRight="5dp" />
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Loading..." />
+	</LinearLayout>
+
+	<RelativeLayout android:id="@+id/LinearLayout01"
+		android:layout_width="wrap_content" android:layout_alignParentLeft="true"
+		android:layout_below="@+id/codegreenTitle" android:background="@drawable/titlebar"
+		android:orientation="horizontal" android:layout_height="40dip">
+		<ImageView android:id="@+id/ImageView01"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:background="@drawable/rightnavigation"
+			android:layout_gravity="right|center_vertical"
+			android:layout_centerVertical="true" android:visibility="gone"></ImageView>
+		<ImageView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_centerVertical="true"
+			android:id="@+id/ImageView03" android:background="@drawable/corner_left"
+			android:layout_toRightOf="@+id/ImageView01"></ImageView>
+		<HorizontalScrollView android:id="@+id/HorizontalScrollView01"
+			android:layout_width="wrap_content" android:layout_centerVertical="true"
+			android:scrollbars="none" android:layout_toLeftOf="@+id/ImageView04"
+			android:layout_toRightOf="@+id/ImageView03" android:layout_height="fill_parent"
+			android:fadingEdge="horizontal" android:fadingEdgeLength="20dip">
+			<LinearLayout android:id="@+id/LinearLayout02" style="@android:style/ButtonBar"
+				android:background="@drawable/titlebar" android:layout_width="wrap_content"
+				android:layout_height="fill_parent">
+				<Button android:id="@+id/btn_green_basics" android:text="Green Basics"
+					android:textColor="#FFFFFF" android:background="@drawable/scrollbutton"
+					android:gravity="center" android:textSize="12sp"
+					android:layout_gravity="center" android:layout_height="fill_parent"
+					android:layout_width="wrap_content"></Button>
+				<Button android:layout_alignParentLeft="true"
+					android:textColor="#FFFFFF" android:text="Design and Architecture"
+					android:id="@+id/btn_design" android:gravity="center"
+					android:textSize="12sp" android:background="@drawable/scrollbutton"
+					android:layout_gravity="center" android:layout_height="fill_parent"
+					android:layout_width="wrap_content"></Button>
+				<Button android:layout_alignParentLeft="true"
+					android:textColor="#FFFFFF" android:text="Science and Technology"
+					android:id="@+id/btn_secience" android:gravity="center"
+					android:textSize="12sp" android:background="@drawable/scrollbutton"
+					android:layout_gravity="center" android:layout_height="fill_parent"
+					android:layout_width="wrap_content"></Button>
+				<Button android:layout_alignParentLeft="true"
+					android:textColor="#FFFFFF" android:text="Transport and travel"
+					android:id="@+id/btn_transport" android:gravity="center"
+					android:textSize="12sp" android:layout_gravity="center"
+					android:background="@drawable/scrollbutton" android:layout_height="fill_parent"
+					android:layout_width="wrap_content"></Button>
+				<Button android:layout_alignParentLeft="true"
+					android:textColor="#FFFFFF" android:id="@+id/btn_business"
+					android:background="@drawable/scrollbutton" android:text="Business/Investment"
+					android:gravity="center" android:textSize="12sp"
+					android:layout_gravity="center" android:layout_height="fill_parent"
+					android:layout_width="wrap_content"></Button>
+				<Button android:layout_alignParentLeft="true"
+					android:textColor="#FFFFFF" android:id="@+id/btn_politics"
+					android:background="@drawable/scrollbutton" android:text="Politics/Policies"
+					android:gravity="center" android:textSize="12sp"
+					android:layout_gravity="center" android:layout_height="fill_parent"
+					android:layout_width="wrap_content"></Button>
+				<Button android:layout_alignParentLeft="true"
+					android:textColor="#FFFFFF" android:id="@+id/btn_food"
+					android:background="@drawable/scrollbutton" android:text="Food and Health"
+					android:gravity="center" android:textSize="12sp"
+					android:layout_gravity="center" android:layout_height="fill_parent"
+					android:layout_width="wrap_content"></Button>
+			</LinearLayout>
+
+		</HorizontalScrollView>
+		<ImageView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_centerVertical="true"
+			android:background="@drawable/corner_right" android:id="@+id/ImageView04"
+			android:layout_alignRight="@+id/ImageView02"></ImageView>
+		<ImageView android:id="@+id/ImageView02"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:background="@drawable/leftnavigation"
+			android:layout_centerVertical="true" android:layout_alignParentRight="true"
+			android:visibility="invisible"></ImageView>
+
+	</RelativeLayout>
+	<ListView android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_alignParentLeft="true"
+		android:layout_below="@+id/LinearLayout01" android:clickable="true"
+		android:scrollbarDefaultDelayBeforeFade="100" android:fadeScrollbars="true"
+		android:layout_above="@+id/relativeLayout1" android:id="@android:id/list"></ListView>
+	<RelativeLayout android:layout_width="fill_parent"
+		android:id="@+id/relativeLayout1" android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true">
+		<LinearLayout android:id="@+id/admarvel"
+			android:layout_width="fill_parent" android:layout_height="50dip"></LinearLayout>
+	</RelativeLayout>
+</RelativeLayout>

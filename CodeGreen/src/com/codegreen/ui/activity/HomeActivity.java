@@ -2,7 +2,6 @@ package com.codegreen.ui.activity;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,15 +32,24 @@ public class HomeActivity extends ListActivity implements Updatable{
 	private static final int MENU_OPTION_SEARCH = 0x02;
 	private static final int MENU_OPTION_SHARE = 0x03;
 	private static final int MENU_OPTION_INFO = 0x04;
+	
+	Button mBtnGreenBasic = null;
+	Button mBtnDesignArcht = null;
+	Button mBtnScience = null;
+	Button mBtnTransport = null;
+	Button mBtnBusiness = null;
+	Button mBtnPolitics = null;
+	Button mBtnFood = null;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		progressBar = (ProgressBar)findViewById(R.id.header_progress_circular);
-		initWidgets();
-		getArticleData(Constants.ARTICAL_TYPE_TEXT); 
+		//progressBar = (ProgressBar)findViewById(R.id.header_progress_circular);
+	     initWidgets();
+	//	getArticleData(Constants.ARTICAL_TYPE_TEXT); 
 	}
 
 
@@ -49,7 +57,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 	 * Initialize variables
 	 */
 	private void initWidgets() {
-		Button btn_text = (Button)findViewById(R.id.text_btn);
+		/*Button btn_text = (Button)findViewById(R.id.text_btn);
 		Button btn_audio = (Button)findViewById(R.id.audio_btn);
 		Button btn_vedio = (Button)findViewById(R.id.vedio_btn);
 		Button btn_image = (Button)findViewById(R.id.image_btn);
@@ -83,7 +91,57 @@ public class HomeActivity extends ListActivity implements Updatable{
 			public void onClick(View v) {
 				getArticleData(Constants.ARTICAL_TYPE_IMAGE);
 			}
-		});
+		});*/
+		
+		 mBtnGreenBasic = (Button)findViewById(R.id.btn_green_basics);
+		 mBtnDesignArcht = (Button)findViewById(R.id.btn_design);
+		 mBtnScience = (Button)findViewById(R.id.btn_secience);
+		 mBtnTransport = (Button)findViewById(R.id.btn_transport);
+		 mBtnBusiness = (Button)findViewById(R.id.btn_business);
+		 mBtnPolitics = (Button)findViewById(R.id.btn_politics);
+		 mBtnFood = (Button)findViewById(R.id.btn_food);
+		 mBtnGreenBasic.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+				}
+			});
+		 mBtnDesignArcht.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+				}
+			});
+		 mBtnScience.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+				}
+			});
+		 mBtnTransport.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+				}
+			});
+		 mBtnBusiness.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+				}
+			});
+		 mBtnPolitics.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+				}
+			});
+		 mBtnFood.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+				}
+			});
 	}
 
 
