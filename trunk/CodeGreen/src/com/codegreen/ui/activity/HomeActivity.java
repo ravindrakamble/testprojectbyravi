@@ -1,16 +1,19 @@
 package com.codegreen.ui.activity;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import com.codegreen.R;
@@ -26,7 +29,6 @@ public class HomeActivity extends ListActivity implements Updatable{
 	String TAG = "HomeActivity";
 	private static String CurrentTabSelected = Constants.ARTCLETYPE_TEXT;
 
-	private ProgressBar progressBar;
 
 	private static final int MENU_OPTION_SAVED = 0x01;
 	private static final int MENU_OPTION_SEARCH = 0x02;
@@ -40,6 +42,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 	Button mBtnBusiness = null;
 	Button mBtnPolitics = null;
 	Button mBtnFood = null;
+	LinearLayout progress_Lay = null;
 	
 
 	@Override
@@ -50,6 +53,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 		//progressBar = (ProgressBar)findViewById(R.id.header_progress_circular);
 	     initWidgets();
 	//	getArticleData(Constants.ARTICAL_TYPE_TEXT); 
+	     searchArticles(Constants.GREEN_BASICS);
 	}
 
 
@@ -93,6 +97,8 @@ public class HomeActivity extends ListActivity implements Updatable{
 			}
 		});*/
 		
+		progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
+		
 		 mBtnGreenBasic = (Button)findViewById(R.id.btn_green_basics);
 		 mBtnDesignArcht = (Button)findViewById(R.id.btn_design);
 		 mBtnScience = (Button)findViewById(R.id.btn_secience);
@@ -104,45 +110,76 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 				@Override
 				public void onClick(View v) {
+					searchArticles(Constants.GREEN_BASICS);
 				}
 			});
 		 mBtnDesignArcht.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					searchArticles(Constants.DESIGN_AND_ARCHITECTURE);
 				}
 			});
 		 mBtnScience.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					searchArticles(Constants.SCIENCE_ANDECHNOLOGY);
 				}
 			});
 		 mBtnTransport.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					searchArticles(Constants.TRANSPORT);
 				}
 			});
 		 mBtnBusiness.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					searchArticles(Constants.BUSINESS);
 				}
 			});
 		 mBtnPolitics.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					searchArticles(Constants.POLITICS);
 				}
 			});
 		 mBtnFood.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					searchArticles(Constants.FOOD_AND_HEALTH);
 				}
 			});
 	}
+	
+	
+	private void searchArticles(int type){
+		try {
+			HttpHandler httpHandler =  HttpHandler.getInstance();
+			//Cancel previous request;
+			httpHandler.cancelRequest();
+
+			//Start progress bar
+			progress_Lay.setVisibility(View.VISIBLE);
+			//Prepare data for new request
+			ArticleDAO articleDAO = new ArticleDAO();
+			articleDAO.setTitle("");
+			articleDAO.setType("");
+			articleDAO.setCategoryID(String.valueOf(type));
+
+			//Send request
+			httpHandler.setApplicationContext(getApplicationContext());
+			httpHandler.handleEvent(articleDAO, Constants.REQ_SEARCHARTICLES, this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 
 
 	/**
@@ -156,7 +193,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 			httpHandler.cancelRequest();
 
 			//Start progressbar
-			progressBar.setVisibility(View.VISIBLE);
+			//progressBar.setVisibility(View.VISIBLE);
 
 			//Prepare data for new request
 			ArticleDAO articleDAO = new ArticleDAO();
@@ -199,6 +236,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 		case MENU_OPTION_SAVED:
 			break;
 		case MENU_OPTION_SEARCH:
+			launchSearchActivity();
 			break;
 
 		case MENU_OPTION_SHARE:
@@ -217,7 +255,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 	@Override
 	public void update(Constants.ENUM_PARSERRESPONSE updateData) {
 
-		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
+		/*if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
 			if(mAdapter == null){
@@ -241,7 +279,31 @@ public class HomeActivity extends ListActivity implements Updatable{
 			}
 		}else
 			Log.e(TAG, "--------Response Received-------ENUM_PARSERRESPONSE.PARSERRESPONSE_FAILURE");
+*/
+		
+		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
+			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
+						
+			if(mAdapter == null){
+				runOnUiThread(new Runnable() { 
+					@Override
+					public void run() {
+						mAdapter = new HomeScreenAdapter(HomeActivity.this);
+						setListAdapter(mAdapter); 
+					}
+				});
+
+			}else{
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						mAdapter.notifyDataSetChanged();
+						mAdapter.notifyDataSetInvalidated();
+					}
+				});
+			}
+		}
 		//Send message to remove progress bar
 		Message msg = new Message();
 		msg.what = Constants.PROGRESS_INVISIBLE;
@@ -275,13 +337,43 @@ public class HomeActivity extends ListActivity implements Updatable{
 		public void handleMessage(Message msg) {
 			switch(msg.what){
 			case Constants.PROGRESS_VISIBLE:
-				progressBar.setVisibility(View.VISIBLE);
+				progress_Lay.setVisibility(View.VISIBLE);
 				break;
 
 			case Constants.PROGRESS_INVISIBLE:
-				progressBar.setVisibility(View.INVISIBLE);
+				progress_Lay.setVisibility(View.INVISIBLE);
 				break;
 			}
 		};
 	};
+	
+	
+	 @Override
+	    public boolean onKeyDown(int keyCode, KeyEvent event){
+
+	    	try{
+	    		 if(keyCode == KeyEvent.KEYCODE_SEARCH)
+	    			launchSearchActivity();
+	    		
+	    	}catch (Exception e) {
+	    		e.printStackTrace();
+			}    		
+	    	return false;
+	    
+	    }
+	 
+	 /**
+	     *  Launch SearchCallhistoryActivity 
+	     * @param filterStr
+	     */
+	    private void launchSearchActivity(){
+	    	try{
+				Context cxt = getApplicationContext();
+	    		Intent intent = new Intent(cxt, SearchActivity.class);     		
+	    		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+	    		startActivity(intent);
+	    	}catch (Exception e) {
+				e.printStackTrace();
+			}
+	    }
 }

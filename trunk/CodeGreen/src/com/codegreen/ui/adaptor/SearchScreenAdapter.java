@@ -1,5 +1,7 @@
 package com.codegreen.ui.adaptor;
+
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,25 +17,85 @@ import com.codegreen.common.CacheManager;
 import com.codegreen.network.FetchImage;
 import com.codegreen.util.Constants;
 
-@SuppressWarnings("unchecked")
-public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
+public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 
 	private Context mContext;
-	private ArrayList<ArticleDAO> mArticleList;
+	private ArrayList<ArticleDAO> mAllArticleList;
 	private LayoutInflater mLayoutInflator = null;
 	private FetchImage imageLoader;
+	private ArrayList<ArticleDAO> mArticleList;
 
-	public HomeScreenAdapter(Context context) {
+	public SearchScreenAdapter(Context context, String filterStr) {
 		try {
 			mContext = context;
 			mLayoutInflator  =  LayoutInflater.from(mContext); 
-			mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES);
+			mAllArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);
 			imageLoader=new FetchImage(mContext);
+			filterEntries(filterStr);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 *  Apply Filtering  
+	 * @param filterStr
+	 */
+	public int applyFilter(String filterStr){
+		int filterCount = 0;
+		
+		try{
+			if(filterStr == null)
+				return 0;
+			
+		  filterCount =	filterEntries(filterStr);
+			//Draw Again....
+			notifyDataSetInvalidated();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return filterCount;
+	}
+	
+	
+	
+	
+	/**
+	 * Filter Contact Entries using the filterStr paramter.
+	 * @param filterStr
+	 */
+	private int filterEntries(String filterStr){
+		try{
+			mArticleList.clear();
+			if(filterStr != null)
+				filterStr = filterStr.toLowerCase();
+			
+			if(mAllArticleList != null){
+				String title = null;
+				for(int i =0;i<mAllArticleList.size();i++){
+					ArticleDAO article = (ArticleDAO)mAllArticleList.get(i);
+					if(filterStr == null){
+						mArticleList.add(article);
+					}else{
+						title = article.getTitle();
+						if(title == null)
+							continue;
+						
+						title = title.toLowerCase();
+						if(title.contains((filterStr)))
+							mArticleList.add(article);
+					}
+				}
+				/*if(mArticleList.size() > 0)
+					Collections.sort(mContacts, new GenericComparator(EnumComparatorObjectType.ENUM_OBJECT_ADDRESS_BOOK_ENTRY));
+			*/}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mArticleList.size();
+	}
+	
 	
 	@Override
 	public int getCount() {
@@ -95,7 +157,7 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 	@Override
 	public void notifyDataSetChanged() {
 		try {
-			mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES);
+			mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -125,3 +187,5 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 	}
 
 }
+
+
