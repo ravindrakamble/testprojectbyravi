@@ -12,7 +12,7 @@
 			android:textSize="20dip" android:layout_width="wrap_content"></TextView>
 	</RelativeLayout>
 
-	<LinearLayout android:visibility="gone" android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerInParent="true">
+	<LinearLayout android:visibility="gone" android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/progress_lay" android:layout_centerInParent="true">
 		<ProgressBar android:layout_width="wrap_content"
 			android:layout_height="wrap_content" style="@android:style/Widget.ProgressBar.Small"
 			android:layout_marginRight="5dp" />
