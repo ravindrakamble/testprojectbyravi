@@ -1,5 +1,6 @@
 package com.codegreen.ui.activity;
 
+import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.listener.Updatable;
@@ -22,6 +23,22 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			strSelectedArticleType = getIntent().getStringExtra(Constants.CURRENT_ARTICLE_TYPE);
 			strSelectedArticleID = getIntent().getStringExtra("ArticleID");
 		}
+		if(strSelectedArticleType != null){
+			if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
+				setContentView(R.layout.atrticle_text);
+				//get the controls
+			}else if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)){
+				setContentView(R.layout.article_image);
+				//get the controls
+			}else if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
+				setContentView(R.layout.article_audio);
+				//get the controls
+			}else if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+				setContentView(R.layout.article_vedio);
+				//get the controls
+			}
+		}
+		
 		if(strSelectedArticleType != null && strSelectedArticleID != null){
 			getArticleDetails();
 		}
@@ -45,8 +62,10 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	}
 
 	@Override
-	public void update(ENUM_PARSERRESPONSE PARSERRESPONSE_FAILURE) {
-		
+	public void update(Constants.ENUM_PARSERRESPONSE updateData) {
+		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
+			//Update the details
+		}
 	}
 
 }

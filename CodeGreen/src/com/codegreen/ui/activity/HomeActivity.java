@@ -1,5 +1,6 @@
 package com.codegreen.ui.activity;
 
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.listener.Updatable;
 import com.codegreen.ui.adaptor.HomeScreenAdapter;
+import com.codegreen.ui.dialog.ReviewDialog;
 import com.codegreen.util.Constants;
 
 public class HomeActivity extends ListActivity implements Updatable{
@@ -229,17 +231,23 @@ public class HomeActivity extends ListActivity implements Updatable{
 		}
 		return false;
 	}
+	
+	public static final int ID_SEARCH =0x40;
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_OPTION_SAVED:
+			
 			break;
 		case MENU_OPTION_SEARCH:
+			showDialog(ID_SEARCH);
 			launchSearchActivity();
+
 			break;
 
 		case MENU_OPTION_SHARE:
+			
 			break;
 
 		case MENU_OPTION_INFO:
@@ -250,7 +258,19 @@ public class HomeActivity extends ListActivity implements Updatable{
 		}
 		return false;
 	}
-
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case ID_SEARCH:
+			ReviewDialog reviewDialog = new ReviewDialog(this);
+			return reviewDialog;
+		default:
+			break;
+		}
+		return null;
+		
+	}
 
 	@Override
 	public void update(Constants.ENUM_PARSERRESPONSE updateData) {
