@@ -62,10 +62,14 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	}
 
 	@Override
+	public void update(ENUM_PARSERRESPONSE PARSERRESPONSE_FAILURE, byte callId) {
+		
+/*=======
 	public void update(Constants.ENUM_PARSERRESPONSE updateData) {
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 			//Update the details
 		}
-	}
+>>>>>>> .r20
+*/	}
 
 }

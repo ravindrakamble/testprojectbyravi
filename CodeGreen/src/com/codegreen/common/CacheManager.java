@@ -10,10 +10,6 @@ package com.codegreen.common;
 
 import java.util.Hashtable;
 
-/**
- * @author sougata.sen
- *
- */
 public class CacheManager {
 
         /**

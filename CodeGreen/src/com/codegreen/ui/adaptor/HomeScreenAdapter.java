@@ -27,7 +27,10 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 		try {
 			mContext = context;
 			mLayoutInflator  =  LayoutInflater.from(mContext); 
-			mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES);
+			if(mReqId == Constants.REQ_GETARTICLESBYTYPE)
+				mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES);
+			else 
+				mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);
 			imageLoader=new FetchImage(mContext);
 
 		} catch (Exception e) {
@@ -90,16 +93,31 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 		return convertView;
 	}
 
+	byte mReqId;
+	
+	public void setRequestID(byte reqID){
+		mReqId = reqID;
+	}
+
 
 
 	@Override
 	public void notifyDataSetChanged() {
 		try {
-			mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES);
+			if(mReqId == Constants.REQ_GETARTICLESBYTYPE)
+				mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES);
+			else 
+				mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public void notifyDataSetInvalidated() {
+		super.notifyDataSetInvalidated();
+	}
+
 
 	static class ListHolder {
 		TextView txt_articleName;

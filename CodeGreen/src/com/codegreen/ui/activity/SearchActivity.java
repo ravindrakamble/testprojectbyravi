@@ -36,6 +36,9 @@ public class SearchActivity extends ListActivity implements Updatable{
 	 */
 	private TextView mNoItems;
 	LinearLayout progressLayout = null;
+	
+	private  int CURRENT_SELECTED_CATEGORY = 1;
+	private  String CURRENT_SELECTED_MEDIA  ="";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,12 @@ public class SearchActivity extends ListActivity implements Updatable{
 		setContentView(R.layout.search_view);
 		mSearchView = findViewById(R.id.search_view1);
 		mSearchText = (EditText)mSearchView.findViewById(R.id.search_editview);
-		mSearchText.addTextChangedListener(mSearchTextWatcher);
+		
+		if(getIntent() !=null){
+			CURRENT_SELECTED_CATEGORY = getIntent().getIntExtra("Selected_Category",1);
+			CURRENT_SELECTED_MEDIA = getIntent().getStringExtra("Selected_Media");
+		}
+		//mSearchText.addTextChangedListener(mSearchTextWatcher);
 		progressLayout = (LinearLayout)findViewById(R.id.progreeView);
 		progressLayout.setVisibility(View.GONE);
 		searchView = (ImageView)mSearchView.findViewById(R.id.search_imageview);
@@ -54,7 +62,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 				mNoItems.setVisibility(View.GONE);
 				progressLayout.setVisibility(View.VISIBLE);
 				//Call the search web service
-				searchArticles(mSearchText.getText().toString().trim(), 1);
+				searchArticles(mSearchText.getText().toString().trim(), CURRENT_SELECTED_CATEGORY);
 			}
 		});
 		mSearchText.setFilters(new InputFilter[] {mSearchTextFilter , mSearchTextLengthFilter});
@@ -76,7 +84,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 			//Prepare data for new request
 			ArticleDAO articleDAO = new ArticleDAO();
 			articleDAO.setTitle(searchString);
-			articleDAO.setType("");
+			articleDAO.setType(CURRENT_SELECTED_MEDIA);
 			articleDAO.setCategoryID(String.valueOf(type));
 
 			//Send request
@@ -111,7 +119,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 
 
 
-	private TextWatcher mSearchTextWatcher = new TextWatcher() {
+	/*private TextWatcher mSearchTextWatcher = new TextWatcher() {
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
 
@@ -143,7 +151,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 		}
 	};
 
-
+*/
 	@Override
 	public void update(byte errorCode, byte callID, Object obj) {
 		// TODO Auto-generated method stub
@@ -151,7 +159,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 	}
 
 	@Override
-	public void update(Constants.ENUM_PARSERRESPONSE updateData) {
+	public void update(Constants.ENUM_PARSERRESPONSE updateData, byte ReqID) {
 
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 

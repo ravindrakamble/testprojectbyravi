@@ -11,10 +11,6 @@ package com.codegreen.common;
 import java.util.Date;
 
 
-/**
- * @author sougata.sen
- *
- */
 public abstract class Task implements Runnable{
 
 	/**
