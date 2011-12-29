@@ -1,25 +1,7 @@
- /**
- * =================================================================================================================
- * File Name       	: Request.java
- * Author          	: sougata.sen @ Endeavour Software Technologies pvt. ltd., Bangalore.
- * Version         	: 0.1
- * Date            	: 11-Aug-2010
- * Copyright       	: Digi-Data Corporation.
- * Description     	: 
- * To Do List		: TODO
- * History         	:
- * =====================================================================================================================
- *  Sr. No.	Date		Name				Reviewed By					Description
- * =====================================================================================================================
- *  		11-Aug-2010   	sougata.sen		     	sougata.sen						Initial Version. 
- * =====================================================================================================================
- */
+
 package com.codegreen.services;
 
-/**
- * @author ravindra.kamble
- *
- */
+
 public class SOAPRequest {
 
 	/**

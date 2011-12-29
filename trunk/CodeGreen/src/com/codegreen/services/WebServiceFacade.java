@@ -13,12 +13,6 @@ import com.codegreen.common.TaskExecutor;
 import com.codegreen.network.NetworkTask;
 import com.codegreen.util.Constants;
 
-/**
- * 
- * This Class is responsible for Handling all Web services.
- * @author sougata.sen
- *
- */
 public class WebServiceFacade {
 
 	/**

@@ -1,11 +1,4 @@
-/**
- * =================================================================================================================
- * File Name            : DDXmlParser.java
- * =====================================================================================================================
- *  Sr. No.     Date            Name                       Description
- * =====================================================================================================================
- * =====================================================================================================================
- */
+
 package com.codegreen.parser;
 
 import java.util.ArrayList;
@@ -20,10 +13,6 @@ import com.codegreen.businessprocess.objects.ReviewDAO;
 import com.codegreen.util.Constants;
 
 
-/**
- * @author ravindra.kamble
- *
- */
 public class XmlParser extends DefaultHandler implements ParserConstants{
 
 

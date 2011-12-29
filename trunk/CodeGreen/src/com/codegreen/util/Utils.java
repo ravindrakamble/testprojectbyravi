@@ -20,10 +20,6 @@ import java.util.Vector;
 
 
 
-/**
- * @author sougata.sen
- *
- */
 public class Utils {
         /**
     	 * Creation/Expiration date constants.

@@ -1,8 +1,10 @@
 package com.codegreen.ui.activity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,9 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
@@ -36,7 +38,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 	private static final int MENU_OPTION_SEARCH = 0x02;
 	private static final int MENU_OPTION_SHARE = 0x03;
 	private static final int MENU_OPTION_INFO = 0x04;
-	
+
 	Button mBtnGreenBasic = null;
 	Button mBtnDesignArcht = null;
 	Button mBtnScience = null;
@@ -46,120 +48,137 @@ public class HomeActivity extends ListActivity implements Updatable{
 	Button mBtnFood = null;
 	LinearLayout progress_Lay = null;
 	
+	
+	private static int CURRENT_SELECTED_CATEGORY = 1;
+	private static String CURRENT_SELECTED_MEDIA = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
-		//progressBar = (ProgressBar)findViewById(R.id.header_progress_circular);
-	     initWidgets();
-	//	getArticleData(Constants.ARTICAL_TYPE_TEXT); 
-	     searchArticles(Constants.GREEN_BASICS);
+		initWidgets();
+		// Call the data by category default
+		searchArticles(Constants.GREEN_BASICS);
+		
 	}
-
+	
+	
 
 	/**
 	 * Initialize variables
 	 */
 	private void initWidgets() {
-		/*Button btn_text = (Button)findViewById(R.id.text_btn);
-		Button btn_audio = (Button)findViewById(R.id.audio_btn);
-		Button btn_vedio = (Button)findViewById(R.id.vedio_btn);
-		Button btn_image = (Button)findViewById(R.id.image_btn);
 
-		// set click listener
-		btn_text.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				getArticleData(Constants.ARTICAL_TYPE_TEXT);
-			}
-		});
-		btn_audio.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				getArticleData(Constants.ARTICAL_TYPE_AUDIO);
-			}
-		});
-
-		btn_vedio.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				getArticleData(Constants.ARTICAL_TYPE_VEDIO);
-			}
-		});
-		btn_image.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				getArticleData(Constants.ARTICAL_TYPE_IMAGE);
-			}
-		});*/
-		
 		progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
-		
-		 mBtnGreenBasic = (Button)findViewById(R.id.btn_green_basics);
-		 mBtnDesignArcht = (Button)findViewById(R.id.btn_design);
-		 mBtnScience = (Button)findViewById(R.id.btn_secience);
-		 mBtnTransport = (Button)findViewById(R.id.btn_transport);
-		 mBtnBusiness = (Button)findViewById(R.id.btn_business);
-		 mBtnPolitics = (Button)findViewById(R.id.btn_politics);
-		 mBtnFood = (Button)findViewById(R.id.btn_food);
-		 mBtnGreenBasic.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					searchArticles(Constants.GREEN_BASICS);
-				}
-			});
-		 mBtnDesignArcht.setOnClickListener(new OnClickListener() {
+		mBtnGreenBasic = (Button)findViewById(R.id.btn_green_basics);
+		mBtnDesignArcht = (Button)findViewById(R.id.btn_design);
+		mBtnScience = (Button)findViewById(R.id.btn_secience);
+		mBtnTransport = (Button)findViewById(R.id.btn_transport);
+		mBtnBusiness = (Button)findViewById(R.id.btn_business);
+		mBtnPolitics = (Button)findViewById(R.id.btn_politics);
+		mBtnFood = (Button)findViewById(R.id.btn_food);
+		mBtnGreenBasic.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					searchArticles(Constants.DESIGN_AND_ARCHITECTURE);
-				}
-			});
-		 mBtnScience.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				CURRENT_SELECTED_CATEGORY = 1;
+				searchArticles(Constants.GREEN_BASICS);
+			}
+		});
+		mBtnDesignArcht.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					searchArticles(Constants.SCIENCE_ANDECHNOLOGY);
-				}
-			});
-		 mBtnTransport.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				CURRENT_SELECTED_CATEGORY = 2;
+				searchArticles(Constants.DESIGN_AND_ARCHITECTURE);
+			}
+		});
+		mBtnScience.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					searchArticles(Constants.TRANSPORT);
-				}
-			});
-		 mBtnBusiness.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				CURRENT_SELECTED_CATEGORY = 3;
+				searchArticles(Constants.SCIENCE_ANDECHNOLOGY);
+			}
+		});
+		mBtnTransport.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					searchArticles(Constants.BUSINESS);
-				}
-			});
-		 mBtnPolitics.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				CURRENT_SELECTED_CATEGORY = 4;
+				searchArticles(Constants.TRANSPORT);
+			}
+		});
+		mBtnBusiness.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					searchArticles(Constants.POLITICS);
-				}
-			});
-		 mBtnFood.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				CURRENT_SELECTED_CATEGORY = 5;
+				searchArticles(Constants.BUSINESS);
+			}
+		});
+		mBtnPolitics.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					searchArticles(Constants.FOOD_AND_HEALTH);
-				}
-			});
+			@Override
+			public void onClick(View v) {
+				CURRENT_SELECTED_CATEGORY = 6;
+				searchArticles(Constants.POLITICS);
+			}
+		});
+		mBtnFood.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				CURRENT_SELECTED_CATEGORY = 7;
+				searchArticles(Constants.FOOD_AND_HEALTH);
+			}
+		});
+		ImageView btn_Media = (ImageView) findViewById(R.id.btn_media);
+		btn_Media.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				showMediaOptions();
+			}
+		});
 	}
-	
-	
+
+
+
+	private void showMediaOptions(){
+		final CharSequence[] items = {"Text", "Image", "Audio", "Vedio"};
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Media Options :");
+		builder.setIcon(R.drawable.icon);
+		builder.setItems(items, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int item) {
+				if(item == 0){
+					getArticleData(Constants.ARTICAL_TYPE_TEXT);
+				CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_TEXT;
+			}
+				else if(item == 2){
+					getArticleData(Constants.ARTICAL_TYPE_AUDIO);
+					CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_AUDIO;
+				}
+				else if(item == 3){
+					getArticleData(Constants.ARTICAL_TYPE_VEDIO);
+					CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_VEDIO;
+				}
+				else if(item == 1){
+					CURRENT_SELECTED_MEDIA =  Constants.ARTICAL_TYPE_IMAGE;
+					getArticleData(Constants.ARTICAL_TYPE_IMAGE);
+				}
+			}
+		});
+		AlertDialog alert = builder.create();
+
+		alert.show();
+	}
+
+
+
 	private void searchArticles(int type){
 		try {
 			HttpHandler httpHandler =  HttpHandler.getInstance();
@@ -195,13 +214,13 @@ public class HomeActivity extends ListActivity implements Updatable{
 			httpHandler.cancelRequest();
 
 			//Start progressbar
-			//progressBar.setVisibility(View.VISIBLE);
+			progress_Lay.setVisibility(View.VISIBLE);
 
 			//Prepare data for new request
 			ArticleDAO articleDAO = new ArticleDAO();
 			articleDAO.setType(articleType);
-			articleDAO.setLastArticlePublishingDate("12/20/2011");
-
+			articleDAO.setLastArticlePublishingDate("12/20/2011"); // TBD 
+			articleDAO.setCategoryID(String.valueOf(CURRENT_SELECTED_CATEGORY));
 			//Send request
 			httpHandler.setApplicationContext(getApplicationContext());
 			httpHandler.handleEvent(articleDAO, Constants.REQ_GETARTICLESBYTYPE, this);
@@ -241,9 +260,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 			
 			break;
 		case MENU_OPTION_SEARCH:
-			showDialog(ID_SEARCH);
 			launchSearchActivity();
-
 			break;
 
 		case MENU_OPTION_SHARE:
@@ -273,43 +290,18 @@ public class HomeActivity extends ListActivity implements Updatable{
 	}
 
 	@Override
-	public void update(Constants.ENUM_PARSERRESPONSE updateData) {
+	public void update(Constants.ENUM_PARSERRESPONSE updateData, final byte reqID) {
 
-		/*if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
-
-			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
-			if(mAdapter == null){
-				runOnUiThread(new Runnable() { 
-					@Override
-					public void run() {
-						mAdapter = new HomeScreenAdapter(HomeActivity.this);
-						setListAdapter(mAdapter); 
-					}
-				});
-
-			}else{
-				runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						mAdapter.notifyDataSetChanged();
-						mAdapter.notifyDataSetInvalidated();
-					}
-				});
-			}
-		}else
-			Log.e(TAG, "--------Response Received-------ENUM_PARSERRESPONSE.PARSERRESPONSE_FAILURE");
-*/
-		
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
-						
+			
 			if(mAdapter == null){
 				runOnUiThread(new Runnable() { 
 					@Override
 					public void run() {
 						mAdapter = new HomeScreenAdapter(HomeActivity.this);
+						mAdapter.setRequestID(reqID);
 						setListAdapter(mAdapter); 
 					}
 				});
@@ -318,12 +310,14 @@ public class HomeActivity extends ListActivity implements Updatable{
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
+						mAdapter.setRequestID(reqID);
 						mAdapter.notifyDataSetChanged();
 						mAdapter.notifyDataSetInvalidated();
 					}
 				});
 			}
 		}
+		
 		//Send message to remove progress bar
 		Message msg = new Message();
 		msg.what = Constants.PROGRESS_INVISIBLE;
@@ -333,25 +327,29 @@ public class HomeActivity extends ListActivity implements Updatable{
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
-		
-		if(articleEntry != null){
+
+		// Need later for playing music dont delete
+	/*	if(articleEntry != null){
 			Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
 			PlayerActivity.streamUrl = articleEntry.getUrl();
 			startActivity(intent);
-			
-			/*Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
+
+			Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
 		    Uri data = Uri.parse(articleEntry.getUrl());
 		    intent.setDataAndType(data, "video/mp4");
-		    startActivity(intent);*/
+		    startActivity(intent);
 			return;
 		}
-		// Launch details screen
-		Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
+*/		// Launch details screen
+		/*Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, CurrentTabSelected);
 		intent.putExtra("ArticleID", articleEntry.getArticleID());
-		startActivity(intent);
+		startActivity(intent);*/
+		
+		// Code Integration in Progress-------------------------------
 	} 
+	
 
 	private Handler uiUpdator = new Handler(){
 		public void handleMessage(Message msg) {
@@ -366,34 +364,36 @@ public class HomeActivity extends ListActivity implements Updatable{
 			}
 		};
 	};
-	
-	
-	 @Override
-	    public boolean onKeyDown(int keyCode, KeyEvent event){
 
-	    	try{
-	    		 if(keyCode == KeyEvent.KEYCODE_SEARCH)
-	    			launchSearchActivity();
-	    		
-	    	}catch (Exception e) {
-	    		e.printStackTrace();
-			}    		
-	    	return false;
-	    
-	    }
-	 
-	 /**
-	     *  Launch SearchCallhistoryActivity 
-	     * @param filterStr
-	     */
-	    private void launchSearchActivity(){
-	    	try{
-				Context cxt = getApplicationContext();
-	    		Intent intent = new Intent(cxt, SearchActivity.class);     		
-	    		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-	    		startActivity(intent);
-	    	}catch (Exception e) {
-				e.printStackTrace();
-			}
-	    }
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+
+		try{
+			if(keyCode == KeyEvent.KEYCODE_SEARCH)
+				launchSearchActivity();
+
+		}catch (Exception e) {
+			e.printStackTrace();
+		}    		
+		return false;
+
+	}
+
+	/**
+	 *  Launch SearchCallhistoryActivity 
+	 * @param filterStr
+	 */
+	private void launchSearchActivity(){
+		try{
+			Context cxt = getApplicationContext();
+			Intent intent = new Intent(cxt, SearchActivity.class);     		
+			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			intent.putExtra("Selected_Category", ""+CURRENT_SELECTED_CATEGORY);
+			intent.putExtra("Selected_Media", CURRENT_SELECTED_MEDIA);
+			startActivity(intent);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

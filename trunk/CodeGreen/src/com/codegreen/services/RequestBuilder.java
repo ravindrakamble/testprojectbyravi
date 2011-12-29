@@ -14,10 +14,6 @@ import com.codegreen.util.Constants;
 
 
 
-/**
- * @author ravindra.kamble
- *
- */
 public class RequestBuilder {
 
 	/**
@@ -110,6 +106,7 @@ public class RequestBuilder {
 		sb.append("<GetArticlesByType xmlns=\"http://tempuri.org/\">");
 		sb.append("<type>" + articleDAO.getType() + "</type>");
 		sb.append("<lastArticlePublishingDate>" + articleDAO.getLastArticlePublishingDate() +"</lastArticlePublishingDate>");
+		sb.append("<categoryID>"+articleDAO.getCategoryID() +"</categoryID>");
 		sb.append("</GetArticlesByType>");
 		sb.append("</soap:Body>");
 		sb.append("</soap:Envelope>");

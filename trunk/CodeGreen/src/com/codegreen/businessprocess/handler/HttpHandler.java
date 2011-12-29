@@ -27,6 +27,7 @@ public class HttpHandler implements Handler {
 	private static HttpHandler mSelf = null;
 	
 	private Context applicationContext;
+	byte mReqId;
 	
 	private HttpHandler(){
 		
@@ -43,6 +44,7 @@ public class HttpHandler implements Handler {
 	public byte handleEvent(Object eventObject, byte callID, Updatable updatable) {
 		this.updatable = updatable;
 		requestStatus = Constants.HTTPREQUEST.STARTED;
+		mReqId = callID;
 		WebServiceFacade webServiceFacade = WebServiceFacade.getInstance();
 		switch (callID) {
 		case Constants.REQ_GETARTICLESBYTYPE:
@@ -118,23 +120,23 @@ public class HttpHandler implements Handler {
 						//Update the articles into database
 						DBAdapter dbAdapter = DBAdapter.getInstance(applicationContext);
 						//dbAdapter.insertArticles(ddXmlParser.getArticles());
-						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId);
 						break;
 					case Constants.REQ_GETARTICLEDETAILS:
 						CacheManager.getInstance().store(Constants.C_ARTICLE_DETAILS, ddXmlParser.getArticleDAO());
-						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId);
 						break;
 					case Constants.REQ_GETREVIEWS:
 						CacheManager.getInstance().store(Constants.C_REVIEWS, ddXmlParser.getReviews());
-						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId);
 						break;
 					case Constants.REQ_SEARCHARTICLES:
 						CacheManager.getInstance().store(Constants.C_SEARCH_ARTICLES, ddXmlParser.getArticles());
-						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId);
 						break;
 					case Constants.REQ_SUBMITREVIEW:
 						CacheManager.getInstance().store(Constants.C_SUBMITREVIEW, ddXmlParser.getReviewMessage());
-						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS);
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId);
 						break;
 					}
 				}

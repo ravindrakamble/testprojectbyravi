@@ -8,10 +8,7 @@
  */
 package com.codegreen.util;
 
-/**
- * @author sougata.sen
- *
- */
+
 public interface Constants {
 	/**
 	 * Request Constants 

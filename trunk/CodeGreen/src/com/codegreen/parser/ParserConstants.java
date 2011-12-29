@@ -8,10 +8,7 @@
  */
 package com.codegreen.parser;
 
-/**
- * @author ravindra.kamble
- *
- */
+
 public interface ParserConstants {
 	public String ARTICLE = "Article";
 	public String IMAGEARTICLEID = "IMAGEArticleID";

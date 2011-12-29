@@ -10,10 +10,6 @@ package com.codegreen.database;
 
 import android.content.Context;
 
-/**
- * @author sougata.sen
- *
- */
 public interface DAO {
 	
 	public void open(Context context);

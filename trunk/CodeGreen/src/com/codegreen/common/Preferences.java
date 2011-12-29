@@ -1,29 +1,10 @@
-/**
- * =================================================================================================================
- * File Name            : Preferences.java
- * Author               : vishal.r @ Endeavour Software Technologies pvt. ltd., Bangalore.
- * Version              : 0.1
- * Date                 : 29-Mar-2011
- * Copyright            : Digi-Data Corporation.
- * Description          : 
- * To Do List           : TODO
- * History              :
- * =====================================================================================================================
- *  Sr. No.     Date            Name                            Reviewed By                                     Description
- * =====================================================================================================================
- *              29-Mar-2011     vishal.r                     vishal.r                                             Initial Version. 
- * =====================================================================================================================
- */
+
 package com.codegreen.common;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-/**
- * @author ravindra.kamble
- *
- */
 public class Preferences {
 	// Preferences keys
 
