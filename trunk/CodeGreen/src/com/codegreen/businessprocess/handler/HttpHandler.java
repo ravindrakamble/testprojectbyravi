@@ -111,7 +111,7 @@ public class HttpHandler implements Handler {
 			Constants.PARSING parsedMessage = ddXmlParser.getParseMessage();
 
 			if(parsedMessage == Constants.PARSING.COMPLETED){
-				Log.e("No of records found;" , "" + ddXmlParser.getArticles().size());
+				//Log.e("No of records found;" , "" + ddXmlParser.getArticles().size()); // for other req giving null
 				if(updatable != null){
 					switch (callID) {
 					case Constants.REQ_GETARTICLESBYTYPE:

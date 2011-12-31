@@ -40,7 +40,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 	public void startDocument() throws SAXException {
 		switch(requestID){
 		case Constants.REQ_GETARTICLESBYTYPE:
-		case Constants.REQ_SEARCHARTICLES:
+		case Constants.REQ_SEARCHARTICLES: 
 			articles = new ArrayList<ArticleDAO>();
 			break;
 		case Constants.REQ_GETARTICLEDETAILS:
@@ -116,17 +116,20 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 		case Constants.REQ_SEARCHARTICLES:
 			if(endTagName.equalsIgnoreCase(IMAGEARTICLEID)){
 				articleDAO.setArticleID(parsedData);
-				articleDAO.setType(Constants.ARTCLETYPE_IMAGE);
+				//articleDAO.setType(Constants.ARTCLETYPE_IMAGE);
 			}else if(endTagName.equalsIgnoreCase(TEXTARTICLEID)){
 				articleDAO.setArticleID(parsedData);
-				articleDAO.setType(Constants.ARTCLETYPE_TEXT);
+				//articleDAO.setType(Constants.ARTCLETYPE_TEXT);
 			}else if(endTagName.equalsIgnoreCase(AUDIOARTICLEID)){
 				articleDAO.setArticleID(parsedData);
-				articleDAO.setType(Constants.ARTCLETYPE_AUDIO);
+				//articleDAO.setType(Constants.ARTCLETYPE_AUDIO);
 			}else if(endTagName.equalsIgnoreCase(VIDEOARTICLEID)){
 				articleDAO.setArticleID(parsedData);
-				articleDAO.setType(Constants.ARTCLETYPE_VIDEO);
-			}else if(endTagName.equalsIgnoreCase(TITLE)){
+				//articleDAO.setType(Constants.ARTCLETYPE_VIDEO);
+			}else if(endTagName.equalsIgnoreCase(ARTICLEID)){
+				articleDAO.setArticleID(parsedData);
+			}
+			else if(endTagName.equalsIgnoreCase(TITLE)){
 				articleDAO.setTitle(parsedData);
 			}else if(endTagName.equalsIgnoreCase(SHORTDESCIPTION)){
 				articleDAO.setShortDescription(parsedData);
@@ -134,6 +137,8 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 				articleDAO.setDetailedDescription(parsedData);
 			}else if(endTagName.equalsIgnoreCase(THUMBURL)){
 				articleDAO.setThumbUrl(parsedData);
+			}else if(endTagName.equalsIgnoreCase(ARTICLETYPE)){
+					articleDAO.setType(parsedData);
 			}else if(endTagName.equalsIgnoreCase(URL)){
 				articleDAO.setUrl(parsedData);
 			}else if(endTagName.equalsIgnoreCase(PUBLISHEDDATE)){
@@ -141,9 +146,8 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 			}else if(endTagName.equalsIgnoreCase(CATEGORYID)){
 				articleDAO.setCategoryID(parsedData);
 			}else if(endTagName.equalsIgnoreCase(ARTICLE)){
-				if(requestID != Constants.REQ_GETARTICLEDETAILS){
-				articles.add(articleDAO);
-				}
+				if(requestID != Constants.REQ_GETARTICLEDETAILS)
+					articles.add(articleDAO); 
 			}
 			break;
 		
