@@ -108,4 +108,10 @@
 		<LinearLayout android:id="@+id/admarvel"
 			android:layout_width="fill_parent" android:layout_height="50dip"></LinearLayout>
 	</RelativeLayout>
+	
+	
+		<TextView android:id="@+id/android:empty" android:gravity="center" android:visibility="gone"
+		android:layout_gravity="center_horizontal|center_vertical" android:text="No data Found."
+		android:textStyle="bold" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" />
 </RelativeLayout>

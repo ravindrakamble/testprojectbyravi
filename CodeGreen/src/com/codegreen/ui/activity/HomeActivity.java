@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
@@ -48,10 +50,10 @@ public class HomeActivity extends ListActivity implements Updatable{
 	Button mBtnFood = null;
 	LinearLayout progress_Lay = null;
 	
-	
 	private static int CURRENT_SELECTED_CATEGORY = 1;
 	private static String CURRENT_SELECTED_MEDIA = "";
-
+	private TextView mNoItems = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -78,6 +80,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 		mBtnBusiness = (Button)findViewById(R.id.btn_business);
 		mBtnPolitics = (Button)findViewById(R.id.btn_politics);
 		mBtnFood = (Button)findViewById(R.id.btn_food);
+		mNoItems =(TextView) findViewById(android.R.id.empty);
 		mBtnGreenBasic.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -187,6 +190,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 			//Start progress bar
 			progress_Lay.setVisibility(View.VISIBLE);
+			mNoItems.setVisibility(View.GONE);
 			//Prepare data for new request
 			ArticleDAO articleDAO = new ArticleDAO();
 			articleDAO.setTitle("");
@@ -215,7 +219,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 			//Start progressbar
 			progress_Lay.setVisibility(View.VISIBLE);
-
+			mNoItems.setVisibility(View.GONE);
 			//Prepare data for new request
 			ArticleDAO articleDAO = new ArticleDAO();
 			articleDAO.setType(articleType);
@@ -341,11 +345,11 @@ public class HomeActivity extends ListActivity implements Updatable{
 			return;
 		}
 */		// Launch details screen
-		/*Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
+		 Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, CurrentTabSelected);
+		intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
 		intent.putExtra("ArticleID", articleEntry.getArticleID());
-		startActivity(intent);*/
+		startActivity(intent);
 		
 		// Code Integration in Progress-------------------------------
 	} 
@@ -356,10 +360,12 @@ public class HomeActivity extends ListActivity implements Updatable{
 			switch(msg.what){
 			case Constants.PROGRESS_VISIBLE:
 				progress_Lay.setVisibility(View.VISIBLE);
+				mNoItems.setVisibility(View.GONE);
 				break;
 
 			case Constants.PROGRESS_INVISIBLE:
 				progress_Lay.setVisibility(View.INVISIBLE);
+				mNoItems.setVisibility(View.VISIBLE);
 				break;
 			}
 		};

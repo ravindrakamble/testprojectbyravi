@@ -121,7 +121,7 @@ public class RequestBuilder {
 		sb.append("<GetArticleDetails xmlns=\"http://tempuri.org/\">");
 		sb.append("<articleID>" + articleDAO.getArticleID() + "</articleID>");
 		sb.append("<type>" + articleDAO.getType() +"</type>");
-		sb.append("<categoryID>" + articleDAO.getCategoryID() +"</categoryID>");
+		/*sb.append("<categoryID>" + articleDAO.getCategoryID() +"</categoryID>");*/
 		sb.append("</GetArticleDetails>");
 		sb.append("</soap:Body>");
 		sb.append("</soap:Envelope>");
