@@ -364,34 +364,27 @@ public class HomeActivity extends ListActivity implements Updatable{
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
 
-		// Need later for playing music dont delete
-		/*	if(articleEntry != null){
-			Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
-			PlayerActivity.streamUrl = articleEntry.getUrl();
-			startActivity(intent);
-
-			Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-		    Uri data = Uri.parse(articleEntry.getUrl());
-		    intent.setDataAndType(data, "video/mp4");
-		    startActivity(intent);
-			return;
-		}
-		 */		// Launch details screen
-		if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)||  articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
+		// Launch details screen
+		//if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)||  articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
 			Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
 			intent.putExtra("ArticleID", articleEntry.getArticleID());
 			startActivity(intent);
-		}else if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO) ){
-			Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+		//}else if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO) ){
+			/*Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
 			PlayerActivity.streamUrl = articleEntry.getThumbUrl();
 			if(articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO))
 				PlayerActivity.isAudio = true;
 			else
 				PlayerActivity.isAudio = false;
-			startActivity(intent);
-		}
+			startActivity(intent);*/
+			/*Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
+			intent.putExtra("ArticleID", articleEntry.getArticleID());
+			startActivity(intent);*/
+	//	}
 
 	} 
 

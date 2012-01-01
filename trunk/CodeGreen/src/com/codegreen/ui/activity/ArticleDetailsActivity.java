@@ -15,7 +15,9 @@ import com.codegreen.util.Utils;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -24,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -34,13 +37,14 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	String strSelectedArticleID = "";
 	String TAG = "ArticleDetailsActivity";
 	LinearLayout progress_Lay = null;
-	WebView imageView = null;
+	ImageView imageView = null;
 	private static final int MENU_OPTION_SAVED = 0x01;
 	private static final int MENU_OPTION_SEARCH = 0x02;
 	private static final int MENU_OPTION_SHARE = 0x03;
 	private TextView txt_reviews = null;
 	private static final int MENU_OPTION_ADD_REVIEW = 0x04;
 	ArticleDAO articleDetails;
+	TextView txt_player_select = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +58,20 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			setContentView(R.layout.atrticle_text);
 			txtDetails = (TextView) findViewById(R.id.article_details_view);
 			progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
-			imageView = (WebView)findViewById(R.id.webview);
+			imageView = (ImageView)findViewById(R.id.webview);
 			txt_reviews = (TextView)findViewById(R.id.txt_reviews);
 			txt_reviews.setVisibility(View.GONE);
+			imageView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, strSelectedArticleType);
+					intent.putExtra("ArticleID", strSelectedArticleID);
+					startActivity(intent);
+				}
+			});
+			
 			txt_reviews.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -132,13 +147,25 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						String strDetails = "";
 						articleDetails = (ArticleDAO) CacheManager.getInstance().get(Constants.C_ARTICLE_DETAILS);
 						if(articleDetails != null){
-							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals("")){
+							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals("") || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getThumbUrl().equals("") || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO) && !articleDetails.getThumbUrl().equals("") ){
 								imageView.setVisibility(View.VISIBLE);
-								imageView.loadUrl(articleDetails.getUrl());
+								if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+									//imageView.loadUrl(articleDetails.getUrl());
+							}else if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
+									//imageView.loadUrl(articleDetails.getThumbUrl());
+									//txt_player_select.setVisibility(View.VISIBLE);
+									PlayerActivity.streamUrl = articleDetails.getUrl();
+									PlayerActivity.isAudio = true;
+								}else{
+									//imageView.loadUrl(articleDetails.getThumbUrl());
+									//txt_player_select.setVisibility(View.VISIBLE);
+									PlayerActivity.streamUrl = articleDetails.getUrl();
+									PlayerActivity.isAudio = false;
+								}
 							}else
 								imageView.setVisibility(View.GONE);
 
-							strDetails = "<b>Title : </b>"+ articleDetails.getTitle() + "<br/>"+ "<b>Date :</b>" + articleDetails.getPublishedDate() + "<br/>" + articleDetails.getShortDescription() + "<br/>" + articleDetails.getDetailedDescription();
+							strDetails = "<b>Title : </b>"+ articleDetails.getTitle() + "<br/>"+ "<b>Date :</b>" + articleDetails.getPublishedDate() + "<br/>" + articleDetails.getDetailedDescription();
 							if(strDetails != null && !strDetails.equals("")){
 								txtDetails.setVisibility(View.VISIBLE);
 								txtDetails.setText(Html.fromHtml(strDetails));
@@ -150,7 +177,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						}
 					}else if(callId == Constants.REQ_GETREVIEWS){
 						txt_reviews.setVisibility(View.VISIBLE);
-
 						List<ReviewDAO> reviewList = (List<ReviewDAO>) CacheManager.getInstance().get(Constants.C_REVIEWS);
 						ReviewDAO reviewDAO = null;
 						StringBuilder reviews = new StringBuilder();
@@ -169,7 +195,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							}
 
 							txt_reviews.setTextColor(Color.BLACK);
-							txt_reviews.setTextSize(10);
+							txt_reviews.setTypeface(Typeface.DEFAULT);
+							txt_reviews.setTextSize(15);
 							txt_reviews.setText(Html.fromHtml(reviews.toString()));
 						}else{
 							txt_reviews.setText("No Reviews submitted yet.");
