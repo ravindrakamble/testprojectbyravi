@@ -10,6 +10,8 @@ package com.codegreen.common;
 
 import java.util.Hashtable;
 
+import android.graphics.Bitmap;
+
 public class CacheManager {
 
         /**
@@ -23,7 +25,7 @@ public class CacheManager {
         private Hashtable<String,Object> cache = new Hashtable<String,Object>();
         
         public static boolean loggedIn = false;
-        
+        private Bitmap latestArticleBitmap;
         /**
          * Private Access constructor.
          */
@@ -83,6 +85,14 @@ public class CacheManager {
                         cache.clear();
                 }
         }
+
+		public Bitmap getLatestArticleBitmap() {
+			return latestArticleBitmap;
+		}
+
+		public void setLatestArticleBitmap(Bitmap latestArticleBitmap) {
+			this.latestArticleBitmap = latestArticleBitmap;
+		}
         
 }
 

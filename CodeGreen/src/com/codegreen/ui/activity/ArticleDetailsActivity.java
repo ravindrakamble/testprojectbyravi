@@ -152,7 +152,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						if(articleDetails != null){
 							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals("") || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getThumbUrl().equals("") || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO) && !articleDetails.getThumbUrl().equals("") ){
 								imageView.setVisibility(View.VISIBLE);
-								if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+								if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
 									//imageView.loadUrl(articleDetails.getUrl());
 								}else if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
 									//imageView.loadUrl(articleDetails.getThumbUrl());
@@ -177,6 +177,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 								txtDetails.setVisibility(View.GONE);
 							}
 							txt_reviews.setVisibility(View.VISIBLE);
+							
+							downloadImage();
 						}
 					}else if(callId == Constants.REQ_GETREVIEWS){
 						txt_reviews.setVisibility(View.VISIBLE);
@@ -209,6 +211,10 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 						//update the reviews
 						getReviews(articleDetails);
+					}else if(callId == Constants.REQ_DOWNLOADIMAGE){
+						if(CacheManager.getInstance().getLatestArticleBitmap() != null){
+							imageView.setImageBitmap(CacheManager.getInstance().getLatestArticleBitmap());
+						}
 					}
 				}
 			});
@@ -269,4 +275,18 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 	}
 
+	private void downloadImage(){
+		if(articleDetails != null){
+			HttpHandler httpHandler =  HttpHandler.getInstance();
+			//Cancel previous request;
+			httpHandler.cancelRequest();
+			String url = null;
+			if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+				url = articleDetails.getUrl();
+			}else{
+				url = articleDetails.getThumbUrl();
+			}
+			httpHandler.handleEvent(url, Constants.REQ_DOWNLOADIMAGE, ArticleDetailsActivity.this);
+		}
+	}
 }
