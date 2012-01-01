@@ -141,7 +141,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							}
 							else{
 								txtDetails.setVisibility(View.GONE);
-
 							}
 							txt_reviews.setVisibility(View.VISIBLE);
 						}
