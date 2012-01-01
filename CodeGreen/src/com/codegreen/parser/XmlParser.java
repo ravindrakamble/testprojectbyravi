@@ -166,6 +166,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 			}
 			break;
 		}
+		 parsedData = "";
 	}
 
 	/**
