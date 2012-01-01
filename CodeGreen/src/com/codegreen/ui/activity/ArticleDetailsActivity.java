@@ -1,19 +1,24 @@
 package com.codegreen.ui.activity;
 
-import java.util.ArrayList;
 
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
+import com.codegreen.businessprocess.objects.ReviewDAO;
 import com.codegreen.common.CacheManager;
 import com.codegreen.listener.Updatable;
+import com.codegreen.ui.dialog.ReviewDialog;
 import com.codegreen.util.Constants;
 import com.codegreen.util.Constants.ENUM_PARSERRESPONSE;
+import com.codegreen.util.Utils;
+
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
@@ -30,6 +35,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private static final int MENU_OPTION_SAVED = 0x01;
 	private static final int MENU_OPTION_SEARCH = 0x02;
 	private static final int MENU_OPTION_SHARE = 0x03;
+	private static final int MENU_OPTION_ADD_REVIEW = 0x04;
+
+	ArticleDAO articleDetails;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +72,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			menu.add(0, MENU_OPTION_SAVED,0 , "Saved Items").setIcon(android.R.drawable.ic_menu_gallery);
 			menu.add(0, MENU_OPTION_SEARCH,0 , "Search").setIcon(android.R.drawable.ic_menu_search);
 			menu.add(0, MENU_OPTION_SHARE,0 , "Share").setIcon(android.R.drawable.ic_menu_share);
+			menu.add(0, MENU_OPTION_ADD_REVIEW,0 , "Share").setIcon(android.R.drawable.ic_menu_add);
 			return true;
 		}
 		catch (Exception e) {
@@ -94,34 +103,97 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	}
 
 	@Override
-	public void update(ENUM_PARSERRESPONSE updateData, byte callId) {
+	public void update(ENUM_PARSERRESPONSE updateData, final byte callId) {
 
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
+
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
 					progress_Lay.setVisibility(View.GONE);
-					String strDetails = "";
-					ArticleDAO data = (ArticleDAO) CacheManager.getInstance().get(Constants.C_ARTICLE_DETAILS);
-					if(data != null){
-						if(data.getUrl() != null && !data.getUrl().equals("")){
-							imageView.setVisibility(View.VISIBLE);
-							imageView.loadUrl(data.getUrl());
-						}else
-							imageView.setVisibility(View.GONE);
+					if(callId == Constants.REQ_GETARTICLEDETAILS){
+						String strDetails = "";
+						articleDetails = (ArticleDAO) CacheManager.getInstance().get(Constants.C_ARTICLE_DETAILS);
+						if(articleDetails != null){
+							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals("")){
+								imageView.setVisibility(View.VISIBLE);
+								imageView.loadUrl(articleDetails.getUrl());
+							}else
+								imageView.setVisibility(View.GONE);
 
-						strDetails = "Title : "+ data.getTitle() + "<br/>"+ "Date :" + data.getPublishedDate() + "<br/>" + data.getShortDescription() + "<br/>" + data.getDetailedDescription();
-						if(strDetails != null && !strDetails.equals("")){
-							txtDetails.setVisibility(View.VISIBLE);
-							txtDetails.setText(Html.fromHtml(strDetails));
+							strDetails = "Title : "+ articleDetails.getTitle() + "<br/>"+ "Date :" + articleDetails.getPublishedDate() + "<br/>" + articleDetails.getShortDescription() + "<br/>" + articleDetails.getDetailedDescription();
+							if(strDetails != null && !strDetails.equals("")){
+								txtDetails.setVisibility(View.VISIBLE);
+								txtDetails.setText(Html.fromHtml(strDetails));
+							}
+							else
+								txtDetails.setVisibility(View.GONE);
+						}else if(callId == Constants.REQ_GETREVIEWS){
+						}else if(callId == Constants.REQ_SUBMITREVIEW){
+							Utils.displayMessage(ArticleDetailsActivity.this, getString(R.string.review_submitted));
 						}
-						else
-							txtDetails.setVisibility(View.GONE);
 					}
 				}
 			});
 		}
 	}
+
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case MENU_OPTION_SAVED:
+
+			break;
+		case MENU_OPTION_SEARCH:
+			break;
+
+		case MENU_OPTION_SHARE:
+			getReviews(articleDetails);
+			break;
+
+		case MENU_OPTION_ADD_REVIEW:
+			showDialog(Constants.DIALOG_REVIEW);
+			break;
+		default:
+			break;
+		}
+		return false;
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case Constants.DIALOG_REVIEW:
+			ReviewDialog reviewDialog = new ReviewDialog(this, articleDetails);
+			return reviewDialog;
+		default:
+			break;
+		}
+		return null;
+
+	}
+
+	private void getReviews(ArticleDAO articleDAO){
+		try {
+			HttpHandler httpHandler =  HttpHandler.getInstance();
+			//Cancel previous request;
+			httpHandler.cancelRequest();
+
+			//Start progress bar
+			progress_Lay.setVisibility(View.VISIBLE);
+			//Prepare data for new request
+			ReviewDAO reviewDAO = new ReviewDAO();
+			reviewDAO.setArticleID(articleDAO.getArticleID());
+			reviewDAO.setArticleType(articleDAO.getType());
+			//Send request
+			httpHandler.setApplicationContext(getApplicationContext());
+			httpHandler.handleEvent(reviewDAO, Constants.REQ_GETREVIEWS, this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }
