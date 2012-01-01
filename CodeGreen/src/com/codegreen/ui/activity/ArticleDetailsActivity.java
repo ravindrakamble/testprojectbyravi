@@ -64,14 +64,16 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			imageView.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, strSelectedArticleType);
-					intent.putExtra("ArticleID", strSelectedArticleID);
-					startActivity(intent);
+					if(strSelectedArticleType.equals(Constants.ARTCLETYPE_AUDIO) || strSelectedArticleType.equals(Constants.ARTCLETYPE_VIDEO)){
+						Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, strSelectedArticleType);
+						intent.putExtra("ArticleID", strSelectedArticleID);
+						startActivity(intent);
+					}
 				}
 			});
-			
+
 			txt_reviews.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -151,7 +153,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 								imageView.setVisibility(View.VISIBLE);
 								if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
 									//imageView.loadUrl(articleDetails.getUrl());
-							}else if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
+								}else if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
 									//imageView.loadUrl(articleDetails.getThumbUrl());
 									//txt_player_select.setVisibility(View.VISIBLE);
 									PlayerActivity.streamUrl = articleDetails.getUrl();
@@ -189,13 +191,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 								if(reviewDAO.getUserName() != null && !reviewDAO.getUserName().equalsIgnoreCase("")){
 									reviews.append("Submitted by: " + reviewDAO.getUserName());
 								}
-								
-								reviews.append(" <i>" + reviewDAO.getReviewDate() + "</i> <br><br>");
+								if(!reviewDAO.getReviewDate().equals(""))
+									reviews.append("<i>" + reviewDAO.getReviewDate() + "</i> <br><br>");
 
 							}
 
 							txt_reviews.setTextColor(Color.BLACK);
-							txt_reviews.setTypeface(Typeface.DEFAULT);
 							txt_reviews.setTextSize(15);
 							txt_reviews.setText(Html.fromHtml(reviews.toString()));
 						}else{
@@ -204,7 +205,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						//txt_reviews.setText();
 					}else if(callId == Constants.REQ_SUBMITREVIEW){
 						Utils.displayMessage(getApplicationContext(), getString(R.string.review_submitted));
-						
+
 						//update the reviews
 						getReviews(articleDetails);
 					}
