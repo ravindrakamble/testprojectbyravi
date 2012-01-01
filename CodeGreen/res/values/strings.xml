@@ -2,4 +2,8 @@
 <resources>
     <string name="hello">Hello World, SplashActivity!</string>
     <string name="app_name">CodeGreen</string>
+    <string name="review_dialog_title">Add Review</string>
+    <string name="submit_button">Submit</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="add_review">Add Review</string>
 </resources>
