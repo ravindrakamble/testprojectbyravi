@@ -29,6 +29,7 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class ArticleDetailsActivity extends Activity implements Updatable{
@@ -64,7 +65,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			imageView.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if(strSelectedArticleType.equals(Constants.ARTCLETYPE_AUDIO) || strSelectedArticleType.equals(Constants.ARTCLETYPE_VIDEO)){
+					if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
 						Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
 						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, strSelectedArticleType);
@@ -100,9 +101,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		try{
 			menu.removeGroup(0);
 			menu.add(0, MENU_OPTION_SAVED,0 , "Saved Items").setIcon(android.R.drawable.ic_menu_gallery);
-			menu.add(0, MENU_OPTION_SEARCH,0 , "Search").setIcon(android.R.drawable.ic_menu_search);
+			//menu.add(0, MENU_OPTION_SEARCH,0 , "Search").setIcon(android.R.drawable.ic_menu_search);
 			menu.add(0, MENU_OPTION_SHARE,0 , "Share").setIcon(android.R.drawable.ic_menu_share);
-			menu.add(0, MENU_OPTION_ADD_REVIEW,0 , "Share").setIcon(android.R.drawable.ic_menu_add);
+			menu.add(0, MENU_OPTION_ADD_REVIEW,0 , "Add Review").setIcon(android.R.drawable.ic_menu_add);
 			return true;
 		}
 		catch (Exception e) {
@@ -219,13 +220,11 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_OPTION_SAVED:
-
+			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
 			break;
-		case MENU_OPTION_SEARCH:
-			break;
-
-		case MENU_OPTION_SHARE:
-			getReviews(articleDetails);
+			case MENU_OPTION_SHARE:
+			//getReviews(articleDetails);
+			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
 			break;
 
 		case MENU_OPTION_ADD_REVIEW:
