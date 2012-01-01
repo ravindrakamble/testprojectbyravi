@@ -90,7 +90,7 @@ public interface Constants {
 	public static final String NO_MATCH_FOUND = "No match found.";
 	
 	
-	
+	public static final int DIALOG_REVIEW = 1;
 	
 
 }

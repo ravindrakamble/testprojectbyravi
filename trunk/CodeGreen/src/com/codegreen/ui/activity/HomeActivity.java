@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.TextView;
 
 import com.codegreen.R;
@@ -36,6 +37,7 @@ import com.codegreen.util.Constants;
 
 public class HomeActivity extends ListActivity implements Updatable{
 
+	ReviewDialog reviewDialog;
 	HomeScreenAdapter mAdapter = null;
 	String TAG = "HomeActivity";
 	private static String CurrentTabSelected = Constants.ARTCLETYPE_TEXT;
@@ -210,27 +212,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 		}
 	}
 
-	private void getReviews(ArticleDAO articleDAO){
-		try {
-			HttpHandler httpHandler =  HttpHandler.getInstance();
-			//Cancel previous request;
-			httpHandler.cancelRequest();
-
-			//Start progress bar
-			progress_Lay.setVisibility(View.VISIBLE);
-			mNoItems.setVisibility(View.GONE);
-			//Prepare data for new request
-			ReviewDAO reviewDAO = new ReviewDAO();
-			reviewDAO.setArticleID(articleDAO.getArticleID());
-			reviewDAO.setArticleType(articleDAO.getType());
-			//Send request
-			httpHandler.setApplicationContext(getApplicationContext());
-			httpHandler.handleEvent(reviewDAO, Constants.REQ_GETREVIEWS, this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -300,8 +282,6 @@ public class HomeActivity extends ListActivity implements Updatable{
 			break;
 
 		case MENU_OPTION_SHARE:
-			ArticleDAO articleDAO = (ArticleDAO)mAdapter.getItem(0);
-			getReviews(articleDAO);
 			break;
 
 		case MENU_OPTION_INFO:
@@ -316,8 +296,8 @@ public class HomeActivity extends ListActivity implements Updatable{
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
-		case ID_SEARCH:
-			ReviewDialog reviewDialog = new ReviewDialog(this);
+		case Constants.DIALOG_REVIEW:
+			ReviewDialog reviewDialog = new ReviewDialog(this, (ArticleDAO)mAdapter.getItem(0));
 			return reviewDialog;
 		default:
 			break;
@@ -370,6 +350,8 @@ public class HomeActivity extends ListActivity implements Updatable{
 					}
 				});
 			}
+		}else{
+			Toast.makeText(this, "No news data found", Toast.LENGTH_LONG).show();
 		}
 
 		//Send message to remove progress bar

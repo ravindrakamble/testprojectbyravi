@@ -142,7 +142,7 @@ public class HttpHandler implements Handler {
 				}
 			}
 		}else{
-			
+			updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_FAILURE,mReqId);
 		}
 		requestStatus = Constants.HTTPREQUEST.COMPLETED;
 	}
