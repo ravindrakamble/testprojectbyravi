@@ -9,10 +9,8 @@ import com.codegreen.util.Constants;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,13 +30,13 @@ public class SearchActivity extends ListActivity implements Updatable{
 	private EditText mSearchText = null;
 	private SearchScreenAdapter mAdapter = null;
 	private ImageView searchView;
-	
+
 	/*
 	 * Variable to hold the empty screen Text
 	 */
 	private TextView mNoItems;
 	LinearLayout progressLayout = null;
-	
+
 	private  int CURRENT_SELECTED_CATEGORY = 1;
 	private  String CURRENT_SELECTED_MEDIA  ="";
 
@@ -48,7 +46,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 		setContentView(R.layout.search_view);
 		mSearchView = findViewById(R.id.search_view1);
 		mSearchText = (EditText)mSearchView.findViewById(R.id.search_editview);
-		
+
 		if(getIntent() !=null){
 			CURRENT_SELECTED_CATEGORY = getIntent().getIntExtra("Selected_Category",1);
 			CURRENT_SELECTED_MEDIA = getIntent().getStringExtra("Selected_Media");
@@ -153,11 +151,11 @@ public class SearchActivity extends ListActivity implements Updatable{
 		}
 	};
 
-*/
+	 */
 	@Override
 	public void update(byte errorCode, byte callID, Object obj) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -166,10 +164,10 @@ public class SearchActivity extends ListActivity implements Updatable{
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
-			
-			
+
+
 			runOnUiThread(new Runnable() {
-				
+
 				@Override
 				public void run() {
 					searchView.setEnabled(true);
@@ -196,29 +194,18 @@ public class SearchActivity extends ListActivity implements Updatable{
 				});
 			}
 		}
-		
+
 	}
-	
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
-		// Launch details screen
-			if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)||  articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
-				Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
-				intent.putExtra("ArticleID", articleEntry.getArticleID());
-				startActivity(intent);
-			}else if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO) ){
-				Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
-				PlayerActivity.streamUrl = articleEntry.getThumbUrl();
-				if(articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO))
-					PlayerActivity.isAudio = true;
-				else
-					PlayerActivity.isAudio = false;
-				startActivity(intent);
-			}
- 
+
+		Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
+		intent.putExtra("ArticleID", articleEntry.getArticleID());
+		startActivity(intent);
 	}  
 
 }

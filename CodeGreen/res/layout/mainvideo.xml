@@ -5,7 +5,7 @@
 	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:orientation="vertical" android:layout_width="fill_parent"
 		android:layout_height="fill_parent">
-		<ProgressBar android:id="@+id/progressBar1"
+		<ProgressBar android:id="@+id/progressBar1" 
 			android:layout_height="wrap_content" android:layout_width="wrap_content"
 			android:layout_centerInParent="true"></ProgressBar>
 
@@ -16,7 +16,7 @@
 			android:layout_alignParentRight="true" android:layout_alignParentTop="true"
 			android:layout_alignParentBottom="true"></VideoView>
 	</RelativeLayout>
-	<ImageView android:layout_width="wrap_content"
+	<ImageView android:layout_width="wrap_content" android:visibility="gone"
 		android:layout_height="wrap_content" android:background="@drawable/orn_os4"
 		android:layout_gravity="center" android:id="@+id/audioImg"></ImageView>
 	<RelativeLayout android:id="@+id/relativeLayout1"
