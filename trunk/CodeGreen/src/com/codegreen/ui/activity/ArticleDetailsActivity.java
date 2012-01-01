@@ -60,6 +60,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			txtDetails = (TextView) findViewById(R.id.article_details_view);
 			progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
 			imageView = (ImageView)findViewById(R.id.webview);
+			imageView.setBackgroundColor(Color.LTGRAY);
 			txt_reviews = (TextView)findViewById(R.id.txt_reviews);
 			txt_reviews.setVisibility(View.GONE);
 			imageView.setOnClickListener(new OnClickListener() {
