@@ -10,6 +10,7 @@ package com.codegreen.services;
 
 import com.codegreen.businessprocess.handler.Handler;
 import com.codegreen.common.TaskExecutor;
+import com.codegreen.network.DownloadImageTask;
 import com.codegreen.network.NetworkTask;
 import com.codegreen.util.Constants;
 
@@ -92,4 +93,9 @@ public class WebServiceFacade {
 		taskExecutor.execute(reviewTask);
 	}
 	
+	
+	public void downloadImage(String params, Handler handler){
+		DownloadImageTask imageTask = new DownloadImageTask(params, handler);
+		taskExecutor.execute(imageTask);
+	}
 }

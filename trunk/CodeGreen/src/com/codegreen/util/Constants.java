@@ -19,6 +19,7 @@ public interface Constants {
 	public static final byte REQ_SEARCHARTICLES = 4;
 	public static final byte REQ_SUBMITREVIEW = 5;
 	public static final byte REQ_GETCATEGOIRES = 6;
+	public static final byte REQ_DOWNLOADIMAGE = 7;
 
 	//Article types
 	public static final String ARTCLETYPE_IMAGE = "IMAGE";
