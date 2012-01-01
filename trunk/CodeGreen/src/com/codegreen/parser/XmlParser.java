@@ -158,6 +158,8 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 				reviewDAO.setReviewComments(parsedData);
 			}else if(endTagName.equalsIgnoreCase(REVIEW)){
 				reviews.add(reviewDAO);
+			}else if(endTagName.equalsIgnoreCase(CREATEDDATE)){
+				reviewDAO.setReviewDate(parsedData);
 			}
 			break;
 		case Constants.REQ_SUBMITREVIEW:

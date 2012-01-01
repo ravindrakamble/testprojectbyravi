@@ -27,6 +27,8 @@ public interface ParserConstants {
 	public String REVIEW = "Review";
 	public String SUBMITREVIEW = "SubmitReview";
 	public String SUBMITREVIEWMESSAGE = "Message";
-	public String ARTICLETYPE="ArticleType";
-	public String ARTICLEID="ArticleID";
+	public String ARTICLETYPE ="ArticleType";
+	public String ARTICLEID ="ArticleID";
+	public String CREATEDDATE ="CreatedDate";
+	public String REVIEW_ID ="ReviewID";
 }

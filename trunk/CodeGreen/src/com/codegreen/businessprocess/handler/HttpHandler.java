@@ -135,7 +135,6 @@ public class HttpHandler implements Handler {
 						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId);
 						break;
 					case Constants.REQ_SUBMITREVIEW:
-						CacheManager.getInstance().store(Constants.C_SUBMITREVIEW, ddXmlParser.getReviewMessage());
 						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId);
 						break;
 					}
