@@ -275,16 +275,18 @@ public class HomeActivity extends ListActivity implements Updatable{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_OPTION_SAVED:
-
+			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
 			break;
 		case MENU_OPTION_SEARCH:
 			launchSearchActivity();
 			break;
 
 		case MENU_OPTION_SHARE:
+			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
 			break;
 
 		case MENU_OPTION_INFO:
+			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
 			break;
 
 		default:
