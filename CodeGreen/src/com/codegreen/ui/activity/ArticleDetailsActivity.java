@@ -1,6 +1,5 @@
 package com.codegreen.ui.activity;
 
-
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
@@ -20,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,8 +35,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private static final int MENU_OPTION_SAVED = 0x01;
 	private static final int MENU_OPTION_SEARCH = 0x02;
 	private static final int MENU_OPTION_SHARE = 0x03;
+	private TextView txt_reviews = null;
 	private static final int MENU_OPTION_ADD_REVIEW = 0x04;
-
 	ArticleDAO articleDetails;
 
 	@Override
@@ -52,6 +52,15 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			txtDetails = (TextView) findViewById(R.id.article_details_view);
 			progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
 			imageView = (WebView)findViewById(R.id.webview);
+			txt_reviews = (TextView)findViewById(R.id.txt_reviews);
+			txt_reviews.setVisibility(View.GONE);
+			txt_reviews.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					getReviews(articleDetails);
+				}
+			});
 		}
 
 		if(strSelectedArticleType != null && strSelectedArticleID != null){
@@ -60,6 +69,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	}
 
 	TextView txtDetails = null;
+
 
 	private void initTextView() {
 
@@ -108,6 +118,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
+			
 
 			runOnUiThread(new Runnable() {
 				@Override
@@ -123,24 +134,30 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							}else
 								imageView.setVisibility(View.GONE);
 
-							strDetails = "Title : "+ articleDetails.getTitle() + "<br/>"+ "Date :" + articleDetails.getPublishedDate() + "<br/>" + articleDetails.getShortDescription() + "<br/>" + articleDetails.getDetailedDescription();
+							strDetails = "<b>Title : </b>"+ articleDetails.getTitle() + "<br/>"+ "<b>Date :</b>" + articleDetails.getPublishedDate() + "<br/>" + articleDetails.getShortDescription() + "<br/>" + articleDetails.getDetailedDescription();
 							if(strDetails != null && !strDetails.equals("")){
 								txtDetails.setVisibility(View.VISIBLE);
 								txtDetails.setText(Html.fromHtml(strDetails));
 							}
-							else
+							else{
 								txtDetails.setVisibility(View.GONE);
-						}else if(callId == Constants.REQ_GETREVIEWS){
-						}else if(callId == Constants.REQ_SUBMITREVIEW){
-							Utils.displayMessage(ArticleDetailsActivity.this, getString(R.string.review_submitted));
+
+							}
+							txt_reviews.setVisibility(View.VISIBLE);
 						}
+					}else if(callId == Constants.REQ_GETREVIEWS){
+						txt_reviews.setVisibility(View.VISIBLE);
+						
+						//txt_reviews.setText();
+					}else if(callId == Constants.REQ_SUBMITREVIEW){
+						Utils.displayMessage(ArticleDetailsActivity.this, getString(R.string.review_submitted));
 					}
 				}
 			});
 		}
 	}
 
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
