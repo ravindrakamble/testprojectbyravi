@@ -1,11 +1,14 @@
 package com.codegreen.ui.activity;
 
+import java.util.ArrayList;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,6 +27,8 @@ import android.widget.TextView;
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
+import com.codegreen.businessprocess.objects.ReviewDAO;
+import com.codegreen.common.CacheManager;
 import com.codegreen.listener.Updatable;
 import com.codegreen.ui.adaptor.HomeScreenAdapter;
 import com.codegreen.ui.dialog.ReviewDialog;
@@ -49,11 +54,11 @@ public class HomeActivity extends ListActivity implements Updatable{
 	Button mBtnPolitics = null;
 	Button mBtnFood = null;
 	LinearLayout progress_Lay = null;
-	
+
 	private static int CURRENT_SELECTED_CATEGORY = 1;
 	private static String CURRENT_SELECTED_MEDIA = "";
 	private TextView mNoItems = null;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,10 +66,10 @@ public class HomeActivity extends ListActivity implements Updatable{
 		initWidgets();
 		// Call the data by category default
 		searchArticles(Constants.GREEN_BASICS);
-		
+
 	}
-	
-	
+
+
 
 	/**
 	 * Initialize variables
@@ -159,8 +164,8 @@ public class HomeActivity extends ListActivity implements Updatable{
 			public void onClick(DialogInterface dialog, int item) {
 				if(item == 0){
 					getArticleData(Constants.ARTICAL_TYPE_TEXT);
-				CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_TEXT;
-			}
+					CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_TEXT;
+				}
 				else if(item == 2){
 					getArticleData(Constants.ARTICAL_TYPE_AUDIO);
 					CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_AUDIO;
@@ -205,6 +210,33 @@ public class HomeActivity extends ListActivity implements Updatable{
 		}
 	}
 
+	private void getReviews(ArticleDAO articleDAO){
+		try {
+			HttpHandler httpHandler =  HttpHandler.getInstance();
+			//Cancel previous request;
+			httpHandler.cancelRequest();
+
+			//Start progress bar
+			progress_Lay.setVisibility(View.VISIBLE);
+			mNoItems.setVisibility(View.GONE);
+			//Prepare data for new request
+			ReviewDAO reviewDAO = new ReviewDAO();
+			reviewDAO.setArticleID(articleDAO.getArticleID());
+			reviewDAO.setArticleType(articleDAO.getType());
+			//Send request
+			httpHandler.setApplicationContext(getApplicationContext());
+			httpHandler.handleEvent(reviewDAO, Constants.REQ_GETREVIEWS, this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// Restore the default value of media type
+		CURRENT_SELECTED_MEDIA = "";
+	}
 
 
 	/**
@@ -254,21 +286,22 @@ public class HomeActivity extends ListActivity implements Updatable{
 		}
 		return false;
 	}
-	
+
 	public static final int ID_SEARCH =0x40;
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_OPTION_SAVED:
-			
+
 			break;
 		case MENU_OPTION_SEARCH:
 			launchSearchActivity();
 			break;
 
 		case MENU_OPTION_SHARE:
-			
+			ArticleDAO articleDAO = (ArticleDAO)mAdapter.getItem(0);
+			getReviews(articleDAO);
 			break;
 
 		case MENU_OPTION_INFO:
@@ -279,7 +312,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 		}
 		return false;
 	}
-	
+
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
@@ -290,7 +323,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 			break;
 		}
 		return null;
-		
+
 	}
 
 	@Override
@@ -299,11 +332,20 @@ public class HomeActivity extends ListActivity implements Updatable{
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
-			
+
 			if(mAdapter == null){
 				runOnUiThread(new Runnable() { 
 					@Override
 					public void run() {
+						int sizeOfData = 0;
+						if(reqID == Constants.REQ_GETARTICLESBYTYPE)
+							sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES)).size();
+						else 
+							sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES)).size();
+
+						if(sizeOfData == 0)
+							mNoItems.setVisibility(View.VISIBLE);
+
 						mAdapter = new HomeScreenAdapter(HomeActivity.this);
 						mAdapter.setRequestID(reqID);
 						setListAdapter(mAdapter); 
@@ -314,6 +356,14 @@ public class HomeActivity extends ListActivity implements Updatable{
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
+						int sizeOfData = 0;
+						if(reqID == Constants.REQ_GETARTICLESBYTYPE)
+							sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES)).size();
+						else 
+							sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES)).size();
+
+						if(sizeOfData == 0)
+							mNoItems.setVisibility(View.VISIBLE);
 						mAdapter.setRequestID(reqID);
 						mAdapter.notifyDataSetChanged();
 						mAdapter.notifyDataSetInvalidated();
@@ -321,7 +371,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 				});
 			}
 		}
-		
+
 		//Send message to remove progress bar
 		Message msg = new Message();
 		msg.what = Constants.PROGRESS_INVISIBLE;
@@ -333,7 +383,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 		ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
 
 		// Need later for playing music dont delete
-	/*	if(articleEntry != null){
+		/*	if(articleEntry != null){
 			Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
 			PlayerActivity.streamUrl = articleEntry.getUrl();
 			startActivity(intent);
@@ -344,16 +394,25 @@ public class HomeActivity extends ListActivity implements Updatable{
 		    startActivity(intent);
 			return;
 		}
-*/		// Launch details screen
-		 Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
-		intent.putExtra("ArticleID", articleEntry.getArticleID());
-		startActivity(intent);
-		
-		// Code Integration in Progress-------------------------------
+		 */		// Launch details screen
+		if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)||  articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
+			Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
+			intent.putExtra("ArticleID", articleEntry.getArticleID());
+			startActivity(intent);
+		}else if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO) ){
+			Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+			PlayerActivity.streamUrl = articleEntry.getThumbUrl();
+			if(articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO))
+				PlayerActivity.isAudio = true;
+			else
+				PlayerActivity.isAudio = false;
+			startActivity(intent);
+		}
+
 	} 
-	
+
 
 	private Handler uiUpdator = new Handler(){
 		public void handleMessage(Message msg) {
@@ -365,7 +424,6 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 			case Constants.PROGRESS_INVISIBLE:
 				progress_Lay.setVisibility(View.INVISIBLE);
-				mNoItems.setVisibility(View.VISIBLE);
 				break;
 			}
 		};

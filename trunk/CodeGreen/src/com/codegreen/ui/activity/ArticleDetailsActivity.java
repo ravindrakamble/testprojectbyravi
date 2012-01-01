@@ -40,33 +40,23 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			strSelectedArticleID = getIntent().getStringExtra("ArticleID");
 		}
 		if(strSelectedArticleType != null){
-			if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_TEXT) || strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)){
-				setContentView(R.layout.atrticle_text);
-				 txtDetails = (TextView) findViewById(R.id.article_details_view);
-				 progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
-				 imageView = (WebView)findViewById(R.id.webview);
-				//initTextView();
-				//get the controls
-			}else if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
-				setContentView(R.layout.article_audio);
-				//get the controls
-			}else if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
-				setContentView(R.layout.article_vedio);
-				//get the controls
-			}
+			setContentView(R.layout.atrticle_text);
+			txtDetails = (TextView) findViewById(R.id.article_details_view);
+			progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
+			imageView = (WebView)findViewById(R.id.webview);
 		}
-		
+
 		if(strSelectedArticleType != null && strSelectedArticleID != null){
 			getArticleDetails();
 		}
 	}
 
 	TextView txtDetails = null;
-	
+
 	private void initTextView() {
-		
+
 	}
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		try{
@@ -81,9 +71,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 		return false;
 	}
-	
-	
-	
+
+
+
 
 	/**
 	 * WS call to get article details
@@ -92,7 +82,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		progress_Lay.setVisibility(View.VISIBLE);
 		HttpHandler httpHandler =  HttpHandler.getInstance();
 		ArticleDAO articleDAO = new ArticleDAO();
-	    articleDAO.setArticleID(strSelectedArticleID);
+		articleDAO.setArticleID(strSelectedArticleID);
 		articleDAO.setType(strSelectedArticleType);
 		articleDAO.setCategoryID(Constants.CURRENT_CATEGORY_TYPE);
 		httpHandler.handleEvent(articleDAO, Constants.REQ_GETARTICLEDETAILS, this);
@@ -100,12 +90,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 	@Override
 	public void update(byte errorCode, byte callID, Object obj) {
-		
+
 	}
 
 	@Override
 	public void update(ENUM_PARSERRESPONSE updateData, byte callId) {
-		
+
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
@@ -116,14 +106,14 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					String strDetails = "";
 					ArticleDAO data = (ArticleDAO) CacheManager.getInstance().get(Constants.C_ARTICLE_DETAILS);
 					if(data != null){
-						if(data.getUrl() != null){
+						if(data.getUrl() != null && !data.getUrl().equals("")){
 							imageView.setVisibility(View.VISIBLE);
 							imageView.loadUrl(data.getUrl());
 						}else
 							imageView.setVisibility(View.GONE);
-						
+
 						strDetails = "Title : "+ data.getTitle() + "<br/>"+ "Date :" + data.getPublishedDate() + "<br/>" + data.getShortDescription() + "<br/>" + data.getDetailedDescription();
-						if(!strDetails.equals("")){
+						if(strDetails != null && !strDetails.equals("")){
 							txtDetails.setVisibility(View.VISIBLE);
 							txtDetails.setText(Html.fromHtml(strDetails));
 						}

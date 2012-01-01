@@ -37,19 +37,19 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 *  Apply Filtering  
 	 * @param filterStr
 	 */
 	public int applyFilter(String filterStr){
 		int filterCount = 0;
-		
+
 		try{
 			if(filterStr == null)
 				return 0;
-			
-		  filterCount =	filterEntries(filterStr);
+
+			filterCount =	filterEntries(filterStr);
 			//Draw Again....
 			notifyDataSetInvalidated();
 		}catch (Exception e) {
@@ -57,10 +57,10 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 		}
 		return filterCount;
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Filter Contact Entries using the filterStr paramter.
 	 * @param filterStr
@@ -70,7 +70,7 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 			mArticleList.clear();
 			if(filterStr != null)
 				filterStr = filterStr.toLowerCase();
-			
+
 			if(mAllArticleList != null){
 				String title = null;
 				for(int i =0;i<mAllArticleList.size();i++){
@@ -81,7 +81,7 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 						title = article.getTitle();
 						if(title == null)
 							continue;
-						
+
 						title = title.toLowerCase();
 						if(title.contains((filterStr)))
 							mArticleList.add(article);
@@ -89,14 +89,14 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 				}
 				/*if(mArticleList.size() > 0)
 					Collections.sort(mContacts, new GenericComparator(EnumComparatorObjectType.ENUM_OBJECT_ADDRESS_BOOK_ENTRY));
-			*/}
+				 */}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		return mArticleList.size();
 	}
-	
-	
+
+
 	@Override
 	public int getCount() {
 		if (mArticleList != null)
@@ -137,16 +137,21 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 		ArticleDAO data = mArticleList.get(position);
 		if(data!= null){ 
 			holder.txt_articleName.setText(data.getShortDescription().toString());
+			holder.img_thumbnail.setVisibility(View.VISIBLE);
 
-			if(data.getThumbUrl() == null){
-				holder.img_thumbnail.setVisibility(View.GONE);
-			}else{
-				holder.img_thumbnail.setVisibility(View.VISIBLE);
-				if(data.getDownloadedImage() == null){ 
-					imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
-				}else {
-					holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
+			if(!data.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
+				if(data.getThumbUrl() == null){
+					holder.img_thumbnail.setVisibility(View.GONE);
+				}else{
+					holder.img_thumbnail.setVisibility(View.VISIBLE);
+					if(data.getDownloadedImage() == null){ 
+						imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
+					}else {
+						holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
+					}
 				}
+			}else{
+				holder.img_thumbnail.setVisibility(View.GONE);
 			}
 		}
 		return convertView;
