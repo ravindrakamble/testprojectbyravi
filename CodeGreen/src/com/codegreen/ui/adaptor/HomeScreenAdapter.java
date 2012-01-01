@@ -37,7 +37,7 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public int getCount() {
 		if (mArticleList != null)
@@ -77,24 +77,30 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 		// set Values 
 		ArticleDAO data = mArticleList.get(position);
 		if(data!= null){ 
+			
+			holder.img_thumbnail.setVisibility(View.VISIBLE);
 			holder.txt_articleName.setText(data.getShortDescription().toString());
 
-			if(data.getThumbUrl() == null){
-				holder.img_thumbnail.setVisibility(View.GONE);
-			}else{
-				holder.img_thumbnail.setVisibility(View.VISIBLE);
-				if(data.getDownloadedImage() == null){ 
-					imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
-				}else {
-					holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
+			if(!data.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
+				if(data.getThumbUrl() == null){
+					holder.img_thumbnail.setVisibility(View.GONE);
+				}else{
+					holder.img_thumbnail.setVisibility(View.VISIBLE);
+					if(data.getDownloadedImage() == null){ 
+						imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
+					}else {
+						holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
+					}
 				}
+			}else{
+				holder.img_thumbnail.setVisibility(View.GONE);
 			}
 		}
 		return convertView;
 	}
 
 	byte mReqId;
-	
+
 	public void setRequestID(byte reqID){
 		mReqId = reqID;
 	}
@@ -112,7 +118,7 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void notifyDataSetInvalidated() {
 		super.notifyDataSetInvalidated();

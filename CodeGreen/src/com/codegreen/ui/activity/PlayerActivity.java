@@ -32,6 +32,8 @@ public class PlayerActivity extends Activity {
 		if(isAudio==true)
 		{
 			audioImg.setVisibility(View.VISIBLE);
+			videoPlayer("/sdcard/a.3gp", "a", true);
+			
 		}else{
 			audioImg.setVisibility(View.GONE);
 			videoPlayer("/sdcard/a.3gp", "a", true);

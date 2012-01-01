@@ -7,6 +7,7 @@ import com.codegreen.listener.Updatable;
 import com.codegreen.ui.adaptor.SearchScreenAdapter;
 import com.codegreen.util.Constants;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -18,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class SearchActivity extends ListActivity implements Updatable{
@@ -196,7 +198,27 @@ public class SearchActivity extends ListActivity implements Updatable{
 		}
 		
 	}
-
-
+	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
+		// Launch details screen
+			if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)||  articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
+				Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
+				intent.putExtra("ArticleID", articleEntry.getArticleID());
+				startActivity(intent);
+			}else if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO) ){
+				Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+				PlayerActivity.streamUrl = articleEntry.getThumbUrl();
+				if(articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO))
+					PlayerActivity.isAudio = true;
+				else
+					PlayerActivity.isAudio = false;
+				startActivity(intent);
+			}
+ 
+	}  
 
 }
