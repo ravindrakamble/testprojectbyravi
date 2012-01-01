@@ -1,5 +1,7 @@
 package com.codegreen.ui.activity;
 
+import java.util.List;
+
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
@@ -13,6 +15,7 @@ import com.codegreen.util.Utils;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -113,12 +116,13 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void update(ENUM_PARSERRESPONSE updateData, final byte callId) {
 
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
-			
+
 
 			runOnUiThread(new Runnable() {
 				@Override
@@ -146,10 +150,36 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						}
 					}else if(callId == Constants.REQ_GETREVIEWS){
 						txt_reviews.setVisibility(View.VISIBLE);
-						
+
+						List<ReviewDAO> reviewList = (List<ReviewDAO>) CacheManager.getInstance().get(Constants.C_REVIEWS);
+						ReviewDAO reviewDAO = null;
+						StringBuilder reviews = new StringBuilder();
+						if(reviewList != null && reviewList.size() > 0){
+							reviews.append("<b>Reviews:</b><br>");
+							for(int i = 0; i < reviewList.size(); i++){
+								reviewDAO = reviewList.get(i);
+
+								reviews.append(reviewDAO.getReviewComments() + "<br>");
+								if(reviewDAO.getUserName() != null && !reviewDAO.getUserName().equalsIgnoreCase("")){
+									reviews.append("Submitted by: " + reviewDAO.getUserName());
+								}
+								
+								reviews.append(" <i>" + reviewDAO.getReviewDate() + "</i> <br><br>");
+
+							}
+
+							txt_reviews.setTextColor(Color.BLACK);
+							txt_reviews.setTextSize(10);
+							txt_reviews.setText(Html.fromHtml(reviews.toString()));
+						}else{
+							txt_reviews.setText("No Reviews submitted yet.");
+						}
 						//txt_reviews.setText();
 					}else if(callId == Constants.REQ_SUBMITREVIEW){
-						Utils.displayMessage(ArticleDetailsActivity.this, getString(R.string.review_submitted));
+						Utils.displayMessage(getApplicationContext(), getString(R.string.review_submitted));
+						
+						//update the reviews
+						getReviews(articleDetails);
 					}
 				}
 			});
