@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, SplashActivity!</string>
-    <string name="app_name">CodeGreen</string>
-    <string name="review_dialog_title">Add Review</string>
-    <string name="submit_button">Submit</string>
-    <string name="cancel_button">Cancel</string>
-    <string name="add_review">Add Review</string>
-    <string name="review_submitted">Review submitted successfully.</string>
+	<string name="hello">Hello World, SplashActivity!</string>
+	<string name="app_name">CodeGreen</string>
+	<string name="review_dialog_title">Add Review</string>
+	<string name="submit_button">Submit</string>
+	<string name="cancel_button">Cancel</string>
+	<string name="add_review">Add Review</string>
+	<string name="review_submitted">Review submitted successfully.</string>
+	<string name="record_saved">Record saved successfully.</string>
+	<string name="no_reviews">No Reviews submitted yet.</string>
+	<string name="submitted_by">Submitted by:</string>
+	<string name="submitted_by_anonymous">Submitted by anonymous</string>
+	<string name="reviews">Reviews:</string>
+
 </resources>

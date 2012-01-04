@@ -87,7 +87,7 @@ public class PlayerActivity extends Activity implements Updatable {
 				progressBar.setVisibility(View.INVISIBLE);
 			}
 			catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			}
 		}
 
