@@ -7,6 +7,7 @@ import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.businessprocess.objects.ReviewDAO;
 import com.codegreen.common.CacheManager;
+import com.codegreen.database.DBAdapter;
 import com.codegreen.listener.Updatable;
 import com.codegreen.ui.dialog.ReviewDialog;
 import com.codegreen.util.Constants;
@@ -154,15 +155,10 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals("") || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getThumbUrl().equals("") || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO) && !articleDetails.getThumbUrl().equals("") ){
 								imageView.setVisibility(View.VISIBLE);
 								if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
-									//imageView.loadUrl(articleDetails.getUrl());
 								}else if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
-									//imageView.loadUrl(articleDetails.getThumbUrl());
-									//txt_player_select.setVisibility(View.VISIBLE);
 									PlayerActivity.streamUrl = articleDetails.getUrl();
 									PlayerActivity.isAudio = true;
 								}else{
-									//imageView.loadUrl(articleDetails.getThumbUrl());
-									//txt_player_select.setVisibility(View.VISIBLE);
 									PlayerActivity.streamUrl = articleDetails.getUrl();
 									PlayerActivity.isAudio = false;
 								}
@@ -187,16 +183,18 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						ReviewDAO reviewDAO = null;
 						StringBuilder reviews = new StringBuilder();
 						if(reviewList != null && reviewList.size() > 0){
-							reviews.append("<b>Reviews:</b><br>");
+							reviews.append("<b>" + getString(R.string.reviews) +"</b><br>");
 							for(int i = 0; i < reviewList.size(); i++){
 								reviewDAO = reviewList.get(i);
 
 								reviews.append(reviewDAO.getReviewComments() + "<br>");
 								if(reviewDAO.getUserName() != null && !reviewDAO.getUserName().equalsIgnoreCase("")){
-									reviews.append("Submitted by: " + reviewDAO.getUserName());
+									reviews.append(getString(R.string.submitted_by) + " " + reviewDAO.getUserName());
+								}else{
+									reviews.append(getString(R.string.submitted_by_anonymous));
 								}
 								if(!reviewDAO.getReviewDate().equals(""))
-									reviews.append("<i>" + reviewDAO.getReviewDate() + "</i> <br><br>");
+									reviews.append(" <i>" + reviewDAO.getReviewDate() + "</i> <br><br>");
 
 							}
 
@@ -204,7 +202,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							txt_reviews.setTextSize(15);
 							txt_reviews.setText(Html.fromHtml(reviews.toString()));
 						}else{
-							txt_reviews.setText("No Reviews submitted yet.");
+							txt_reviews.setText(getString(R.string.no_reviews));
 						}
 						//txt_reviews.setText();
 					}else if(callId == Constants.REQ_SUBMITREVIEW){
@@ -227,11 +225,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_OPTION_SAVED:
-			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
+			DBAdapter dbAdapter = DBAdapter.getInstance(getApplicationContext());
+			dbAdapter.insertArticle(articleDetails);
+			Toast.makeText(getApplicationContext(),getString(R.string.record_saved), Toast.LENGTH_LONG).show();
 			break;
 			case MENU_OPTION_SHARE:
-			//getReviews(articleDetails);
-			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(),"Implementation is in Progress...", Toast.LENGTH_LONG).show();
 			break;
 
 		case MENU_OPTION_ADD_REVIEW:

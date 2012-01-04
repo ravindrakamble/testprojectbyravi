@@ -28,10 +28,7 @@ public class DBAdapter
 	static DBAdapter dbAdapter;
 
 	//Create table strings
-	static final String AudioArticles = "CREATE TABLE AUDIOARTICLES (_audioArticleID integer primary key, ";
-	static final String VideoArticles = "CREATE TABLE VIDEOARTICLES (_videoArticleID integer primary key, ";
-	static final String IMAGEArticles = "CREATE TABLE IMAGEARTICLES (_imageArticleID integer primary key, ";
-	static final String TextArticles = "CREATE TABLE TEXTARTICLES (_textArticleID integer primary key, ";
+	static final String articles = "CREATE TABLE ARTICLES (_articleID integer primary key, articletype varchar ";
 	static final String Review = "CREATE TABLE Review (_reviewID integer primary key, ";
 	static final String PublishedDates = "CREATE TABLE PUBLISHEDDATES (textDate varchar, imageDate varchar, audioDate varchar, videoDate varchar);";
 
@@ -66,10 +63,7 @@ public class DBAdapter
 		public void onCreate(SQLiteDatabase db) 
 		{
 			//Create AUDIO Article table
-			db.execSQL(AudioArticles + articleFields);
-			db.execSQL(VideoArticles + articleFields);
-			db.execSQL(IMAGEArticles + articleFields);
-			db.execSQL(TextArticles + articleFields);
+			db.execSQL(articles + articleFields);
 			db.execSQL(Review + reviewFields);
 			db.execSQL(PublishedDates);
 			String todayDate = Utils.getCurrentDateNTime();
@@ -127,158 +121,38 @@ public class DBAdapter
 	}
 
 
-	public boolean insertArticles(List<ArticleDAO> articles){
-		if(articles != null ){
-			for(ArticleDAO article:articles){
-				if(article.getType() != null ){
-					if(article.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
-						insertAudioArticle(article);
-					}else if(article.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
-						insertVideoArticle(article);
-					}else if(article.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
-						insertTextArticle(article);
-					}else if(article.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)){
-						insertImageArticle(article);
-					}
-				}
-				insertAudioArticle(article);
-			}
-		}
-		return true;
-	}
-	/**
-	 * Insert video article 
-	 * @param articleDAO
-	 * @return
-	 */
-	boolean insertVideoArticle(ArticleDAO articleDAO){
-		ContentValues initialValues = new ContentValues();
-		initialValues.put("_videoArticleID", articleDAO.getArticleID());
-
-		insertArticle(initialValues, "VIDEOARTICLES", articleDAO);
-
-		return true;
-	}
-
-	public boolean insertVideoArticles(List<ArticleDAO> articles){
-		if(articles != null ){
-			for(ArticleDAO article:articles){
-				insertVideoArticle(article);
-			}
-		}
-		return true;
-	}
-
-	public boolean deleteAllVideoArticles(){
-		return db.delete("VIDEOARTICLES", null , null) > 0;
-	}
-
-	public boolean deleteVideoArticle(ArticleDAO articleDAO){
-		return db.delete("VIDEOARTICLES", articleDAO.getArticleID() , null) > 0;
-	}
-
-	public List<ArticleDAO> getVideoArticles(){
-		return getArticles("VIDEOARTICLES");
-	}
-
-
-	/**
-	 * Insert image article 
-	 * @param articleDAO
-	 * @return
-	 */
-	boolean insertImageArticle(ArticleDAO articleDAO){
-		ContentValues initialValues = new ContentValues();
-		initialValues.put("_imageArticleID", articleDAO.getArticleID());
-		insertArticle(initialValues, "IMAGEARTICLES", articleDAO);
-		return true;
-	}
-
-	public boolean insertImageArticles(List<ArticleDAO> articles){
-		if(articles != null ){
-			for(ArticleDAO article:articles){
-				insertAudioArticle(article);
-			}
-		}
-		return true;
-	}
-	public boolean deleteAllImageArticles(){
-		return db.delete("IMAGEARTICLES", null , null) > 0;
-	}
-
-	public boolean deleteImageArticle(ArticleDAO articleDAO){
-		return db.delete("IMAGEARTICLES", articleDAO.getArticleID() , null) > 0;
-	}
-
-	public List<ArticleDAO> getImageArticles(){
-		return getArticles("IMAGEARTICLES");
-	}
-	/**
-	 * Insert text article 
-	 * @param articleDAO
-	 * @return
-	 */
-	boolean insertTextArticle(ArticleDAO articleDAO){
-		ContentValues initialValues = new ContentValues();
-		initialValues.put("_textArticleID", articleDAO.getArticleID());
-
-		insertArticle(initialValues, "TEXTARTICLES", articleDAO);
-
-		return true;
-	}
-
-	public boolean insertTextArticles(List<ArticleDAO> articles){
-		if(articles != null ){
-			for(ArticleDAO article:articles){
-				insertTextArticle(article);
-			}
-		}
-		return true;
-	}
-
-	public boolean deleteAllTextArticles(){
-		return db.delete("TEXTARTICLES", null , null) > 0;
-	}
-
-	public boolean deleteTextArticle(ArticleDAO articleDAO){
-		return db.delete("TEXTARTICLES", articleDAO.getArticleID() , null) > 0;
-	}
-
-	public List<ArticleDAO> getTextArticles(){
-		return getArticles("TEXTARTICLES");
-	}
 	/**
 	 * Insert audio article 
 	 * @param articleDAO
 	 * @return
 	 */
-	boolean insertAudioArticle(ArticleDAO articleDAO){
+	public boolean insertArticle(ArticleDAO articleDAO){
 		ContentValues initialValues = new ContentValues();
-		initialValues.put("_audioArticleID", articleDAO.getArticleID());
+		initialValues.put("_articleID", articleDAO.getArticleID());
 
-		insertArticle(initialValues, "AUDIOARTICLES", articleDAO);
+		insertArticle(initialValues, "ARTICLES", articleDAO);
 
 		return true;
 	}
 
-	public boolean insertAudioArticles(List<ArticleDAO> articles){
+	public boolean insertArticles(List<ArticleDAO> articles){
 		if(articles != null ){
 			for(ArticleDAO article:articles){
-				insertAudioArticle(article);
+				insertArticle(article);
 			}
 		}
 		return true;
 	}
-	public boolean deleteAllAudioArticles(){
-		return db.delete("AUDIOARTICLES", null , null) > 0;
+	public boolean deleteAllArticles(){
+		return db.delete("ARTICLES", null , null) > 0;
 	}
 
-	public boolean deleteAudioArticle(ArticleDAO articleDAO){
-		return db.delete("AUDIOARTICLES", articleDAO.getArticleID() , null) > 0;
+	public boolean deleteArticle(ArticleDAO articleDAO){
+		return db.delete("ARTICLES", articleDAO.getArticleID() , null) > 0;
 	}
 
-	public List<ArticleDAO> getAudioArticles(){
-		return getArticles("AUDIOARTICLES");
+	public List<ArticleDAO> getArticles(){
+		return getArticles("ARTICLES");
 	}
 	/**
 	 * Insert the record.
@@ -289,6 +163,7 @@ public class DBAdapter
 	 */
 	boolean insertArticle(ContentValues initialValues, String tableName, ArticleDAO articleDAO){
 		initialValues.put("title", articleDAO.getTitle());
+		initialValues.put("articletype", articleDAO.getType());
 		initialValues.put("shortdescription", articleDAO.getShortDescription());
 		initialValues.put("detaileddescription", articleDAO.getDetailedDescription());
 		initialValues.put("thumbnailurl", articleDAO.getThumbUrl());
@@ -312,13 +187,14 @@ public class DBAdapter
 			while(articles.moveToNext()){
 				articleDAO = new ArticleDAO();
 				articleDAO.setArticleID(articles.getString(0));
-				articleDAO.setTitle(articles.getString(1));
-				articleDAO.setShortDescription(articles.getString(2));
-				articleDAO.setDetailedDescription(articles.getString(3));
-				articleDAO.setThumbUrl(articles.getString(4));
-				articleDAO.setUrl(articles.getString(5));
-				articleDAO.setPublishedDate(articles.getString(6));
-				articleDAO.setCreatedDate(articles.getString(7));
+				articleDAO.setType(articles.getString(1));
+				articleDAO.setTitle(articles.getString(2));
+				articleDAO.setShortDescription(articles.getString(3));
+				articleDAO.setDetailedDescription(articles.getString(4));
+				articleDAO.setThumbUrl(articles.getString(5));
+				articleDAO.setUrl(articles.getString(6));
+				articleDAO.setPublishedDate(articles.getString(7));
+				articleDAO.setCreatedDate(articles.getString(8));
 				articleList.add(articleDAO);
 			}
 		}
