@@ -64,10 +64,6 @@ public class ReviewDialog extends AlertDialog implements OnClickListener{
 	 * To initialize Custom Dialog's view.
 	 */
 	private void initDialogLayout(){
-		LayoutInflater inflater = LayoutInflater.from(mContext);
-		final View view = inflater
-				.inflate(R.layout.review_dialog, null);
-		setView(view);
 		this.setContentView(R.layout.review_dialog);
 		setTitle(R.string.add_review);
 		
