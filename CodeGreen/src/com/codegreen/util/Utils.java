@@ -400,9 +400,8 @@ public class Utils {
 		StringBuffer endDate = new StringBuffer();
 
 		//Create the current date
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		endDate.append(simpleDateFormat.format(calendar.getTime()));
-		endDate.append(".00Z");
 		return endDate.toString();
 
 	}

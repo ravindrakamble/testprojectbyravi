@@ -96,7 +96,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	TextView txtDetails = null;
 
 
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		try{
@@ -106,7 +106,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			menu.add(0, MENU_OPTION_SHARE,0 , "Share").setIcon(android.R.drawable.ic_menu_share);
 			menu.add(0, MENU_OPTION_ADD_REVIEW,0 , "Add Review").setIcon(android.R.drawable.ic_menu_add);
 			menu.add(0, MENU_OPTION_SAVE,0 , "Save Article").setIcon(android.R.drawable.ic_menu_add);
-			
+
 			return true;
 		}
 		catch (Exception e) {
@@ -175,7 +175,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 								txtDetails.setVisibility(View.GONE);
 							}
 							txt_reviews.setVisibility(View.VISIBLE);
-							
+
 							downloadImage();
 						}
 					}else if(callId == Constants.REQ_GETREVIEWS){
@@ -221,7 +221,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}else if(errorCode == Constants.ERR_NETWORK_FAILURE){
 			Toast.makeText(this, "No Network Available.", Toast.LENGTH_LONG).show();	
 		}
-		
+
 	}
 
 
@@ -232,17 +232,26 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
 			startActivity(intent);
 			break;
-			case MENU_OPTION_SHARE:
+		case MENU_OPTION_SHARE:
 			showDialog(Constants.DIALOG_SHARE);
 			break;
 		case MENU_OPTION_ADD_REVIEW:
 			showDialog(Constants.DIALOG_REVIEW);
 			break;
-			
+
 		case MENU_OPTION_SAVE:
 			DBAdapter dbAdapter = DBAdapter.getInstance(getApplicationContext());
-			dbAdapter.insertArticle(articleDetails);
-			Toast.makeText(getApplicationContext(),getString(R.string.record_saved), Toast.LENGTH_LONG).show();
+			dbAdapter.open();
+			int count =  dbAdapter.getArticles(articleDetails);
+
+			if(count == 0){
+				dbAdapter.insertArticle(articleDetails);
+				Toast.makeText(getApplicationContext(),getString(R.string.record_saved), Toast.LENGTH_LONG).show();
+			}else{
+				Toast.makeText(getApplicationContext(),getString(R.string.saved_already), Toast.LENGTH_LONG).show();
+			}
+			dbAdapter.close();
+
 			break;
 		default:
 			break;

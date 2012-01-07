@@ -19,7 +19,7 @@ import com.codegreen.util.Utils;
 public class DBAdapter 
 {
 
-	private static final String DATABASE_NAME = "codegreen_db";
+	private static final String DATABASE_NAME = "codegreen";
 	private static final int DATABASE_VERSION = 1;
 
 
@@ -28,16 +28,16 @@ public class DBAdapter
 	static DBAdapter dbAdapter;
 
 	//Create table strings
-	static final String articles = "CREATE TABLE ARTICLES (_articleID integer primary key, articletype varchar ";
+	static final String articles = "CREATE TABLE ARTICLES (_articleID integer , articletype varchar, ";
 	static final String Review = "CREATE TABLE Review (_reviewID integer primary key, ";
 	static final String PublishedDates = "CREATE TABLE PUBLISHEDDATES (textDate varchar, imageDate varchar, audioDate varchar, videoDate varchar);";
 
 	//Article table fields
-	static final String articleFields = "title varchar not null, shortdescription varchar , detaileddescription varchar" 
-		+ "thumbnailurl varchar, mainurl varchar, publishingdate varchar , createddate varchar)";
+	static final String articleFields = "title varchar not null, shortdescription varchar , detaileddescription varchar," 
+		+ "thumbnailurl varchar, mainurl varchar, publishingdate varchar , createddate varchar);";
 
 	//Review table fields
-	static final String reviewFields = "articleID integer, articleType varchar, reviewcomments varchar, createddate varchar)";
+	static final String reviewFields = "articleID integer, articleType varchar, reviewcomments varchar, createddate varchar);";
 
 	private DBAdapter(Context context) 
 	{
@@ -67,7 +67,7 @@ public class DBAdapter
 			db.execSQL(Review + reviewFields);
 			db.execSQL(PublishedDates);
 			String todayDate = Utils.getCurrentDateNTime();
-			db.execSQL("insert into PUBLISHEDDATES values (" + todayDate + ","+ todayDate + "," + todayDate +","+ todayDate +");");
+			db.execSQL("insert into PUBLISHEDDATES values ('" + todayDate + "','"+ todayDate + "','" + todayDate +"','"+ todayDate +"');");
 		}
 
 		@Override
@@ -151,6 +151,15 @@ public class DBAdapter
 		return db.delete("ARTICLES", articleDAO.getArticleID() , null) > 0;
 	}
 
+	public int getArticles(ArticleDAO articleDAO){
+		Cursor articles = db.query("ARTICLES", null, "_articleID="+articleDAO.getArticleID()
+				+" and articletype='" + articleDAO.getType()+ "'", null, null, null, null);
+		if(articles != null ){
+			return articles.getCount();
+		}else{
+			return 0;
+		}
+	}
 	public List<ArticleDAO> getArticles(){
 		return getArticles("ARTICLES");
 	}
