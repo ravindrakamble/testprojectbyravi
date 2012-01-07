@@ -10,6 +10,7 @@ import com.codegreen.common.CacheManager;
 import com.codegreen.database.DBAdapter;
 import com.codegreen.listener.Updatable;
 import com.codegreen.ui.dialog.ReviewDialog;
+import com.codegreen.ui.dialog.ShareDialog;
 import com.codegreen.util.Constants;
 import com.codegreen.util.Constants.ENUM_PARSERRESPONSE;
 import com.codegreen.util.Utils;
@@ -256,7 +257,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			ReviewDialog reviewDialog = new ReviewDialog(this, articleDetails);
 			return reviewDialog;
 		case Constants.DIALOG_SHARE:
-			ReviewDialog shareDialog = new shareDialog(this, articleDetails);
+			ShareDialog shareDialog = new ShareDialog(this, articleDetails);
 			return shareDialog; 
 		default:
 			break;
