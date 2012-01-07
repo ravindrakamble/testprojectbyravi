@@ -42,6 +42,7 @@ public interface Constants {
 
 	//Callback constant
 	public static byte OK = 0;
+	public static int NETWORK_ERROR = 10;
 	public static enum PARSING{STARTED,COMPLETED};
 
 	//HTTP request status

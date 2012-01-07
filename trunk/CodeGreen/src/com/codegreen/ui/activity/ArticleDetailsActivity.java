@@ -94,10 +94,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	TextView txtDetails = null;
 
 
-	private void initTextView() {
-
-	}
-
+	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		try{
@@ -137,7 +134,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void update(ENUM_PARSERRESPONSE updateData, final byte callId) {
+	public void update(ENUM_PARSERRESPONSE updateData, final byte callId,byte errorCode) {
 
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
@@ -217,7 +214,10 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					}
 				}
 			});
+		}else if(errorCode == Constants.ERR_NETWORK_FAILURE){
+			Toast.makeText(this, "No Network Available.", Toast.LENGTH_LONG).show();	
 		}
+		
 	}
 
 

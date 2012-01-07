@@ -309,7 +309,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 	}
 
 	@Override
-	public void update(Constants.ENUM_PARSERRESPONSE updateData, final byte reqID) {
+	public void update(Constants.ENUM_PARSERRESPONSE updateData, final byte reqID, byte errorCode) {
 
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
@@ -352,7 +352,10 @@ public class HomeActivity extends ListActivity implements Updatable{
 					}
 				});
 			}
-		}else{
+		}else if(errorCode == Constants.ERR_NETWORK_FAILURE){
+			Toast.makeText(this, "No Network Available.", Toast.LENGTH_LONG).show();	
+		}
+		else{
 			Toast.makeText(this, "No news data found", Toast.LENGTH_LONG).show();
 		}
 
