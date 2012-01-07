@@ -45,6 +45,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private static final int MENU_OPTION_SHARE = 0x03;
 	private TextView txt_reviews = null;
 	private static final int MENU_OPTION_ADD_REVIEW = 0x04;
+	private static final int MENU_OPTION_SAVE = 0x05;
 	ArticleDAO articleDetails;
 	TextView txt_player_select = null;
 
@@ -103,6 +104,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			//menu.add(0, MENU_OPTION_SEARCH,0 , "Search").setIcon(android.R.drawable.ic_menu_search);
 			menu.add(0, MENU_OPTION_SHARE,0 , "Share").setIcon(android.R.drawable.ic_menu_share);
 			menu.add(0, MENU_OPTION_ADD_REVIEW,0 , "Add Review").setIcon(android.R.drawable.ic_menu_add);
+			menu.add(0, MENU_OPTION_SAVE,0 , "Save Article").setIcon(android.R.drawable.ic_menu_add);
+			
 			return true;
 		}
 		catch (Exception e) {
@@ -225,16 +228,20 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_OPTION_SAVED:
+			Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+			startActivity(intent);
+			break;
+			case MENU_OPTION_SHARE:
+			showDialog(Constants.DIALOG_SHARE);
+			break;
+		case MENU_OPTION_ADD_REVIEW:
+			showDialog(Constants.DIALOG_REVIEW);
+			break;
+			
+		case MENU_OPTION_SAVE:
 			DBAdapter dbAdapter = DBAdapter.getInstance(getApplicationContext());
 			dbAdapter.insertArticle(articleDetails);
 			Toast.makeText(getApplicationContext(),getString(R.string.record_saved), Toast.LENGTH_LONG).show();
-			break;
-			case MENU_OPTION_SHARE:
-			Toast.makeText(getApplicationContext(),"Implementation is in Progress...", Toast.LENGTH_LONG).show();
-			break;
-
-		case MENU_OPTION_ADD_REVIEW:
-			showDialog(Constants.DIALOG_REVIEW);
 			break;
 		default:
 			break;
@@ -248,6 +255,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		case Constants.DIALOG_REVIEW:
 			ReviewDialog reviewDialog = new ReviewDialog(this, articleDetails);
 			return reviewDialog;
+		case Constants.DIALOG_SHARE:
+			ReviewDialog shareDialog = new shareDialog(this, articleDetails);
+			return shareDialog; 
 		default:
 			break;
 		}

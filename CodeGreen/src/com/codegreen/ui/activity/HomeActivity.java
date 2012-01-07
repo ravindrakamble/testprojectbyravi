@@ -275,7 +275,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_OPTION_SAVED:
-			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
+			launchSavedActivity();
 			break;
 		case MENU_OPTION_SEARCH:
 			launchSearchActivity();
@@ -435,6 +435,21 @@ public class HomeActivity extends ListActivity implements Updatable{
 			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 			intent.putExtra("Selected_Category", ""+CURRENT_SELECTED_CATEGORY);
 			intent.putExtra("Selected_Media", CURRENT_SELECTED_MEDIA);
+			startActivity(intent);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 *  Launch SearchCallhistoryActivity 
+	 * @param filterStr
+	 */
+	private void launchSavedActivity(){
+		try{
+			Context cxt = getApplicationContext();
+			Intent intent = new Intent(cxt, SavedArticlesActivity.class);     		
+			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 			startActivity(intent);
 		}catch (Exception e) {
 			e.printStackTrace();
