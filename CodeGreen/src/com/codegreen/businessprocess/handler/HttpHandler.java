@@ -4,11 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
-
 import com.codegreen.common.CacheManager;
 import com.codegreen.common.TaskExecutor;
 import com.codegreen.database.DBAdapter;
@@ -91,7 +88,7 @@ public class HttpHandler implements Handler {
 				if(callbackObject != null){
 					CacheManager.getInstance().setLatestArticleBitmap((Bitmap)callbackObject);
 				}
-				updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId);
+				updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
 			}else{
 				ddXmlParser = new XmlParser(callID);
 				//Get the instance of SAXParserFactory.
@@ -132,29 +129,29 @@ public class HttpHandler implements Handler {
 							//Update the articles into database
 							DBAdapter dbAdapter = DBAdapter.getInstance(applicationContext);
 							//dbAdapter.insertArticles(ddXmlParser.getArticles());
-							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId);
+							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
 							break;
 						case Constants.REQ_GETARTICLEDETAILS:
 							CacheManager.getInstance().store(Constants.C_ARTICLE_DETAILS, ddXmlParser.getArticleDAO());
-							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId);
+							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
 							break;
 						case Constants.REQ_GETREVIEWS:
 							CacheManager.getInstance().store(Constants.C_REVIEWS, ddXmlParser.getReviews());
-							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId);
+							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
 							break;
 						case Constants.REQ_SEARCHARTICLES:
 							CacheManager.getInstance().store(Constants.C_SEARCH_ARTICLES, ddXmlParser.getArticles());
-							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId);
+							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
 							break;
 						case Constants.REQ_SUBMITREVIEW:
-							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId);
+							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
 							break;
 						}
 					}
 				}
 			}
 		}else{
-			updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_FAILURE,mReqId);
+			updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_FAILURE,mReqId,errorCode);
 		}
 		requestStatus = Constants.HTTPREQUEST.COMPLETED;
 	}

@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SearchActivity extends ListActivity implements Updatable{
 
@@ -159,7 +160,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 	}
 
 	@Override
-	public void update(Constants.ENUM_PARSERRESPONSE updateData, byte ReqID) {
+	public void update(Constants.ENUM_PARSERRESPONSE updateData, byte ReqID,byte errorCode) {
 
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
@@ -193,7 +194,10 @@ public class SearchActivity extends ListActivity implements Updatable{
 					}
 				});
 			}
+		}else if(errorCode == Constants.ERR_NETWORK_FAILURE){
+			Toast.makeText(this, "No Network Available.", Toast.LENGTH_LONG).show();	
 		}
+		
 
 	}
 

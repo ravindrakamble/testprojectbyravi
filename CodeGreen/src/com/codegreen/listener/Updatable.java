@@ -16,6 +16,6 @@ public interface Updatable {
 	 * Update the UI with provided data
 	 * @param updateData
 	 */
-	public  void update(ENUM_PARSERRESPONSE PARSERRESPONSE_FAILURE,byte callID);
+	public  void update(ENUM_PARSERRESPONSE PARSERRESPONSE_FAILURE,byte callID, byte errorCode);
 
 }

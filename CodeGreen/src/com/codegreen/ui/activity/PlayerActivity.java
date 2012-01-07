@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 
@@ -118,7 +119,7 @@ public class PlayerActivity extends Activity implements Updatable {
 
 
 	@Override
-	public void update(ENUM_PARSERRESPONSE updateData, final byte callId) {
+	public void update(ENUM_PARSERRESPONSE updateData, final byte callId,byte errorCode) {
 		// TODO Auto-generated method stub
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
@@ -159,6 +160,9 @@ public class PlayerActivity extends Activity implements Updatable {
 					}
 				}
 			});
+		}else if(errorCode == Constants.ERR_NETWORK_FAILURE){
+			Toast.makeText(this, "No Network Available.", Toast.LENGTH_LONG).show();	
 		}
+		
 	}
 }
