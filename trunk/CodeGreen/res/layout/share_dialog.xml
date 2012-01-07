@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="260dip"
+	android:orientation="vertical">
+
+	<RelativeLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+
+		<TextView android:id="@+id/txtTitle" android:paddingLeft="20dip"
+			android:layout_marginTop="15dip" android:layout_height="wrap_content"
+			android:textColor="#ffffff" android:textStyle="bold" android:text="Share Using..."
+			android:layout_width="250dip" android:layout_centerHorizontal="true"
+			android:textSize="15dip" android:layout_marginBottom="15dip"></TextView>
+
+		<Button android:id="@+id/btn_facebook" android:layout_height="wrap_content"
+			android:background="@android:drawable/btn_default" android:text="Facebook"
+			android:layout_width="250dip" android:layout_centerHorizontal="true"
+			android:layout_below="@+id/txtTitle"></Button>
+
+		<Button android:id="@+id/btn_twitter" android:layout_height="wrap_content"
+			android:background="@android:drawable/btn_default" android:text="Twitter"
+			android:layout_width="250dip" android:layout_centerHorizontal="true"
+			android:layout_below="@+id/btn_facebook"></Button>
+
+		<Button android:id="@+id/btn_email" android:layout_height="wrap_content"
+			android:background="@android:drawable/btn_default" android:text="Email"
+			android:layout_width="250dip" android:layout_centerHorizontal="true"
+			android:layout_below="@+id/btn_twitter"></Button>
+
+
+		<Button android:id="@+id/btn_cancel" android:layout_marginTop="15dip" android:layout_height="wrap_content"
+			android:background="@android:drawable/btn_default" android:text="Cancel"
+			android:layout_width="250dip" android:layout_centerHorizontal="true"
+			android:layout_below="@+id/btn_email"></Button>
+
+	</RelativeLayout>
+
+</LinearLayout>
