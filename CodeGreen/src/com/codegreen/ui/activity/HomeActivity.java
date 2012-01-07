@@ -33,6 +33,7 @@ import com.codegreen.common.CacheManager;
 import com.codegreen.listener.Updatable;
 import com.codegreen.ui.adaptor.HomeScreenAdapter;
 import com.codegreen.ui.dialog.ReviewDialog;
+import com.codegreen.ui.dialog.ShareDialog;
 import com.codegreen.util.Constants;
 
 public class HomeActivity extends ListActivity implements Updatable{
@@ -68,6 +69,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 		initWidgets();
 		// Call the data by category default
 		searchArticles(Constants.GREEN_BASICS);
+		getListView().setCacheColorHint(0);
 
 	}
 
@@ -259,7 +261,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 			menu.removeGroup(0);
 			menu.add(0, MENU_OPTION_SAVED,0 , "Saved Items").setIcon(android.R.drawable.ic_menu_gallery);
 			menu.add(0, MENU_OPTION_SEARCH,0 , "Search").setIcon(android.R.drawable.ic_menu_search);
-			menu.add(0, MENU_OPTION_SHARE,0 , "Share").setIcon(android.R.drawable.ic_menu_share);
+			//menu.add(0, MENU_OPTION_SHARE,0 , "Share").setIcon(android.R.drawable.ic_menu_share);
 			menu.add(0, MENU_OPTION_INFO,0 , "Info").setIcon(android.R.drawable.ic_menu_help);
 			return true;
 		}
@@ -281,10 +283,10 @@ public class HomeActivity extends ListActivity implements Updatable{
 			launchSearchActivity();
 			break;
 
-		case MENU_OPTION_SHARE:
-			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
+		/*case MENU_OPTION_SHARE:
+			showDialog(Constants.DIALOG_SHARE);
 			break;
-
+*/
 		case MENU_OPTION_INFO:
 			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
 			break;
@@ -301,6 +303,9 @@ public class HomeActivity extends ListActivity implements Updatable{
 		case Constants.DIALOG_REVIEW:
 			ReviewDialog reviewDialog = new ReviewDialog(this, (ArticleDAO)mAdapter.getItem(0));
 			return reviewDialog;
+		case Constants.DIALOG_SHARE:
+			ShareDialog shareDialog = new ShareDialog(this, (ArticleDAO)mAdapter.getItem(0));
+			return shareDialog;
 		default:
 			break;
 		}
@@ -410,19 +415,18 @@ public class HomeActivity extends ListActivity implements Updatable{
 	};
 
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event){
-
+	//@Override
+	/*public boolean onKeyDown(int keyCode, KeyEvent event){
 		try{
-			if(keyCode == KeyEvent.KEYCODE_SEARCH)
+			if(keyCode == KeyEvent.KEYCODE_SEARCH){
 				launchSearchActivity();
-
+				return true;
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}    		
 		return false;
-
-	}
+	}*/
 
 	/**
 	 *  Launch SearchCallhistoryActivity 
