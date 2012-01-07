@@ -127,8 +127,6 @@ public class HttpHandler implements Handler {
 							CacheManager.getInstance().store(Constants.C_ARTICLES, ddXmlParser.getArticles());
 
 							//Update the articles into database
-							DBAdapter dbAdapter = DBAdapter.getInstance(applicationContext);
-							//dbAdapter.insertArticles(ddXmlParser.getArticles());
 							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
 							break;
 						case Constants.REQ_GETARTICLEDETAILS:
