@@ -12,5 +12,5 @@
 	<string name="submitted_by">Submitted by:</string>
 	<string name="submitted_by_anonymous">Submitted by anonymous</string>
 	<string name="reviews">Reviews:</string>
-
+<string name="saved_already">Article already saved</string>
 </resources>

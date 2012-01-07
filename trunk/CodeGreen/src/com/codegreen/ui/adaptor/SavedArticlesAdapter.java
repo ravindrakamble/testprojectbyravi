@@ -21,21 +21,20 @@ import com.codegreen.util.Constants;
 public class SavedArticlesAdapter extends BaseAdapter implements SectionIndexer {
 
 	private Context mContext;
-	private ArrayList<ArticleDAO> mAllArticleList;
 	private LayoutInflater mLayoutInflator = null;
 	private FetchImage imageLoader;
 	private ArrayList<ArticleDAO> mArticleList;
 	private DBAdapter dbAdapter;
 
-	public SavedArticlesAdapter(Context context, String filterStr) {
+	public SavedArticlesAdapter(Context context) {
 		try {
 			mContext = context;
 			mLayoutInflator  =  LayoutInflater.from(mContext);
 			dbAdapter = DBAdapter.getInstance(context);
-			mAllArticleList = (ArrayList<ArticleDAO>)dbAdapter.getArticles();
+			dbAdapter.open();
+			mArticleList = (ArrayList<ArticleDAO>)dbAdapter.getArticles();
 			imageLoader=new FetchImage(mContext);
-			filterEntries(filterStr);
-
+			dbAdapter.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -74,10 +73,10 @@ public class SavedArticlesAdapter extends BaseAdapter implements SectionIndexer 
 			if(filterStr != null)
 				filterStr = filterStr.toLowerCase();
 
-			if(mAllArticleList != null){
+			if(mArticleList != null){
 				String title = null;
-				for(int i =0;i<mAllArticleList.size();i++){
-					ArticleDAO article = (ArticleDAO)mAllArticleList.get(i);
+				for(int i =0;i<mArticleList.size();i++){
+					ArticleDAO article = (ArticleDAO)mArticleList.get(i);
 					if(filterStr == null){
 						mArticleList.add(article);
 					}else{
@@ -163,7 +162,10 @@ public class SavedArticlesAdapter extends BaseAdapter implements SectionIndexer 
 	@Override
 	public void notifyDataSetChanged() {
 		try {
-			mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);
+			dbAdapter.open();
+			mArticleList = (ArrayList<ArticleDAO>)dbAdapter.getArticles();
+			imageLoader=new FetchImage(mContext);
+			dbAdapter.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
