@@ -93,6 +93,7 @@ public interface Constants {
 	
 	
 	public static final int DIALOG_REVIEW = 1;
+	public static final int DIALOG_SHARE = 2;
 	
 
 }
