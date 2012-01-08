@@ -301,10 +301,10 @@ public class HomeActivity extends ListActivity implements Updatable{
 		case Constants.DIALOG_REVIEW:
 			ReviewDialog reviewDialog = new ReviewDialog(this, (ArticleDAO)mAdapter.getItem(0));
 			return reviewDialog;
-		case Constants.DIALOG_SHARE:
+		/*case Constants.DIALOG_SHARE:
 			ShareDialog shareDialog = new ShareDialog(this, (ArticleDAO)mAdapter.getItem(0));
 			return shareDialog;
-		default:
+		*/default:
 			break;
 		}
 		return null;
