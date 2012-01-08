@@ -36,7 +36,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.facebook.android.Facebook.DialogListener;
+import com.codegreen.R;
+import com.codegreen.share.Facebook.DialogListener;
 
 public class FbDialog extends Dialog {
 

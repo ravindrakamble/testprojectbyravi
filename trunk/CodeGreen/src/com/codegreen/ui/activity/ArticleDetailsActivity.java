@@ -232,6 +232,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
 			startActivity(intent);
 			break;
+ 
 		case MENU_OPTION_SHARE:
 			showDialog(Constants.DIALOG_SHARE);
 			break;
@@ -308,5 +309,14 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			}
 			httpHandler.handleEvent(url, Constants.REQ_DOWNLOADIMAGE, ArticleDetailsActivity.this);
 		}
+	}
+
+	private void shareDialog(){
+		Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+		shareIntent.setType("text/plain");
+		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Sample text");
+		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Example text");    
+
+		startActivity(Intent.createChooser(shareIntent, "TestApp"));
 	}
 }
