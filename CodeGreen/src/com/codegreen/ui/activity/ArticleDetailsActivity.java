@@ -18,9 +18,11 @@ import com.codegreen.util.Utils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -234,6 +236,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			break;
  
 		case MENU_OPTION_SHARE:
+			
 			showDialog(Constants.DIALOG_SHARE);
 			break;
 		case MENU_OPTION_ADD_REVIEW:
@@ -267,7 +270,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			ReviewDialog reviewDialog = new ReviewDialog(this, articleDetails);
 			return reviewDialog;
 		case Constants.DIALOG_SHARE:
-			ShareDialog shareDialog = new ShareDialog(this, articleDetails);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+			ShareDialog shareDialog = new ShareDialog(this, articleDetails,prefs);
 			return shareDialog; 
 		default:
 			break;
