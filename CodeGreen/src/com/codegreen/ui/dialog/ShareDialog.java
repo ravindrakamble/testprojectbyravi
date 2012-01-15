@@ -3,6 +3,7 @@ package com.codegreen.ui.dialog;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
@@ -339,6 +340,21 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 
 				response = httpClient.execute(post);
 
+				URL url = new URL("https://twitter.com/oauth/authorize");
+				HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+				httpsURLConnection.setRequestMethod("POST");
+				httpsURLConnection.setRequestProperty("authenticity_token", temp);
+				httpsURLConnection.setRequestProperty("oauth_token", authUrl
+						.substring(authUrl.indexOf("=") + 1));
+				httpsURLConnection.setRequestProperty("session[username_or_email]", user);
+				httpsURLConnection.setRequestProperty("session[password]", pass);
+				httpsURLConnection.setAllowUserInteraction(true);
+				httpsURLConnection.setDoInput(true);
+				httpsURLConnection.setDoOutput(true);
+				
+				httpsURLConnection.connect();
+				
+				int respCode = httpsURLConnection.getResponseCode();
 				buffer = getBody(response);
 
 				if (buffer.indexOf("\"oauth_pin\"") > 0) {

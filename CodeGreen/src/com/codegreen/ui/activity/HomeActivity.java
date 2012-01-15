@@ -33,6 +33,7 @@ import com.codegreen.ui.adaptor.HomeScreenAdapter;
 import com.codegreen.ui.dialog.ReviewDialog;
 import com.codegreen.ui.dialog.ShareDialog;
 import com.codegreen.util.Constants;
+import com.codegreen.util.Utils;
 
 public class HomeActivity extends ListActivity implements Updatable{
 
@@ -237,7 +238,8 @@ public class HomeActivity extends ListActivity implements Updatable{
 			//Prepare data for new request
 			ArticleDAO articleDAO = new ArticleDAO();
 			articleDAO.setType(articleType);
-			articleDAO.setLastArticlePublishingDate("12/20/2011"); // TBD 
+			//date format should be mm/dd/yyyy
+			articleDAO.setLastArticlePublishingDate(Utils.getCurrentDate()); // TBD 
 			articleDAO.setCategoryID(String.valueOf(CURRENT_SELECTED_CATEGORY));
 			//Send request
 			httpHandler.setApplicationContext(getApplicationContext());
@@ -317,9 +319,10 @@ public class HomeActivity extends ListActivity implements Updatable{
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
-
+			
 			if(mAdapter == null){
 				runOnUiThread(new Runnable() { 
+					@SuppressWarnings("unchecked")
 					@Override
 					public void run() {
 						int sizeOfData = 0;

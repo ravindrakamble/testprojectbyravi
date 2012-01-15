@@ -36,6 +36,7 @@ public class PlayerActivity extends Activity implements Updatable {
 	private final String TAG = "PlayerActivity";
 	ImageView audioImg = null;
 
+	private String locationOfData;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,13 +46,18 @@ public class PlayerActivity extends Activity implements Updatable {
 		if(getIntent() != null){
 			strSelectedArticleType = getIntent().getStringExtra(Constants.CURRENT_ARTICLE_TYPE);
 			strSelectedArticleID = getIntent().getStringExtra("ArticleID");
+			locationOfData =  getIntent().getStringExtra("savedarticle");
 		}
 		progressBar = (ProgressBar)findViewById(R.id.progressBar1);
 		progressBar.setVisibility(View.VISIBLE);
 		audioImg=(ImageView)findViewById(R.id.audioImg);
 
 		if(strSelectedArticleType != null && strSelectedArticleID != null){
-			getArticleDetails();
+			if(locationOfData == null){
+				getArticleDetails();
+			}else{
+				videoPlayer(locationOfData, "", true);
+			}
 		}
 	}
 
@@ -77,7 +83,11 @@ public class PlayerActivity extends Activity implements Updatable {
 		videoHolder.setMediaController(new MediaController(this)); 
 		System.out.println(PlayerActivity.streamUrl);
 		//assigning a video file to the video holder
-		videoHolder.setVideoURI(Uri.parse(PlayerActivity.streamUrl)); 
+		if(locationOfData == null){
+			videoHolder.setVideoURI(Uri.parse(PlayerActivity.streamUrl)); 
+		}else{
+			videoHolder.setVideoURI(Uri.parse(locationOfData)); 
+		}
 		//get focus, before playing the video.
 		videoHolder.requestFocus(); 
 
@@ -163,6 +173,6 @@ public class PlayerActivity extends Activity implements Updatable {
 		}else if(errorCode == Constants.ERR_NETWORK_FAILURE){
 			Toast.makeText(this, "No Network Available.", Toast.LENGTH_LONG).show();	
 		}
-		
+
 	}
 }

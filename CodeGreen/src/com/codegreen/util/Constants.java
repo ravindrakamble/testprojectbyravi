@@ -20,6 +20,10 @@ public interface Constants {
 	public static final byte REQ_SUBMITREVIEW = 5;
 	public static final byte REQ_GETCATEGOIRES = 6;
 	public static final byte REQ_DOWNLOADIMAGE = 7;
+	public static final byte REQ_DOWNLOADARTICLE = 8;
+	
+	public static final byte DOWNLOAD_ARTICLE_DATA = 1;
+	public static final byte DOWNLOAD_ARTICLE_IMAGE = 2;
 
 	//Article types
 	public static final String ARTCLETYPE_IMAGE = "IMAGE";
@@ -39,6 +43,8 @@ public interface Constants {
 	public static final String SEARCHARTICLES = "SearchArticles";
 	public static final String SUBMITREVIEW = "SubmitReview";
 	public static final String GETCATEGOIRES ="";
+	
+	
 
 	//Callback constant
 	public static byte OK = 0;
@@ -57,6 +63,8 @@ public interface Constants {
 	public static final String C_SEARCH_ARTICLES = "SRHART";
 	public static final String C_REVIEWS = "RVS";
 	public static final String C_SUBMITREVIEW = "SRV";
+	public static final String C_DOWNLOADED_ARTICLE = "DA";
+	public static final String C_SAVED_ARTICLE = "SVDA";
 
 	public static enum ENUM_PARSERRESPONSE{PARSERRESPONSE_SUCCESS,PARSERRESPONSE_FAILURE  						//Used as return value for any function, when failed. 
 	};
@@ -94,6 +102,7 @@ public interface Constants {
 	
 	public static final int DIALOG_REVIEW = 1;
 	public static final int DIALOG_SHARE = 2;
+	public static final int DIALOG_PROGRESS = 3;
 	
 	
 	public static final String CONSUMER_KEY = "Febkwo326bkuPDdsnJj1QA";

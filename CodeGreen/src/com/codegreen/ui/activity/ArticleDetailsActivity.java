@@ -3,8 +3,10 @@ package com.codegreen.ui.activity;
 import java.util.List;
 
 import com.codegreen.R;
+import com.codegreen.businessprocess.handler.DownloadHandler;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
+import com.codegreen.businessprocess.objects.DownloadInfoDAO;
 import com.codegreen.businessprocess.objects.ReviewDAO;
 import com.codegreen.common.CacheManager;
 import com.codegreen.database.DBAdapter;
@@ -17,14 +19,20 @@ import com.codegreen.util.Utils;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnKeyListener;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,6 +60,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	ArticleDAO articleDetails;
 	TextView txt_player_select = null;
 
+	private boolean savedArticle;
+
+	private final int SHOW_PROGRESS = 1;
+	private final int REMOVE_PROGRESS = 2;
+
+	private ProgressDialog progressDialog;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,6 +73,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		if(getIntent() != null){
 			strSelectedArticleType = getIntent().getStringExtra(Constants.CURRENT_ARTICLE_TYPE);
 			strSelectedArticleID = getIntent().getStringExtra("ArticleID");
+			savedArticle =  getIntent().getBooleanExtra("savedarticle", false);
 		}
 		if(strSelectedArticleType != null){
 			setContentView(R.layout.atrticle_text);
@@ -76,6 +91,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, strSelectedArticleType);
 						intent.putExtra("ArticleID", strSelectedArticleID);
+						if(savedArticle){
+							intent.putExtra("savedarticle", articleDetails.getUrl());
+						}
 						startActivity(intent);
 					}
 				}
@@ -91,7 +109,11 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 
 		if(strSelectedArticleType != null && strSelectedArticleID != null){
-			getArticleDetails();
+			if(!savedArticle){
+				getArticleDetails();
+			}else{
+				update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,Constants.REQ_GETARTICLEDETAILS,(byte)0);
+			}
 		}
 	}
 
@@ -217,11 +239,20 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						if(CacheManager.getInstance().getLatestArticleBitmap() != null){
 							imageView.setImageBitmap(CacheManager.getInstance().getLatestArticleBitmap());
 						}
+					}else if(callId == Constants.REQ_DOWNLOADARTICLE){
+
+						Message msg = new Message();
+						msg.what = REMOVE_PROGRESS;
+						handler.sendMessage(msg);
 					}
 				}
 			});
 		}else if(errorCode == Constants.ERR_NETWORK_FAILURE){
-			Toast.makeText(this, "No Network Available.", Toast.LENGTH_LONG).show();	
+			if(callId == Constants.REQ_DOWNLOADARTICLE){
+				Toast.makeText(this, "Article cannot be downloaded. Please try later.", Toast.LENGTH_LONG).show();
+			}else{
+				Toast.makeText(this, "No Network Available.", Toast.LENGTH_LONG).show();
+			}
 		}
 
 	}
@@ -234,28 +265,38 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
 			startActivity(intent);
 			break;
- 
+
 		case MENU_OPTION_SHARE:
-			
 			showDialog(Constants.DIALOG_SHARE);
 			break;
+
 		case MENU_OPTION_ADD_REVIEW:
 			showDialog(Constants.DIALOG_REVIEW);
 			break;
 
 		case MENU_OPTION_SAVE:
+			if(!Utils.isSdCardPresent()){
+				Toast.makeText(getApplicationContext(),"SD Card is required to download article data.", Toast.LENGTH_LONG).show();
+				return false;
+			}
+
 			DBAdapter dbAdapter = DBAdapter.getInstance(getApplicationContext());
 			dbAdapter.open();
 			int count =  dbAdapter.getArticles(articleDetails);
 
-			if(count == 0){
-				dbAdapter.insertArticle(articleDetails);
-				Toast.makeText(getApplicationContext(),getString(R.string.record_saved), Toast.LENGTH_LONG).show();
-			}else{
+			if(count > 0){
 				Toast.makeText(getApplicationContext(),getString(R.string.saved_already), Toast.LENGTH_LONG).show();
 			}
 			dbAdapter.close();
 
+			if(count == 0){
+				DownloadHandler downloadHandler = DownloadHandler.getInstance();
+				downloadHandler.handleEvent(articleDetails, Constants.REQ_DOWNLOADARTICLE, this);
+
+				Message msg = new Message();
+				msg.what = SHOW_PROGRESS;
+				handler.sendMessage(msg);
+			}
 			break;
 		default:
 			break;
@@ -263,6 +304,22 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		return false;
 	}
 
+
+	private void saveArticle(ArticleDAO article){
+		DBAdapter dbAdapter = DBAdapter.getInstance(getApplicationContext());
+		dbAdapter.open();
+		int count =  dbAdapter.getArticles(article);
+
+		if(count == 0){
+			dbAdapter.insertArticle(article);
+			Toast.makeText(getApplicationContext(),getString(R.string.record_saved), Toast.LENGTH_LONG).show();
+		}else{
+			Toast.makeText(getApplicationContext(),getString(R.string.saved_already), Toast.LENGTH_LONG).show();
+		}
+		dbAdapter.close();
+
+
+	}
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
@@ -273,6 +330,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			ShareDialog shareDialog = new ShareDialog(this, articleDetails,prefs);
 			return shareDialog; 
+
+		case Constants.DIALOG_PROGRESS:
+			if(progressDialog == null){
+				showProgressBar();
+			}
+			return progressDialog;
 		default:
 			break;
 		}
@@ -322,5 +385,42 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Example text");    
 
 		startActivity(Intent.createChooser(shareIntent, "TestApp"));
+	}
+
+	private Handler handler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			int what = msg.what;
+			switch(what){
+			case SHOW_PROGRESS:
+				showDialog(Constants.DIALOG_PROGRESS);
+				break;
+
+			case REMOVE_PROGRESS:
+				progressDialog.dismiss();
+				progressDialog.cancel();
+				ArticleDAO dao = (ArticleDAO)CacheManager.getInstance().get(Constants.C_DOWNLOADED_ARTICLE);
+				if(dao != null){
+					saveArticle(dao);
+				}
+
+
+				break;
+			}
+		};
+	};
+
+	private void showProgressBar(){
+		if(progressDialog == null){
+			progressDialog = new ProgressDialog(this);
+			progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			progressDialog.setMessage("Downloading article data, please wait...");
+			progressDialog.setIcon(android.R.id.icon);
+			progressDialog.setCancelable(false);
+			progressDialog.setOnKeyListener(new OnKeyListener() {
+				public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+					return true;
+				}
+			});
+		}
 	}
 }
