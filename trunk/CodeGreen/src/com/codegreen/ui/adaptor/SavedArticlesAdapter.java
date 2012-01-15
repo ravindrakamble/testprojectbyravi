@@ -33,8 +33,9 @@ public class SavedArticlesAdapter extends BaseAdapter implements SectionIndexer 
 			dbAdapter = DBAdapter.getInstance(context);
 			dbAdapter.open();
 			mArticleList = (ArrayList<ArticleDAO>)dbAdapter.getArticles();
-			imageLoader=new FetchImage(mContext);
 			dbAdapter.close();
+			imageLoader=new FetchImage(mContext);
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

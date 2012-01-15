@@ -1,6 +1,8 @@
 package com.codegreen.network;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -24,10 +26,21 @@ public class DownloadImageTask extends Task {
 	@Override
 	public void run() {
 		InputStream is ;
+		FileInputStream fileInputStream = null;
 		try {
-			is = new URL(imageUrl).openStream();
-			BufferedInputStream bis = new BufferedInputStream(is);  
-			bitmap = BitmapFactory.decodeStream(bis);
+			if(imageUrl != null){
+				if(imageUrl.startsWith("http")){
+					is = new URL(imageUrl).openStream();
+					BufferedInputStream bis = new BufferedInputStream(is);  
+					bitmap = BitmapFactory.decodeStream(bis);
+				}else{
+					File file = new File(imageUrl);
+					if(file.exists()){
+						fileInputStream = new FileInputStream(file);
+						bitmap = BitmapFactory.decodeStream(fileInputStream);
+					}
+				}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 

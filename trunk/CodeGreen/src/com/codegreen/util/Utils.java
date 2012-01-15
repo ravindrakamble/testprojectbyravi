@@ -384,7 +384,7 @@ public class Utils {
 	public static String getCurrentDate(){
 		StringBuffer endDate = new StringBuffer();
 		//Create the current date
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		endDate.append(simpleDateFormat.format(new Date()));
 
 		return endDate.toString();
