@@ -110,6 +110,7 @@ public class DBAdapter
 	public void close() 
 	{
 		DBHelper.close();
+		db.close();
 	}
 
 	public boolean isRunning(){

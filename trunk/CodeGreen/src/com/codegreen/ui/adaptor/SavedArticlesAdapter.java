@@ -18,7 +18,7 @@ import com.codegreen.database.DBAdapter;
 import com.codegreen.network.FetchImage;
 import com.codegreen.util.Constants;
 
-public class SavedArticlesAdapter extends BaseAdapter implements SectionIndexer {
+public class SavedArticlesAdapter extends BaseAdapter{
 
 	private Context mContext;
 	private LayoutInflater mLayoutInflator = null;
@@ -165,8 +165,9 @@ public class SavedArticlesAdapter extends BaseAdapter implements SectionIndexer 
 		try {
 			dbAdapter.open();
 			mArticleList = (ArrayList<ArticleDAO>)dbAdapter.getArticles();
-			imageLoader=new FetchImage(mContext);
 			dbAdapter.close();
+			imageLoader=new FetchImage(mContext);
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -175,21 +176,6 @@ public class SavedArticlesAdapter extends BaseAdapter implements SectionIndexer 
 	static class ListHolder {
 		TextView txt_articleName;
 		ImageView img_thumbnail;
-	}
-
-	@Override
-	public int getPositionForSection(int arg0) {
-		return 0;
-	}
-
-	@Override
-	public int getSectionForPosition(int arg0) {
-		return 0;
-	}
-
-	@Override
-	public Object[] getSections() {
-		return null;
 	}
 
 }

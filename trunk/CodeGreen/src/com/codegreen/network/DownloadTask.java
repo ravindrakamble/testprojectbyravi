@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 
+import android.util.Log;
+
 import com.codegreen.businessprocess.handler.Handler;
 import com.codegreen.businessprocess.objects.DownloadInfoDAO;
 import com.codegreen.common.Task;
@@ -26,6 +28,7 @@ public class DownloadTask extends Task{
 		if(downloadInfo != null && downloadInfo.getUrlToDownload() != null){
 			InputStream inputStream = null;
 			try {
+				Log.e("Downloading :", downloadInfo.getUrlToDownload());
 				URL url = new URL(downloadInfo.getUrlToDownload());
 				
 				inputStream = url.openStream();
