@@ -248,11 +248,22 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				}
 			});
 		}else if(errorCode == Constants.ERR_NETWORK_FAILURE){
-			if(callId == Constants.REQ_DOWNLOADARTICLE){
-				Toast.makeText(this, "Article cannot be downloaded. Please try later.", Toast.LENGTH_LONG).show();
-			}else{
-				Toast.makeText(this, "No Network Available.", Toast.LENGTH_LONG).show();
-			}
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					progress_Lay.setVisibility(View.GONE);
+					if(callId == Constants.REQ_DOWNLOADARTICLE){
+						Toast.makeText(ArticleDetailsActivity.this, "Article cannot be downloaded. Please try later.", Toast.LENGTH_LONG).show();
+					}else{
+						Toast.makeText(ArticleDetailsActivity.this, "No Network Available.", Toast.LENGTH_LONG).show();
+					}
+					Message msg = new Message();
+					msg.what = REMOVE_PROGRESS;
+					msg.arg1 = REMOVE_PROGRESS;
+					handler.sendMessage(msg);
+				}
+			});
+			
 		}
 
 	}
@@ -283,19 +294,23 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			DBAdapter dbAdapter = DBAdapter.getInstance(getApplicationContext());
 			dbAdapter.open();
 			int count =  dbAdapter.getArticles(articleDetails);
-
+			dbAdapter.close();
 			if(count > 0){
 				Toast.makeText(getApplicationContext(),getString(R.string.saved_already), Toast.LENGTH_LONG).show();
 			}
-			dbAdapter.close();
+			
 
 			if(count == 0){
-				DownloadHandler downloadHandler = DownloadHandler.getInstance();
-				downloadHandler.handleEvent(articleDetails, Constants.REQ_DOWNLOADARTICLE, this);
+				if(articleDetails.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_TEXT)){
+					saveArticle(articleDetails);
+				}else{
+					DownloadHandler downloadHandler = DownloadHandler.getInstance();
+					downloadHandler.handleEvent(articleDetails, Constants.REQ_DOWNLOADARTICLE, this);
 
-				Message msg = new Message();
-				msg.what = SHOW_PROGRESS;
-				handler.sendMessage(msg);
+					Message msg = new Message();
+					msg.what = SHOW_PROGRESS;
+					handler.sendMessage(msg);
+				}
 			}
 			break;
 		default:
@@ -310,13 +325,15 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		dbAdapter.open();
 		int count =  dbAdapter.getArticles(article);
 
+		String toastMessage = null;
 		if(count == 0){
 			dbAdapter.insertArticle(article);
-			Toast.makeText(getApplicationContext(),getString(R.string.record_saved), Toast.LENGTH_LONG).show();
+			toastMessage = getString(R.string.record_saved);
 		}else{
-			Toast.makeText(getApplicationContext(),getString(R.string.saved_already), Toast.LENGTH_LONG).show();
+			toastMessage =getString(R.string.saved_already);
 		}
 		dbAdapter.close();
+		Toast.makeText(getApplicationContext(),toastMessage, Toast.LENGTH_LONG).show();
 
 
 	}
@@ -398,11 +415,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			case REMOVE_PROGRESS:
 				progressDialog.dismiss();
 				progressDialog.cancel();
-				ArticleDAO dao = (ArticleDAO)CacheManager.getInstance().get(Constants.C_DOWNLOADED_ARTICLE);
-				if(dao != null){
-					saveArticle(dao);
+				if(msg.arg1 != REMOVE_PROGRESS){
+					ArticleDAO dao = (ArticleDAO)CacheManager.getInstance().get(Constants.C_DOWNLOADED_ARTICLE);
+					if(dao != null){
+						saveArticle(dao);
+					}
 				}
-
 
 				break;
 			}
