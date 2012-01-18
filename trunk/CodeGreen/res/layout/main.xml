@@ -29,10 +29,10 @@
 	</LinearLayout>
 
 	<RelativeLayout android:id="@+id/LinearLayout01"
-		android:layout_width="wrap_content" android:layout_alignParentLeft="true"
-		android:layout_below="@+id/codegreenTitle" android:background="@drawable/titlebar"
+		android:layout_width="fill_parent" android:layout_alignParentLeft="true"
+		android:layout_below="@+id/codegreenTitle" android:background="@drawable/titlebar" 
 		android:orientation="horizontal" android:layout_height="40dip">
-		<ImageView android:id="@+id/ImageView01"
+		<!--<ImageView android:id="@+id/ImageView01"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:background="@drawable/rightnavigation"
 			android:layout_gravity="right|center_vertical"
@@ -41,63 +41,68 @@
 			android:layout_height="wrap_content" android:layout_centerVertical="true"
 			android:id="@+id/ImageView03" android:background="@drawable/corner_left"
 			android:layout_toRightOf="@+id/ImageView01"></ImageView>
-		<HorizontalScrollView android:id="@+id/HorizontalScrollView01"
+		--><HorizontalScrollView android:layout_marginLeft="25dip" android:id="@+id/HorizontalScrollView01"
 			android:layout_width="wrap_content" android:layout_centerVertical="true"
-			android:scrollbars="none" android:layout_toLeftOf="@+id/ImageView04"
-			android:layout_toRightOf="@+id/ImageView03" android:layout_height="fill_parent"
-			android:fadingEdge="horizontal" android:fadingEdgeLength="20dip">
-			<LinearLayout android:id="@+id/LinearLayout02" style="@android:style/ButtonBar"
-				android:background="@drawable/titlebar" android:layout_width="wrap_content"
+			android:scrollbars="none"  android:layout_marginRight="25dip"
+			android:layout_height="fill_parent"
+			>
+			<LinearLayout android:id="@+id/LinearLayout02"
+				android:layout_width="wrap_content"
 				android:layout_height="fill_parent">
-				<Button android:id="@+id/btn_green_basics" android:text="Green Basics"
-					android:textColor="#FFFFFF" android:background="@drawable/scrollbutton"
+				<TextView android:id="@+id/btn_latest" android:text="Latest"
+					android:textColor="#FFFFFF" android:paddingLeft="10dip"
+					android:gravity="center" android:textSize="12sp" android:background="@drawable/selectedbutton"
+					android:layout_gravity="center" android:layout_height="fill_parent"
+					android:layout_width="wrap_content"></TextView>
+				<TextView android:id="@+id/btn_green_basics" android:text="Green Basics"
+					android:textColor="#FFFFFF" android:paddingLeft="10dip"
 					android:gravity="center" android:textSize="12sp"
 					android:layout_gravity="center" android:layout_height="fill_parent"
-					android:layout_width="wrap_content"></Button>
-				<Button android:layout_alignParentLeft="true"
+					android:layout_width="wrap_content"></TextView>
+				<TextView android:layout_alignParentLeft="true"
 					android:textColor="#FFFFFF" android:text="Design and Architecture"
 					android:id="@+id/btn_design" android:gravity="center"
-					android:textSize="12sp" android:background="@drawable/scrollbutton"
+					android:textSize="12sp"  android:paddingLeft="10dip"
 					android:layout_gravity="center" android:layout_height="fill_parent"
-					android:layout_width="wrap_content"></Button>
-				<Button android:layout_alignParentLeft="true"
+					android:layout_width="wrap_content"></TextView>
+				<TextView android:layout_alignParentLeft="true" android:paddingLeft="10dip"
 					android:textColor="#FFFFFF" android:text="Science and Technology"
 					android:id="@+id/btn_secience" android:gravity="center"
-					android:textSize="12sp" android:background="@drawable/scrollbutton"
+					android:textSize="12sp" 
 					android:layout_gravity="center" android:layout_height="fill_parent"
-					android:layout_width="wrap_content"></Button>
-				<Button android:layout_alignParentLeft="true"
+					android:layout_width="wrap_content"></TextView>
+				<TextView android:layout_alignParentLeft="true" android:paddingLeft="10dip"
 					android:textColor="#FFFFFF" android:text="Transport and travel"
 					android:id="@+id/btn_transport" android:gravity="center"
 					android:textSize="12sp" android:layout_gravity="center"
-					android:background="@drawable/scrollbutton" android:layout_height="fill_parent"
-					android:layout_width="wrap_content"></Button>
-				<Button android:layout_alignParentLeft="true"
+					android:layout_height="fill_parent"
+					android:layout_width="wrap_content"></TextView>
+				<TextView android:layout_alignParentLeft="true" android:paddingLeft="10dip"
 					android:textColor="#FFFFFF" android:id="@+id/btn_business"
-					android:background="@drawable/scrollbutton" android:text="Business/Investment"
+					android:text="Business/Investment"
 					android:gravity="center" android:textSize="12sp"
 					android:layout_gravity="center" android:layout_height="fill_parent"
-					android:layout_width="wrap_content"></Button>
-				<Button android:layout_alignParentLeft="true"
+					android:layout_width="wrap_content"></TextView>
+				<TextView android:layout_alignParentLeft="true" android:paddingLeft="10dip"
 					android:textColor="#FFFFFF" android:id="@+id/btn_politics"
-					android:background="@drawable/scrollbutton" android:text="Politics/Policies"
+					android:text="Politics/Policies"
 					android:gravity="center" android:textSize="12sp"
 					android:layout_gravity="center" android:layout_height="fill_parent"
-					android:layout_width="wrap_content"></Button>
-				<Button android:layout_alignParentLeft="true"
+					android:layout_width="wrap_content"></TextView>
+				<TextView android:layout_alignParentLeft="true" android:paddingLeft="10dip"
 					android:textColor="#FFFFFF" android:id="@+id/btn_food"
-					android:background="@drawable/scrollbutton" android:text="Food and Health"
-					android:gravity="center" android:textSize="12sp"
+					android:text="Food and Health"
+					android:gravity="center" android:textSize="12sp" android:paddingRight="10dip"
 					android:layout_gravity="center" android:layout_height="fill_parent"
-					android:layout_width="wrap_content"></Button>
+					android:layout_width="wrap_content"></TextView>
 			</LinearLayout>
 
-		</HorizontalScrollView>
+		</HorizontalScrollView><!--
 		<ImageView android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:layout_centerVertical="true"
 			android:background="@drawable/corner_right" android:id="@+id/ImageView04"
 			android:layout_alignRight="@+id/ImageView02"></ImageView>
-		<ImageView android:id="@+id/ImageView02"
+		--><ImageView android:id="@+id/ImageView02"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:background="@drawable/leftnavigation"
 			android:layout_centerVertical="true" android:layout_alignParentRight="true"

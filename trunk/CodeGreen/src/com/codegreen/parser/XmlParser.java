@@ -8,6 +8,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.util.Log;
+
 import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.businessprocess.objects.ReviewDAO;
 import com.codegreen.util.Constants;
@@ -28,6 +30,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 	private ReviewDAO reviewDAO;
 	private String reviewMessage;
 	private Constants.PARSING parseMessage;
+	private StringBuilder respString = new StringBuilder();
 
 	public XmlParser(byte reqID){
 		this.requestID = reqID;
@@ -78,7 +81,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 		}
 
 		startTagName = localName;
-
+		
 		switch(requestID){
 		case Constants.REQ_GETARTICLESBYTYPE:
 		case Constants.REQ_SEARCHARTICLES:
@@ -110,22 +113,19 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 		}
 
 		endTagName = localName;
+		parsedData = respString.toString();
 		switch(requestID){
 		case Constants.REQ_GETARTICLESBYTYPE:
 		case Constants.REQ_GETARTICLEDETAILS:
 		case Constants.REQ_SEARCHARTICLES:
 			if(endTagName.equalsIgnoreCase(IMAGEARTICLEID)){
 				articleDAO.setArticleID(parsedData);
-				//articleDAO.setType(Constants.ARTCLETYPE_IMAGE);
 			}else if(endTagName.equalsIgnoreCase(TEXTARTICLEID)){
 				articleDAO.setArticleID(parsedData);
-				//articleDAO.setType(Constants.ARTCLETYPE_TEXT);
 			}else if(endTagName.equalsIgnoreCase(AUDIOARTICLEID)){
 				articleDAO.setArticleID(parsedData);
-				//articleDAO.setType(Constants.ARTCLETYPE_AUDIO);
 			}else if(endTagName.equalsIgnoreCase(VIDEOARTICLEID)){
 				articleDAO.setArticleID(parsedData);
-				//articleDAO.setType(Constants.ARTCLETYPE_VIDEO);
 			}else if(endTagName.equalsIgnoreCase(ARTICLEID)){
 				articleDAO.setArticleID(parsedData);
 			}
@@ -137,10 +137,12 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 				articleDAO.setDetailedDescription(parsedData);
 			}else if(endTagName.equalsIgnoreCase(THUMBURL)){
 				articleDAO.setThumbUrl(parsedData);
+				Log.e("Thumb URL", parsedData);
 			}else if(endTagName.equalsIgnoreCase(ARTICLETYPE)){
 					articleDAO.setType(parsedData);
 			}else if(endTagName.equalsIgnoreCase(URL)){
 				articleDAO.setUrl(parsedData);
+				Log.e("Main URL", parsedData);
 			}else if(endTagName.equalsIgnoreCase(PUBLISHEDDATE)){
 				articleDAO.setPublishedDate(parsedData);
 			}else if(endTagName.equalsIgnoreCase(CATEGORYID)){
@@ -169,6 +171,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 			break;
 		}
 		 parsedData = "";
+		 respString = new StringBuilder();
 	}
 
 	/**
@@ -177,7 +180,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 	@Override
 	public void characters(char[] ch, int start, int length)
 	throws SAXException {
-		parsedData = new String(ch, start, length);
+		respString.append(new String(ch, start, length));
 	}
 	
 	

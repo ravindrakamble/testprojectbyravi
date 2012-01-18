@@ -51,10 +51,10 @@ import android.os.AsyncTask;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -79,7 +79,7 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 	private SharedPreferences prefs;
 	private CommonsHttpOAuthConsumer httpOauthConsumer;
 	private DefaultOAuthProvider httpOauthprovider;
-
+	private static String toast_message="";
 
 	private static final String APP_ID = "269876589726953";
 	private static final String[] PERMISSIONS = new String[] {"publish_stream"};
@@ -90,6 +90,12 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 
 	private Facebook facebook;
 	private String messageToPost;
+	private final static int TOASET_MSG = 0;
+	private final static int DISMISS = 1;
+	private final static int SHOW = 2;
+	TextView status_msg;
+	String message = "";
+
 
 
 	
@@ -108,11 +114,12 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 		this.articleDAO = articleDAO; 
 		facebook = new Facebook(APP_ID);
 		restoreCredentials(facebook);
-		String facebookMessage = articleDAO.getArticleID();
+		String facebookMessage = "Posting Article " +  articleDAO.getDetailedDescription();
 		if (facebookMessage == null){
 			facebookMessage = "Test wall post";
 		}
 		messageToPost = facebookMessage;
+		message = "Posting Article " +  articleDAO.getDetailedDescription();
 	}
 
 
@@ -228,18 +235,140 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 		dialog.show();
 	}
 
+	private void validateTwitter(String user, String pass){
 
+		try {
+			httpOauthConsumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
+			httpOauthprovider = new DefaultOAuthProvider("https://twitter.com/oauth/request_token", "https://twitter.com/oauth/access_token", "https://twitter.com/oauth/authorize");
+			String authUrl = httpOauthprovider.retrieveRequestToken(httpOauthConsumer, "oob");
 
-	
-	private void onSelectTwitter() {
-		ShareData shareData = ShareData.getShareData();
-		if (shareData.get("Twitter_Token") == null) {
-			showLoginDialog();
-		} else {
-			System.out.println((AccessToken) shareData.get("Twitter_Token"));
-			postTweet((AccessToken) shareData.get("Twitter_Token"));
+			System.out.println("-------------------------------------------------------" + authUrl + "---------------------------------------");
+			System.out.println(authUrl.substring(authUrl.indexOf("=") + 1));
+
+			HttpClient client = new DefaultHttpClient();
+			HttpResponse response = client.execute(new HttpGet(authUrl));
+
+			int status = response.getStatusLine().getStatusCode();
+
+			if (status != HttpStatus.SC_OK){
+				ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+				response.getEntity().writeTo(ostream);
+			}else{
+				StringBuilder buffer = getBody(response);
+				HttpPost post = new HttpPost("https://twitter.com/oauth/authorize");
+
+				String temp = buffer.substring(buffer.indexOf("authenticity_token"));
+				temp = temp.substring(temp.indexOf("value"));
+				temp = temp.substring(temp.indexOf("\"") + 1);
+				temp = temp.substring(0, temp.indexOf("\""));
+
+				System.out.println(temp + ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+
+				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				pairs.add(new BasicNameValuePair("authenticity_token", temp));
+				pairs.add(new BasicNameValuePair("oauth_token", authUrl.substring(authUrl.indexOf("=") + 1)));
+				pairs.add(new BasicNameValuePair("session[username_or_email]", user));
+				pairs.add(new BasicNameValuePair("session[password]", pass));
+				post.setEntity(new UrlEncodedFormEntity(pairs));
+				post.getParams().setBooleanParameter("http.protocol.expect-continue", false);
+
+				response = client.execute(post);
+
+				URL url = new URL("https://twitter.com/oauth/authorize");
+				HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+				httpsURLConnection.setRequestMethod("POST");
+				httpsURLConnection.setRequestProperty("authenticity_token", temp);
+				httpsURLConnection.setRequestProperty("oauth_token", authUrl
+						.substring(authUrl.indexOf("=") + 1));
+				httpsURLConnection.setRequestProperty("session[username_or_email]", user);
+				httpsURLConnection.setRequestProperty("session[password]", pass);
+				httpsURLConnection.setAllowUserInteraction(true);
+				httpsURLConnection.setDoInput(true);
+				httpsURLConnection.setDoOutput(true);
+				
+				httpsURLConnection.connect();
+				
+				int respCode = httpsURLConnection.getResponseCode();
+				buffer = getBody(response);
+
+				if (buffer.indexOf("\"oauth_pin\"") > 0){
+					temp = buffer.substring(buffer.indexOf("\"oauth_pin\""));
+					System.out.println("====================" + temp + "----------------------");
+					temp = temp.substring(temp.indexOf(">") + 1, temp.indexOf("<"));
+					temp = temp.trim();
+					System.out.println("====================" + temp + "----------------------");
+					httpOauthprovider.retrieveAccessToken(httpOauthConsumer, temp);
+
+					AccessToken accessToken = new AccessToken(httpOauthConsumer.getToken(), httpOauthConsumer.getTokenSecret());
+
+					ShareData.getShareData().put("Twitter_Token", accessToken);
+
+					postTweet(accessToken);
+				}else{
+					toast_message=  "Wrong username/email or password";
+					Message msg = new Message();
+					msg.what = TOASET_MSG;
+					screenHandler.sendMessage(msg);
+
+				}
+			}
+		}catch (Exception e){
+			toast_message=  e.getMessage();
+			Message msg = new Message();
+			msg.what = TOASET_MSG;
+			screenHandler.sendMessage(msg);
+			e.printStackTrace();
 		}
 	}
+	
+	
+	private StringBuilder getBody(HttpResponse response) throws Exception {
+		InputStream content = response.getEntity().getContent();
+		InputStreamReader reader = new InputStreamReader(content, HTTP.DEFAULT_CONTENT_CHARSET);
+		StringBuilder buffer = new StringBuilder();
+
+		try{
+			char[] tmp = new char[1024];
+			int l;
+			while ((l = reader.read(tmp)) != -1){
+				buffer.append(tmp, 0, l);
+			}
+			return buffer;
+		}finally{
+			reader.close();
+			content.close();
+		}
+	}
+
+
+	private void postTweet(AccessToken accessToken){
+		try {		
+			twitter = new TwitterFactory().getInstance();
+			twitter.setOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
+			twitter.setOAuthAccessToken(accessToken);
+			twitter.updateStatus(message + " -via @MyTestApp");
+			System.out.println("Twitter shared data:" + message);
+			toast_message=  "Posted Successfully";
+			Message msg = new Message();
+			msg.what = TOASET_MSG;
+			screenHandler.sendMessage(msg);
+
+		}catch (Exception ex){
+			ex.printStackTrace();
+		}
+	}
+
+
+
+	Dialog outerDialog;
+	
+	private void onSelectTwitter(){
+		ShareData shareData = ShareData.getShareData();
+		outerDialog = new Dialog(mContext);
+		showDialog(TWITTER_DIALOG);
+	}
+	
+	
 	public boolean saveCredentials(Facebook facebook) {
     	Editor editor = mContext.getApplicationContext().getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
     	editor.putString(TOKEN, facebook.getAccessToken());
@@ -263,210 +392,89 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 			postToWall(messageToPost);
 		}
 	}
- 
+	
+	private void showDialog(int id){
+		switch (id){
+		case TWITTER_DIALOG:
 
-	private void validateTwitter(String user, String pass) {
-		try {
-			httpOauthConsumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY,
-					Constants.CONSUMER_SECRET);
-			httpOauthprovider = new DefaultOAuthProvider(
-					"http://twitter.com/oauth/request_token",
-					"http://twitter.com/oauth/access_token",
-			"http://twitter.com/oauth/authorize");
-			String authUrl = httpOauthprovider.retrieveRequestToken(
-					httpOauthConsumer, "oob");
+			outerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			outerDialog.setContentView(R.layout.twitterlogin);
+			final TextView user = (TextView) outerDialog.findViewById(R.id.usernameEditText);
+			final TextView pass = (TextView) outerDialog.findViewById(R.id.passwordEditText);
+			status_msg = (TextView) outerDialog.findViewById(R.id.status_msg);
+			Button button = (Button) outerDialog.findViewById(R.id.signinButton);
+			status_msg.setText(message);
+			button.setOnClickListener(new Button.OnClickListener(){
 
-			System.out
-			.println("-------------------------------------------------------"
-					+ authUrl
-					+ "---------------------------------------");
-			System.out.println(authUrl.substring(authUrl.indexOf("=") + 1));
-
-			HttpClient client = new DefaultHttpClient();
-			HttpResponse response = client.execute(new HttpGet(authUrl));
-
-			int status = response.getStatusLine().getStatusCode();
-
-			if (status != HttpStatus.SC_OK) {
-				ByteArrayOutputStream ostream = new ByteArrayOutputStream();
-				response.getEntity().writeTo(ostream);
-			} else {
-				StringBuilder buffer = getBody(response);
-
-				HostnameVerifier hostnameVerifier = new HostnameVerifier() {
-					
-					@Override
-					public boolean verify(String hostname, SSLSession session) {
-						return true;
+				public void onClick(View v){
+					if ((user.getText() == null || pass.getText() == null) || (user.getText().toString().length() <= 0 || pass.getText().toString().length() <= 0)){
+						Message msg = new Message();
+						msg.what = TOASET_MSG;
+						toast_message= "Please enter username/email and password";
+						screenHandler.sendMessage(msg);
 					}
-				};
-
-				KeyStore trusted = KeyStore.getInstance("BKS");
-			    trusted.load(null, "".toCharArray());
-			    SSLSocketFactory sslf = new SSLSocketFactory(trusted);
-			    //sslf.setHostnameVerifier(hostnameVerifier);
-
-			       SchemeRegistry registry = new SchemeRegistry();
-			       registry.register(new Scheme("https", sslf, 443));
-			       SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
-			       DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
-
-			       // Set verifier      
-			       HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
-
-
-				HttpPost post = new HttpPost(
-				"https://twitter.com/oauth/authorize");
-
-				String temp = buffer.substring(buffer
-						.indexOf("authenticity_token"));
-				temp = temp.substring(temp.indexOf("value"));
-				temp = temp.substring(temp.indexOf("\"") + 1);
-				temp = temp.substring(0, temp.indexOf("\""));
-
-				System.out.println(temp
-						+ ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
-
-				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-				pairs.add(new BasicNameValuePair("authenticity_token", temp));
-				pairs.add(new BasicNameValuePair("oauth_token", authUrl
-						.substring(authUrl.indexOf("=") + 1)));
-				pairs.add(new BasicNameValuePair("session[username_or_email]",
-						user));
-				pairs.add(new BasicNameValuePair("session[password]", pass));
-				post.setEntity(new UrlEncodedFormEntity(pairs));
-				post.getParams().setBooleanParameter(
-						"http.protocol.expect-continue", false);
-
-				response = httpClient.execute(post);
-
-				URL url = new URL("https://twitter.com/oauth/authorize");
-				HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-				httpsURLConnection.setRequestMethod("POST");
-				httpsURLConnection.setRequestProperty("authenticity_token", temp);
-				httpsURLConnection.setRequestProperty("oauth_token", authUrl
-						.substring(authUrl.indexOf("=") + 1));
-				httpsURLConnection.setRequestProperty("session[username_or_email]", user);
-				httpsURLConnection.setRequestProperty("session[password]", pass);
-				httpsURLConnection.setAllowUserInteraction(true);
-				httpsURLConnection.setDoInput(true);
-				httpsURLConnection.setDoOutput(true);
-				
-				httpsURLConnection.connect();
-				
-				int respCode = httpsURLConnection.getResponseCode();
-				buffer = getBody(response);
-
-				if (buffer.indexOf("\"oauth_pin\"") > 0) {
-					temp = buffer.substring(buffer.indexOf("\"oauth_pin\""));
-					System.out.println("====================" + temp
-							+ "----------------------");
-					temp = temp.substring(temp.indexOf(">") + 1,
-							temp.indexOf("<"));
-					temp = temp.trim();
-					System.out.println("====================" + temp
-							+ "----------------------");
-					httpOauthprovider.retrieveAccessToken(httpOauthConsumer,
-							temp);
-
-					AccessToken accessToken = new AccessToken(
-							httpOauthConsumer.getToken(),
-							httpOauthConsumer.getTokenSecret());
-
-					ShareData.getShareData().put("Twitter_Token", accessToken);
-
-					postTweet(accessToken);
-				} else {
-					Toast.makeText(mContext.getApplicationContext(), "Wrong username/email or password",
-							Toast.LENGTH_LONG).show();
+					else{
+						userString = user.getText().toString();
+						passString = pass.getText().toString();
+						Message msg = new Message();
+						msg.what = DISMISS;
+						screenHandler.sendMessage(msg);
+						new DoShareTwitter().execute();
+					}
 				}
+			});
+			Message msg = new Message();
+			msg.what = SHOW;
+			screenHandler.sendMessage(msg);
+			break;
+		}
+	}
+
+	public Handler screenHandler = new Handler(){
+		public void handleMessage(Message msg){
+			switch (msg.what){
+			case TOASET_MSG:
+				Toast.makeText(mContext, toast_message, Toast.LENGTH_LONG).show();
+				break;
+			case DISMISS:
+				outerDialog.dismiss();
+				break;
+			case SHOW:
+				outerDialog.show();
+				break;
 			}
-		} catch (Exception e) {
-			//Toast.makeText(mContext.getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-			e.printStackTrace();
 		}
-	}
+	};
 
-	private StringBuilder getBody(HttpResponse response) throws Exception {
-		InputStream content = response.getEntity().getContent();
-		InputStreamReader reader = new InputStreamReader(content,
-				HTTP.DEFAULT_CONTENT_CHARSET);
-
-		StringBuilder buffer = new StringBuilder();
-
-		try {
-
-			char[] tmp = new char[1024];
-
-			int l;
-
-			while ((l = reader.read(tmp)) != -1) {
-
-				buffer.append(tmp, 0, l);
-
-			}
-			return buffer;
-		} finally {
-
-			reader.close();
-			content.close();
-
-		}
-	}
-
-	private void postTweet(AccessToken accessToken) {
-		try {
-			twitter = new TwitterFactory().getInstance();
-			twitter.setOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
-			twitter.setOAuthAccessToken(accessToken);
-			twitter.updateStatus("From App");
-			Toast.makeText(mContext.getApplicationContext(), "Posted Successfully", Toast.LENGTH_LONG)
-			.show();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
-	class DoShareTwitter extends AsyncTask<String, Void, Void>
-	{
+	class DoShareTwitter extends AsyncTask<String, Void, Void>{
 		ProgressDialog dialog;
 		int pos;
-
-		protected void onProgressUpdate(Void... progress)
-		{
-
+		protected void onProgressUpdate(Void... progress){
 			dialog = new ProgressDialog(mContext);
 			dialog.setTitle("");
-			dialog.setMessage("Sending Please Wait...");
+			dialog.setMessage("Posting Please Wait...");
 			dialog.setCancelable(false);
-
 			dialog.show();
-
 		}
 
 		@Override
-		protected void onPostExecute(Void params)
-		{
-			if (dialog != null)
-			{
+		protected void onPostExecute(Void params){
+			if (dialog != null){
 				dialog.cancel();
 			}
 		}
 
 		@Override
-		protected Void doInBackground(String... params)
-		{
-			// TODO Auto-generated method stub
+		protected Void doInBackground(String... params){
 			publishProgress();
-			if (userString != null && userString.length() > 0 && passString != null && passString.length() > 0)
-			{
+			if (userString != null && userString.length() > 0 && passString != null && passString.length() > 0){
 				validateTwitter(userString, passString);
 			}
 			return null;
-
 		}
 
 	}
+
 	public void loginAndPostToWall(){
 		 facebook.authorize((Activity)mContext, PERMISSIONS, new LoginDialogListener());
 	}
@@ -475,6 +483,18 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 		Bundle parameters = new Bundle();
                 parameters.putString("message", message);
                 parameters.putString("description", "topic share");
+				/*if (articleDAO.getTitle() != null)
+					parameters.putString("message", articleDAO.getTitle());// the
+				*/if (articleDAO.getUrl() != null)
+					parameters.putString("link",articleDAO.getUrl());
+				if (articleDAO.getThumbUrl() != null)
+					parameters.putString("picture", articleDAO.getThumbUrl());
+				if (articleDAO.getTitle() != null)
+					parameters.putString("name", articleDAO.getTitle());
+				if (articleDAO.getShortDescription() != null)
+					parameters.putString("caption", "www.codegreenonline.com");
+				if (articleDAO.getDetailedDescription() != null)
+					parameters.putString("description", articleDAO.getDetailedDescription());
                 try {
         	        facebook.request("me");
 			String response = facebook.request("me/feed", parameters, "POST");
