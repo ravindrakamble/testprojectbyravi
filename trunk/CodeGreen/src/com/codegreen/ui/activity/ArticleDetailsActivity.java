@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.content.DialogInterface.OnKeyListener;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -86,14 +87,24 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				@Override
 				public void onClick(View v) {
 					if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
-						Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
-						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, strSelectedArticleType);
-						intent.putExtra("ArticleID", strSelectedArticleID);
-						if(savedArticle){
-							intent.putExtra("savedarticle", articleDetails.getUrl());
+
+						String urlToPlay = articleDetails.getUrl();
+						Log.e("Play Url ", urlToPlay);
+						if(urlToPlay.contains("youtube")){
+							Intent videoClient = new Intent(Intent.ACTION_VIEW); 
+							videoClient.setData(Uri.parse(urlToPlay)); 
+							videoClient.setClassName("com.google.anddroid.youtube", "com.google.android.youtube.WatchActivity"); 
+							startActivity(videoClient); 
+						}else{
+							Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, strSelectedArticleType);
+							intent.putExtra("ArticleID", strSelectedArticleID);
+							if(savedArticle){
+								intent.putExtra("savedarticle", articleDetails.getUrl());
+							}
+							startActivity(intent);
 						}
-						startActivity(intent);
 					}
 				}
 			});
@@ -262,7 +273,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					handler.sendMessage(msg);
 				}
 			});
-			
+
 		}
 
 	}
@@ -297,7 +308,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			if(count > 0){
 				Toast.makeText(getApplicationContext(),getString(R.string.saved_already), Toast.LENGTH_LONG).show();
 			}
-			
+
 
 			if(count == 0){
 				if(articleDetails.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_TEXT)){

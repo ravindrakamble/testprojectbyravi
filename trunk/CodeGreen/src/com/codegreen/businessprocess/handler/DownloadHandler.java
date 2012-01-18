@@ -62,6 +62,9 @@ public class DownloadHandler implements Handler{
 
 				dao = new DownloadInfoDAO();
 				dao.setUrlToDownload(articleDAO.getUrl());
+				if(dao.getFileName() == null){
+					dao.setFileName(articleDAO.getArticleID() + ".mp4");
+				}
 				dao.setType(articleDAO.getType());
 				//Download article image first
 				downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_DATA);
