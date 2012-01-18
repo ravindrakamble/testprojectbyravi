@@ -1,12 +1,15 @@
 package com.codegreen.ui.adaptor;
 import java.util.ArrayList;
 
+import twitter4j.RelatedResults;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 import com.codegreen.R;
@@ -65,6 +68,7 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 		if (convertView == null) {
 			convertView = mLayoutInflator.inflate(R.layout.listitemrow,null);
 			holder = new ListHolder();
+			holder.layout_main = (RelativeLayout) convertView.findViewById(R.id.list_row);
 			holder.txt_articleName = (TextView) convertView.findViewById(R.id.textArticle);
 			holder.img_thumbnail = (ImageView) convertView.findViewById(R.id.ImgThumbnail);
 			convertView.setTag(holder);
@@ -73,6 +77,9 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 			convertView.buildDrawingCache();
 			holder = (ListHolder) convertView.getTag();
 		}
+		
+		
+		holder.layout_main.setBackgroundResource(R.drawable.listitem_selector);
 
 		// set Values 
 		ArticleDAO data = mArticleList.get(position);
@@ -126,6 +133,7 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 
 
 	static class ListHolder {
+		RelativeLayout layout_main;
 		TextView txt_articleName;
 		ImageView img_thumbnail;
 	}

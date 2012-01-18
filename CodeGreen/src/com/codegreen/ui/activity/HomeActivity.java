@@ -94,6 +94,8 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 			@Override
 			public void onClick(View v) {
+				refreshViews();
+				mBtnGreenBasic.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 1;
 				searchArticles(Constants.GREEN_BASICS);
 			}
@@ -102,6 +104,8 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 			@Override
 			public void onClick(View v) {
+				refreshViews();
+				mBtnDesignArcht.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 2;
 				searchArticles(Constants.DESIGN_AND_ARCHITECTURE);
 			}
@@ -110,6 +114,8 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 			@Override
 			public void onClick(View v) {
+				refreshViews();
+				mBtnScience.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 3;
 				searchArticles(Constants.SCIENCE_ANDECHNOLOGY);
 			}
@@ -118,6 +124,8 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 			@Override
 			public void onClick(View v) {
+				refreshViews();
+				mBtnTransport.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 4;
 				searchArticles(Constants.TRANSPORT);
 			}
@@ -126,6 +134,8 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 			@Override
 			public void onClick(View v) {
+				refreshViews();
+				mBtnBusiness.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 5;
 				searchArticles(Constants.BUSINESS);
 			}
@@ -134,6 +144,8 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 			@Override
 			public void onClick(View v) {
+				refreshViews();
+				mBtnPolitics.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 6;
 				searchArticles(Constants.POLITICS);
 			}
@@ -142,6 +154,8 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 			@Override
 			public void onClick(View v) {
+				refreshViews();
+				mBtnFood.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 7;
 				searchArticles(Constants.FOOD_AND_HEALTH);
 			}
@@ -156,14 +170,29 @@ public class HomeActivity extends ListActivity implements Updatable{
 		});
 		mBtnLatest = (TextView)findViewById(R.id.btn_latest);
 		mBtnLatest.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
+				refreshViews();
+				mBtnLatest.setBackgroundResource(R.drawable.selectedbutton);
 				searchArticles(0);
 			}
 		});
 	}
 
+	/**
+	 * refresh image backgrounds 
+	 */
+	private void refreshViews() {
+		mBtnGreenBasic.setBackgroundDrawable(null);
+		mBtnDesignArcht.setBackgroundDrawable(null);
+		mBtnScience.setBackgroundDrawable(null);
+		mBtnTransport.setBackgroundDrawable(null);
+		mBtnBusiness.setBackgroundDrawable(null);
+		mBtnPolitics.setBackgroundDrawable(null);
+		mBtnLatest.setBackgroundDrawable(null);
+		mBtnFood.setBackgroundDrawable(null);
+	}
 
 
 	private void showMediaOptions(){
@@ -222,7 +251,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 		}
 	}
 
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -292,10 +321,10 @@ public class HomeActivity extends ListActivity implements Updatable{
 			launchSearchActivity();
 			break;
 
-		/*case MENU_OPTION_SHARE:
+			/*case MENU_OPTION_SHARE:
 			showDialog(Constants.DIALOG_SHARE);
 			break;
-*/
+			 */
 		case MENU_OPTION_INFO:
 			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
 			break;
@@ -312,11 +341,11 @@ public class HomeActivity extends ListActivity implements Updatable{
 		case Constants.DIALOG_REVIEW:
 			ReviewDialog reviewDialog = new ReviewDialog(this, (ArticleDAO)mAdapter.getItem(0));
 			return reviewDialog;
-		/*case Constants.DIALOG_SHARE:
+			/*case Constants.DIALOG_SHARE:
 			ShareDialog shareDialog = new ShareDialog(this, (ArticleDAO)mAdapter.getItem(0));
 			return shareDialog;
-		*/default:
-			break;
+			 */default:
+				 break;
 		}
 		return null;
 
@@ -328,7 +357,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
-			
+
 			if(mAdapter == null){
 				runOnUiThread(new Runnable() { 
 					@SuppressWarnings("unchecked")
@@ -386,25 +415,25 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 		// Launch details screen
 		//if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)||  articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
-			Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
-			intent.putExtra("ArticleID", articleEntry.getArticleID());
-			startActivity(intent);
+		Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
+		intent.putExtra("ArticleID", articleEntry.getArticleID());
+		startActivity(intent);
 		//}else if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO) ){
-			/*Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+		/*Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
 			PlayerActivity.streamUrl = articleEntry.getThumbUrl();
 			if(articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO))
 				PlayerActivity.isAudio = true;
 			else
 				PlayerActivity.isAudio = false;
 			startActivity(intent);*/
-			/*Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+		/*Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
 			intent.putExtra("ArticleID", articleEntry.getArticleID());
 			startActivity(intent);*/
-	//	}
+		//	}
 
 	} 
 
@@ -454,7 +483,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 *  Launch SearchCallhistoryActivity 
 	 * @param filterStr
