@@ -10,9 +10,11 @@ public class DownloadInfoDAO {
 	}
 	public void setUrlToDownload(String urlToDownload) {
 		this.urlToDownload = urlToDownload;
-		if(urlToDownload != null){
-			String name = urlToDownload.substring(urlToDownload.lastIndexOf("/") + 1, urlToDownload.length());
-			this.fileName = name;
+		if(urlToDownload != null ){
+			if(urlToDownload.indexOf("youtube") == -1){
+				String name = urlToDownload.substring(urlToDownload.lastIndexOf("/") + 1, urlToDownload.length());
+				this.fileName = name;
+			}
 		}
 	}
 	public String getType() {
@@ -27,6 +29,6 @@ public class DownloadInfoDAO {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	
-	
+
+
 }

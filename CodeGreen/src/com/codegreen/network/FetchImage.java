@@ -97,7 +97,7 @@ public class FetchImage
 						}
 					if(photosQueue.imageDowload.size()!=0 && currentIndex < photosQueue.imageDowload.size())
 						{
-						Log.e("******** Downloading sponsor images here : ", photosQueue.imageDowload.get(currentIndex).getThumbUrl());
+						//Log.e("******** Downloading sponsor images here : ", photosQueue.imageDowload.get(currentIndex).getThumbUrl());
 						Bitmap bmp=getBitmap(photosQueue.imageDowload.get(currentIndex).getThumbUrl()); 
 						if(bmp != null)
 						{
