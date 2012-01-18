@@ -48,13 +48,14 @@ public class HomeActivity extends ListActivity implements Updatable{
 	private static final int MENU_OPTION_SHARE = 0x03;
 	private static final int MENU_OPTION_INFO = 0x04;
 
-	Button mBtnGreenBasic = null;
-	Button mBtnDesignArcht = null;
-	Button mBtnScience = null;
-	Button mBtnTransport = null;
-	Button mBtnBusiness = null;
-	Button mBtnPolitics = null;
-	Button mBtnFood = null;
+	TextView mBtnGreenBasic = null;
+	TextView mBtnDesignArcht = null;
+	TextView mBtnScience = null;
+	TextView mBtnTransport = null;
+	TextView mBtnBusiness = null;
+	TextView mBtnPolitics = null;
+	TextView mBtnFood = null;
+	TextView mBtnLatest = null;
 	LinearLayout progress_Lay = null;
 
 	private static int CURRENT_SELECTED_CATEGORY = 1;
@@ -81,13 +82,13 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 		progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
 
-		mBtnGreenBasic = (Button)findViewById(R.id.btn_green_basics);
-		mBtnDesignArcht = (Button)findViewById(R.id.btn_design);
-		mBtnScience = (Button)findViewById(R.id.btn_secience);
-		mBtnTransport = (Button)findViewById(R.id.btn_transport);
-		mBtnBusiness = (Button)findViewById(R.id.btn_business);
-		mBtnPolitics = (Button)findViewById(R.id.btn_politics);
-		mBtnFood = (Button)findViewById(R.id.btn_food);
+		mBtnGreenBasic = (TextView)findViewById(R.id.btn_green_basics);
+		mBtnDesignArcht = (TextView)findViewById(R.id.btn_design);
+		mBtnScience = (TextView)findViewById(R.id.btn_secience);
+		mBtnTransport = (TextView)findViewById(R.id.btn_transport);
+		mBtnBusiness = (TextView)findViewById(R.id.btn_business);
+		mBtnPolitics = (TextView)findViewById(R.id.btn_politics);
+		mBtnFood = (TextView)findViewById(R.id.btn_food);
 		mNoItems =(TextView) findViewById(android.R.id.empty);
 		mBtnGreenBasic.setOnClickListener(new OnClickListener() {
 
@@ -151,6 +152,14 @@ public class HomeActivity extends ListActivity implements Updatable{
 			@Override
 			public void onClick(View v) {
 				showMediaOptions();
+			}
+		});
+		mBtnLatest = (TextView)findViewById(R.id.btn_latest);
+		mBtnLatest.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				searchArticles(0);
 			}
 		});
 	}

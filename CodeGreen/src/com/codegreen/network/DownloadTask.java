@@ -28,30 +28,41 @@ public class DownloadTask extends Task{
 		if(downloadInfo != null && downloadInfo.getUrlToDownload() != null){
 			InputStream inputStream = null;
 			try {
-				Log.e("Downloading :", downloadInfo.getUrlToDownload());
-				URL url = new URL(downloadInfo.getUrlToDownload());
+				String downloadURL = downloadInfo.getUrlToDownload();
+				Log.e("Downloading :", downloadURL);
+				URL url = new URL(downloadURL);
 				
-				inputStream = url.openStream();
-				
-				File downloadDir = new File("/sdcard/codegreen/" + downloadInfo.getType() );
-				if(!downloadDir.exists()){
-					downloadDir.mkdirs();
+				if(downloadURL.contains("youtube")){
+					inputStream = url.openStream();
+					StringBuffer buffer = new StringBuffer();
+					byte[] fileData = new byte[200];
+					while(inputStream.read(fileData) != -1){
+						buffer.append(fileData);
+					}
+					
+					Log.i("YouTube response", buffer.toString());
+				}else{
+					inputStream = url.openStream();
+
+					File downloadDir = new File("/sdcard/codegreen/" + downloadInfo.getType() );
+					if(!downloadDir.exists()){
+						downloadDir.mkdirs();
+					}
+
+					File downloadFile = new File("/sdcard/codegreen/" + downloadInfo.getType()+ "/" + downloadInfo.getFileName() );
+					downloadFile.createNewFile();
+
+					FileOutputStream fileOutputStream = new FileOutputStream(downloadFile);
+					byte[] fileData = new byte[200];
+					while(inputStream.read(fileData) != -1){
+						fileOutputStream.write(fileData);
+					}
+					fileOutputStream.flush();
+					fileOutputStream.close();
+					inputStream.close();
+
+					handler.handleCallback(downloadFile.getAbsolutePath(), callID, (byte)0);
 				}
-				
-				File downloadFile = new File("/sdcard/codegreen/" + downloadInfo.getType()+ "/" + downloadInfo.getFileName() );
-				downloadFile.createNewFile();
-				
-				FileOutputStream fileOutputStream = new FileOutputStream(downloadFile);
-				byte[] fileData = new byte[200];
-				while(inputStream.read(fileData) != -1){
-					fileOutputStream.write(fileData);
-				}
-				fileOutputStream.flush();
-				fileOutputStream.close();
-				inputStream.close();
-				
-				handler.handleCallback(downloadFile.getAbsolutePath(), callID, (byte)0);
-				
 			} catch (Exception e) {
 				e.printStackTrace();
 				handler.handleCallback(null, callID, Constants.ERR_NETWORK_FAILURE);

@@ -6,7 +6,6 @@ import com.codegreen.R;
 import com.codegreen.businessprocess.handler.DownloadHandler;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
-import com.codegreen.businessprocess.objects.DownloadInfoDAO;
 import com.codegreen.businessprocess.objects.ReviewDAO;
 import com.codegreen.common.CacheManager;
 import com.codegreen.database.DBAdapter;
@@ -413,8 +412,10 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				break;
 
 			case REMOVE_PROGRESS:
-				progressDialog.dismiss();
-				progressDialog.cancel();
+				if(progressDialog != null){
+					progressDialog.dismiss();
+					progressDialog.cancel();
+				}
 				if(msg.arg1 != REMOVE_PROGRESS){
 					ArticleDAO dao = (ArticleDAO)CacheManager.getInstance().get(Constants.C_DOWNLOADED_ARTICLE);
 					if(dao != null){
