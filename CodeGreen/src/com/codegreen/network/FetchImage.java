@@ -31,7 +31,7 @@ public class FetchImage
 
 		try 
 		{ 
-			Log.e("GetBitmap :: ", url);
+			//Log.e("GetBitmap :: ", url);
 			url.replaceAll(" ", "%20");
 			InputStream is=new URL(url).openStream(); 
 			BufferedInputStream bis = new BufferedInputStream(is);  

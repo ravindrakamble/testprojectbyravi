@@ -5,17 +5,26 @@ import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.common.CacheManager;
 import com.codegreen.listener.Updatable;
+import com.codegreen.ui.dialog.ReviewDialog;
+import com.codegreen.ui.dialog.ShareDialog;
 import com.codegreen.util.Constants;
 import com.codegreen.util.Utils;
 import com.codegreen.util.Constants.ENUM_PARSERRESPONSE;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.DialogInterface.OnKeyListener;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -29,12 +38,13 @@ public class PlayerActivity extends Activity implements Updatable {
 	/** Called when the activity is first created. */
 	public static boolean isAudio=false;
 	public static String streamUrl;
-	private ProgressBar progressBar;
+	//private ProgressBar progressBar;
 	ArticleDAO articleDetails;
 	String strSelectedArticleType = Constants.ARTCLETYPE_TEXT;
 	String strSelectedArticleID = "";
 	private final String TAG = "PlayerActivity";
 	ImageView audioImg = null;
+	ProgressDialog progressDialog;
 
 	private String locationOfData;
 	@Override
@@ -48,8 +58,9 @@ public class PlayerActivity extends Activity implements Updatable {
 			strSelectedArticleID = getIntent().getStringExtra("ArticleID");
 			locationOfData =  getIntent().getStringExtra("savedarticle");
 		}
-		progressBar = (ProgressBar)findViewById(R.id.progressBar1);
-		progressBar.setVisibility(View.VISIBLE);
+
+		showDialog(Constants.DIALOG_PROGRESS);
+
 		audioImg=(ImageView)findViewById(R.id.audioImg);
 
 		if(strSelectedArticleType != null && strSelectedArticleID != null){
@@ -61,7 +72,36 @@ public class PlayerActivity extends Activity implements Updatable {
 		}
 	}
 
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case Constants.DIALOG_PROGRESS:
+			if(progressDialog == null){
+				showProgressBar();
+			}
+			return progressDialog;
+		default:
+			break;
+		}
+		return null;
 
+	}
+
+
+	private void showProgressBar(){
+		if(progressDialog == null){
+			progressDialog = new ProgressDialog(this);
+			progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			progressDialog.setMessage("Downloading video, please wait...");
+			progressDialog.setIcon(android.R.id.icon);
+			progressDialog.setCancelable(false);
+			progressDialog.setOnKeyListener(new OnKeyListener() {
+				public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+					return true;
+				}
+			});
+		}
+	}
 	/**
 	 * WS call to get article details
 	 */
@@ -95,13 +135,11 @@ public class PlayerActivity extends Activity implements Updatable {
 		if(true){
 			try{
 				videoHolder.start();
-				progressBar.setVisibility(View.INVISIBLE);
 			}
 			catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
 	@Override
 	protected void onStart()
@@ -130,7 +168,7 @@ public class PlayerActivity extends Activity implements Updatable {
 
 	@Override
 	public void update(ENUM_PARSERRESPONSE updateData, final byte callId,byte errorCode) {
-		// TODO Auto-generated method stub
+
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG , "--------Response Received-------PARSERRESPONSE_SUCCESS");
@@ -139,8 +177,9 @@ public class PlayerActivity extends Activity implements Updatable {
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					progressBar.setVisibility(View.GONE);
+					removeDialog(Constants.DIALOG_PROGRESS);
 					if(callId == Constants.REQ_GETARTICLEDETAILS){
+
 						String strDetails = "";
 						articleDetails = (ArticleDAO) CacheManager.getInstance().get(Constants.C_ARTICLE_DETAILS);
 						if(articleDetails != null){
@@ -158,16 +197,24 @@ public class PlayerActivity extends Activity implements Updatable {
 									videoPlayer("/sdcard/a.3gp", "a", true);
 
 								}
-								//txt_reviews.setVisibility(View.VISIBLE);
-							}else if(callId == Constants.REQ_GETREVIEWS){
-								//txt_reviews.setVisibility(View.VISIBLE);
-
-								//txt_reviews.setText();
-							}else if(callId == Constants.REQ_SUBMITREVIEW){
-								Utils.displayMessage(PlayerActivity.this, getString(R.string.review_submitted));
+							}else{
+								Utils.displayMessage(getApplicationContext(), "No Video URL Found");
+								try {
+									Thread.sleep(2000);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								finish();
 							}
 						}
+					}else if(callId == Constants.REQ_GETREVIEWS){
+						//txt_reviews.setVisibility(View.VISIBLE);
+
+						//txt_reviews.setText();
+					}else if(callId == Constants.REQ_SUBMITREVIEW){
+						Utils.displayMessage(PlayerActivity.this, getString(R.string.review_submitted));
 					}
+
 				}
 			});
 		}else if(errorCode == Constants.ERR_NETWORK_FAILURE){
