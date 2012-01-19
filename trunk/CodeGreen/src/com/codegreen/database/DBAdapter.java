@@ -109,8 +109,12 @@ public class DBAdapter
 	//---closes the database---    
 	public void close() 
 	{
-		DBHelper.close();
-		db.close();
+		try{
+			DBHelper.close();
+			db.close();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public boolean isRunning(){

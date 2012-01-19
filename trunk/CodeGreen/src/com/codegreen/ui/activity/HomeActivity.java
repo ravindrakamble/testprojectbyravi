@@ -5,33 +5,32 @@ import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnKeyListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.TextView;
-
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
-import com.codegreen.businessprocess.objects.ReviewDAO;
 import com.codegreen.common.CacheManager;
 import com.codegreen.listener.Updatable;
 import com.codegreen.ui.adaptor.HomeScreenAdapter;
 import com.codegreen.ui.dialog.ReviewDialog;
-import com.codegreen.ui.dialog.ShareDialog;
 import com.codegreen.util.Constants;
 import com.codegreen.util.Utils;
 
@@ -56,11 +55,12 @@ public class HomeActivity extends ListActivity implements Updatable{
 	TextView mBtnPolitics = null;
 	TextView mBtnFood = null;
 	TextView mBtnLatest = null;
-	LinearLayout progress_Lay = null;
+	//LinearLayout progress_Lay = null;
 
 	private static int CURRENT_SELECTED_CATEGORY = 1;
 	private static String CURRENT_SELECTED_MEDIA = "";
 	private TextView mNoItems = null;
+	private ProgressDialog progressDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +72,21 @@ public class HomeActivity extends ListActivity implements Updatable{
 		getListView().setCacheColorHint(0);
 
 	}
+	
+	private void showProgressBar(){
+		if(progressDialog == null){
+			progressDialog = new ProgressDialog(this);
+			progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			progressDialog.setMessage("Loading, please wait...");
+			progressDialog.setIcon(android.R.id.icon);
+			progressDialog.setCancelable(false);
+			progressDialog.setOnKeyListener(new OnKeyListener() {
+				public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+					return true;
+				}
+			});
+		}
+	}
 
 
 
@@ -80,7 +95,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 	 */
 	private void initWidgets() {
 
-		progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
+		//progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
 
 		mBtnGreenBasic = (TextView)findViewById(R.id.btn_green_basics);
 		mBtnDesignArcht = (TextView)findViewById(R.id.btn_design);
@@ -196,11 +211,11 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 
 	private void showMediaOptions(){
-		final CharSequence[] items = {"Text", "Image", "Audio", "Vedio"};
+		final CharSequence[] items = {"Text", "Image", "Audio", "Video"};
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Media Options :");
-		builder.setIcon(R.drawable.icon);
+		builder.setIcon(android.R.drawable.ic_media_rew);
 		builder.setItems(items, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int item) {
 				if(item == 0){
@@ -235,7 +250,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 			httpHandler.cancelRequest();
 
 			//Start progress bar
-			progress_Lay.setVisibility(View.VISIBLE);
+			showDialog(Constants.DIALOG_PROGRESS);
 			mNoItems.setVisibility(View.GONE);
 			//Prepare data for new request
 			ArticleDAO articleDAO = new ArticleDAO();
@@ -271,7 +286,7 @@ public class HomeActivity extends ListActivity implements Updatable{
 			httpHandler.cancelRequest();
 
 			//Start progressbar
-			progress_Lay.setVisibility(View.VISIBLE);
+			showDialog(Constants.DIALOG_PROGRESS);
 			mNoItems.setVisibility(View.GONE);
 			//Prepare data for new request
 			ArticleDAO articleDAO = new ArticleDAO();
@@ -341,10 +356,12 @@ public class HomeActivity extends ListActivity implements Updatable{
 		case Constants.DIALOG_REVIEW:
 			ReviewDialog reviewDialog = new ReviewDialog(this, (ArticleDAO)mAdapter.getItem(0));
 			return reviewDialog;
-			/*case Constants.DIALOG_SHARE:
-			ShareDialog shareDialog = new ShareDialog(this, (ArticleDAO)mAdapter.getItem(0));
-			return shareDialog;
-			 */default:
+		case Constants.DIALOG_PROGRESS:
+			if(progressDialog == null){
+				showProgressBar();
+			}
+			return progressDialog;
+			 default:
 				 break;
 		}
 		return null;
@@ -442,12 +459,12 @@ public class HomeActivity extends ListActivity implements Updatable{
 		public void handleMessage(Message msg) {
 			switch(msg.what){
 			case Constants.PROGRESS_VISIBLE:
-				progress_Lay.setVisibility(View.VISIBLE);
+				showDialog(Constants.DIALOG_PROGRESS);
 				mNoItems.setVisibility(View.GONE);
 				break;
 
 			case Constants.PROGRESS_INVISIBLE:
-				progress_Lay.setVisibility(View.INVISIBLE);
+				removeDialog(Constants.DIALOG_PROGRESS);
 				break;
 			}
 		};
