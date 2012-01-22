@@ -35,11 +35,13 @@ import twitter4j.http.AccessToken;
 import com.codegreen.R;
 import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.share.Facebook;
+import com.codegreen.share.Share;
 import com.codegreen.share.ShareData;
 import com.codegreen.share.DialogError;
 import com.codegreen.share.FacebookError;
 import com.codegreen.share.Facebook.DialogListener;
 import com.codegreen.util.Constants;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -239,7 +241,9 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 
 		try {
 			httpOauthConsumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
-			httpOauthprovider = new DefaultOAuthProvider("https://twitter.com/oauth/request_token", "https://twitter.com/oauth/access_token", "https://twitter.com/oauth/authorize");
+			httpOauthprovider = new DefaultOAuthProvider("https://twitter.com/oauth/request_token", 
+					"https://twitter.com/oauth/access_token", 
+					"https://twitter.com/oauth/authorize");
 			String authUrl = httpOauthprovider.retrieveRequestToken(httpOauthConsumer, "oob");
 
 			System.out.println("-------------------------------------------------------" + authUrl + "---------------------------------------");
@@ -274,43 +278,28 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 
 				response = client.execute(post);
 
-				URL url = new URL("https://twitter.com/oauth/authorize");
-				HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-				httpsURLConnection.setRequestMethod("POST");
-				httpsURLConnection.setRequestProperty("authenticity_token", temp);
-				httpsURLConnection.setRequestProperty("oauth_token", authUrl
-						.substring(authUrl.indexOf("=") + 1));
-				httpsURLConnection.setRequestProperty("session[username_or_email]", user);
-				httpsURLConnection.setRequestProperty("session[password]", pass);
-				httpsURLConnection.setAllowUserInteraction(true);
-				httpsURLConnection.setDoInput(true);
-				httpsURLConnection.setDoOutput(true);
-				
-				httpsURLConnection.connect();
-				
-				int respCode = httpsURLConnection.getResponseCode();
 				buffer = getBody(response);
+				
+				if(buffer.indexOf("\"oauth_pin\"") > 0){
+		    		temp = buffer.substring(buffer.indexOf("\"oauth_pin\""));
+		    		System.out.println("====================" + temp +"----------------------");
+		    		temp = temp.substring(temp.indexOf(">")+1,temp.indexOf("<"));
+		    		temp = temp.trim();
+		    		System.out.println("====================" + temp +"----------------------");
+		    		httpOauthprovider.retrieveAccessToken(httpOauthConsumer, temp);
 
-				if (buffer.indexOf("\"oauth_pin\"") > 0){
-					temp = buffer.substring(buffer.indexOf("\"oauth_pin\""));
-					System.out.println("====================" + temp + "----------------------");
-					temp = temp.substring(temp.indexOf(">") + 1, temp.indexOf("<"));
-					temp = temp.trim();
-					System.out.println("====================" + temp + "----------------------");
-					httpOauthprovider.retrieveAccessToken(httpOauthConsumer, temp);
-
-					AccessToken accessToken = new AccessToken(httpOauthConsumer.getToken(), httpOauthConsumer.getTokenSecret());
-
-					ShareData.getShareData().put("Twitter_Token", accessToken);
-
-					postTweet(accessToken);
-				}else{
-					toast_message=  "Wrong username/email or password";
+		    		AccessToken accessToken = new AccessToken(httpOauthConsumer.getToken(), httpOauthConsumer.getTokenSecret());
+		    		
+		    		ShareData.getShareData().put("Twitter_Token", accessToken);
+		    		
+		    		postTweet(accessToken);
+	    		}
+	    		else{
+	    			toast_message=  "Wrong username/email or password";
 					Message msg = new Message();
 					msg.what = TOASET_MSG;
 					screenHandler.sendMessage(msg);
-
-				}
+	    		}
 			}
 		}catch (Exception e){
 			toast_message=  e.getMessage();
@@ -363,9 +352,11 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 	Dialog outerDialog;
 	
 	private void onSelectTwitter(){
-		ShareData shareData = ShareData.getShareData();
+		Share testShare = new Share(mContext);
+		testShare.share(message, Share.TYPE_TWITTER);
+		/*ShareData shareData = ShareData.getShareData();
 		outerDialog = new Dialog(mContext);
-		showDialog(TWITTER_DIALOG);
+		showDialog(TWITTER_DIALOG);*/
 	}
 	
 	
@@ -434,6 +425,8 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 		public void handleMessage(Message msg){
 			switch (msg.what){
 			case TOASET_MSG:
+				outerDialog.dismiss();
+				outerDialog.cancel();
 				Toast.makeText(mContext, toast_message, Toast.LENGTH_LONG).show();
 				break;
 			case DISMISS:

@@ -105,16 +105,16 @@ public interface Constants {
 	public static final int DIALOG_PROGRESS = 3;
 	
 	
-	public static final String CONSUMER_KEY = "ae4gN6w58zItdBH4gy3uA";//"Febkwo326bkuPDdsnJj1QA";
-	public static final String CONSUMER_SECRET= "j4oq5F5vr12VSVhYGXx0SiEXK5KNLZP6u6rIWkUK8";// "nAHuJpdVPXiv2xCm0S4iZsY806pmeH68iRSrW1apug";
+	public static final String CONSUMER_KEY = "1BjA123Qd4IFUuBZJUB47Q";//"ae4gN6w58zItdBH4gy3uA";//"Febkwo326bkuPDdsnJj1QA";
+	public static final String CONSUMER_SECRET= "kIDzQl9YZJM1U45x6daDuYfN9EwWLaiYfrdgBR1gL4";//"j4oq5F5vr12VSVhYGXx0SiEXK5KNLZP6u6rIWkUK8";// "nAHuJpdVPXiv2xCm0S4iZsY806pmeH68iRSrW1apug";
 	
 	public static final String REQUEST_URL = "http://api.twitter.com/oauth/request_token";
 	public static final String ACCESS_URL = "http://api.twitter.com/oauth/access_token";
 	public static final String AUTHORIZE_URL = "http://api.twitter.com/oauth/authorize";
 	
 	public static final String	OAUTH_CALLBACK_SCHEME	= "x-oauthflow-twitter";
-	public static final String	OAUTH_CALLBACK_HOST		= "callback";
-	public static final String	OAUTH_CALLBACK_URL		= OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
+	public static final String	OAUTH_CALLBACK_HOST		= "";
+	public static final String	OAUTH_CALLBACK_URL		= "";//OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
 
 
 }
