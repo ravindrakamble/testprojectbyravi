@@ -1,4 +1,18 @@
-
+ /**
+ * =================================================================================================================
+ * File Name       : ShareData.java
+ * Author          : Piyush
+ * Version         : 
+ * Date            : 
+ * Copyright       : 
+ * Description     : This class can be used to share any data between different activities.
+ * History         :
+ * =====================================================================================================================
+ *  Sr. No.  Date        Name                    Reviewed By             Description
+ * =====================================================================================================================
+ *  01.      		    Piyush		     								Initial Version.
+ * =====================================================================================================================
+ */
 package com.codegreen.share;
 
 import java.util.HashMap;
@@ -8,7 +22,6 @@ public class ShareData {
 	private HashMap<String,Object> map;
 	private static ShareData shareData;
 	private static int i = 0;
-	final private int TWITTER_DIALOG = 12345;
 	
 	/**
 	 * Return the object of the ShareData Class	
