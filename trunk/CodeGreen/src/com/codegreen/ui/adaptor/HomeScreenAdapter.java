@@ -71,6 +71,7 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 			holder.layout_main = (RelativeLayout) convertView.findViewById(R.id.list_row);
 			holder.txt_articleName = (TextView) convertView.findViewById(R.id.textArticle);
 			holder.img_thumbnail = (ImageView) convertView.findViewById(R.id.ImgThumbnail);
+			holder.txt_articleDesc = (TextView)convertView.findViewById(R.id.textArticledesc);
 			convertView.setTag(holder);
 
 		} else {
@@ -86,8 +87,8 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 		if(data!= null){ 
 			
 			holder.img_thumbnail.setVisibility(View.VISIBLE);
-			holder.txt_articleName.setText(data.getShortDescription().toString());
-
+			holder.txt_articleName.setText(data.getTitle());
+			holder.txt_articleDesc.setText(data.getShortDescription());
 			if(!data.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
 				if(data.getThumbUrl() == null){
 					holder.img_thumbnail.setVisibility(View.GONE);
@@ -136,6 +137,7 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 		RelativeLayout layout_main;
 		TextView txt_articleName;
 		ImageView img_thumbnail;
+		TextView txt_articleDesc;
 	}
 
 	@Override

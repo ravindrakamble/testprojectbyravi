@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/list_row" android:background="@drawable/list_unselected_back"
-	xmlns:android="http://schemas.android.com/apk/res/android" android:minHeight="70dip"
-	android:layout_width="fill_parent" android:layout_height="70dip">
-	
-	
-	<ImageView android:id="@+id/ImgThumbnail" android:layout_alignParentLeft="true"
-		android:layout_width="70dip" android:layout_marginLeft="5dip"
-		android:layout_marginRight="5dip" android:layout_centerInParent="true"
-		android:layout_height="60dip"></ImageView>
-	
-	<TextView android:layout_alignParentTop="true" android:id="@+id/textArticle"
-		android:text="@+id/TextView01"  android:layout_toLeftOf="@+id/Imgarrow"
-		android:layout_marginTop="5dip" android:layout_toRightOf = "@+id/ImgThumbnail"
-		android:layout_width="fill_parent" android:maxLines="3" 
-		android:textStyle="bold" android:layout_height="wrap_content"
-		android:textColor="#000000" android:layout_marginLeft="5dip"
-		android:layout_marginRight="5dip"></TextView>
+<RelativeLayout android:id="@+id/list_row"
+	android:background="@drawable/list_unselected_back" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:minHeight="70dip" android:layout_width="fill_parent"
+	android:layout_height="70dip">
+
+
+	<ImageView android:id="@+id/ImgThumbnail"
+		android:layout_alignParentLeft="true" android:layout_width="64dip"
+		android:layout_marginLeft="5dip" android:layout_marginRight="5dip"
+		android:layout_centerInParent="true" android:layout_height="64dip"></ImageView>
+	<RelativeLayout android:layout_width="fill_parent"
+		android:layout_toRightOf="@+id/ImgThumbnail" android:layout_height="wrap_content"
+		android:layout_toLeftOf="@+id/Imgarrow">
+		<TextView android:layout_alignParentTop="true" android:id="@+id/textArticle"
+			android:text="@+id/TextView01" android:layout_marginTop="5dip"
+			android:layout_width="fill_parent" android:singleLine="true"
+			android:textStyle="bold" android:layout_height="wrap_content"
+			android:textColor="#000000" android:layout_marginLeft="5dip"
+			android:layout_marginRight="5dip"></TextView>
+		<TextView android:id="@+id/textArticledesc" android:text="@+id/TextView02"
+			android:layout_marginTop="5dip"
+			android:layout_width="fill_parent" android:singleLine="true"
+			android:layout_below="@+id/textArticle"
+			android:textStyle="bold" android:layout_height="wrap_content"
+			android:textColor="#000000" android:layout_marginLeft="5dip"
+			android:layout_marginRight="5dip"></TextView>
+	</RelativeLayout>
 	<ImageView android:id="@+id/Imgarrow" android:background="@drawable/arrow_back_selector"
-		android:layout_alignParentRight="true" android:layout_width="wrap_content" android:layout_toRightOf = "@+id/TextView01"
-		android:layout_marginRight="10dip" android:layout_centerInParent="true" 
-		android:layout_height="wrap_content"></ImageView>
+		android:layout_alignParentRight="true" android:layout_width="wrap_content"
+		android:layout_toRightOf="@+id/TextView01" android:layout_marginRight="10dip"
+		android:layout_centerInParent="true" android:layout_height="wrap_content"></ImageView>
 </RelativeLayout>

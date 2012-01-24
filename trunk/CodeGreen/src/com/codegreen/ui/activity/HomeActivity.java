@@ -28,19 +28,22 @@ import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.common.CacheManager;
+import com.codegreen.listener.MediaDialogListner;
 import com.codegreen.listener.Updatable;
 import com.codegreen.ui.adaptor.HomeScreenAdapter;
+import com.codegreen.ui.dialog.MediaDialog;
 import com.codegreen.ui.dialog.ReviewDialog;
 import com.codegreen.util.Constants;
 import com.codegreen.util.Utils;
 
-public class HomeActivity extends ListActivity implements Updatable{
+public class HomeActivity extends ListActivity implements Updatable, MediaDialogListner{
 
 	ReviewDialog reviewDialog;
 	HomeScreenAdapter mAdapter = null;
 	String TAG = "HomeActivity";
 	private static String CurrentTabSelected = Constants.ARTCLETYPE_TEXT;
-
+	
+	
 
 	private static final int MENU_OPTION_SAVED = 0x01;
 	private static final int MENU_OPTION_SEARCH = 0x02;
@@ -211,7 +214,9 @@ public class HomeActivity extends ListActivity implements Updatable{
 
 
 	private void showMediaOptions(){
-		final CharSequence[] items = {"Text", "Image", "Audio", "Video"};
+		
+		showDialog(Constants.DIALOG_MEDIA);
+		/*final CharSequence[] items = {"Text", "Image", "Audio", "Video"};
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Media Options :");
@@ -239,7 +244,8 @@ public class HomeActivity extends ListActivity implements Updatable{
 		AlertDialog alert = builder.create();
 
 		alert.show();
-	}
+		
+*/	}
 
 
 
@@ -361,11 +367,14 @@ public class HomeActivity extends ListActivity implements Updatable{
 				showProgressBar();
 			}
 			return progressDialog;
+		case Constants.DIALOG_MEDIA:
+			MediaDialog media = new MediaDialog(this);
+			media.registerListner(this);
+			return media;
 			 default:
 				 break;
 		}
 		return null;
-
 	}
 
 	@Override
@@ -437,21 +446,6 @@ public class HomeActivity extends ListActivity implements Updatable{
 		intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
 		intent.putExtra("ArticleID", articleEntry.getArticleID());
 		startActivity(intent);
-		//}else if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO) ){
-		/*Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
-			PlayerActivity.streamUrl = articleEntry.getThumbUrl();
-			if(articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO))
-				PlayerActivity.isAudio = true;
-			else
-				PlayerActivity.isAudio = false;
-			startActivity(intent);*/
-		/*Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
-			intent.putExtra("ArticleID", articleEntry.getArticleID());
-			startActivity(intent);*/
-		//	}
-
 	} 
 
 
@@ -514,5 +508,25 @@ public class HomeActivity extends ListActivity implements Updatable{
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void handleDialogClick(int item) {
+		if(item == 0){
+			getArticleData(Constants.ARTICAL_TYPE_TEXT);
+			CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_TEXT;
+		}
+		else if(item == 2){
+			getArticleData(Constants.ARTICAL_TYPE_AUDIO);
+			CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_AUDIO;
+		}
+		else if(item == 3){
+			getArticleData(Constants.ARTICAL_TYPE_VEDIO);
+			CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_VEDIO;
+		}
+		else if(item == 1){
+			CURRENT_SELECTED_MEDIA =  Constants.ARTICAL_TYPE_IMAGE;
+			getArticleData(Constants.ARTICAL_TYPE_IMAGE);
+		}		
 	}
 }

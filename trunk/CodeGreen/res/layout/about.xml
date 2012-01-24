@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="#FFFFFF">
+
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:orientation="vertical" android:background="#FFFFFF">
+
+		<RelativeLayout android:id="@+id/codegreenTitle"
+			android:background="@drawable/bg_topbar" android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+		</RelativeLayout>
+	</RelativeLayout>
+	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:orientation="vertical" android:background="#FFFFFF">
+		<TextView android:layout_alignParentLeft="true"
+			android:textColor="#FFFFFF" android:id="@+id/btn_info" android:text="Information"
+			android:layout_marginRight="10dip" android:gravity="center"
+			android:textSize="12sp" android:layout_marginLeft="10dip"
+			android:layout_gravity="center" android:layout_height="wrap_content"
+			android:layout_width="wrap_content"></TextView>
+			<TextView android:layout_alignParentLeft="true"
+			android:textColor="#FFFFFF" android:id="@+id/btn_feature_req" android:text="Feature Request"
+			android:layout_marginRight="10dip" android:gravity="center"
+			android:textSize="12sp" android:layout_marginLeft="10dip"
+			android:layout_gravity="center" android:layout_height="wrap_content"
+			android:layout_width="wrap_content"></TextView>
+			<TextView android:layout_alignParentLeft="true"
+			android:textColor="#FFFFFF" android:id="@+id/btn_query" android:text="Advertising Query"
+			android:layout_marginRight="10dip" android:gravity="center"
+			android:textSize="12sp" android:layout_marginLeft="10dip"
+			android:layout_gravity="center" android:layout_height="wrap_content"
+			android:layout_width="wrap_content"></TextView>
+			<TextView android:layout_alignParentLeft="true"
+			android:textColor="#FFFFFF" android:id="@+id/btn_info" android:text="Application Review"
+			android:layout_marginRight="10dip" android:gravity="center"
+			android:textSize="12sp" android:layout_marginLeft="10dip"
+			android:layout_gravity="center" android:layout_height="wrap_content"
+			android:layout_width="wrap_content"></TextView>
+				<TextView android:layout_alignParentLeft="true"
+			android:textColor="#FFFFFF" android:id="@+id/btn_info" android:text="Sharing Application"
+			android:layout_marginRight="10dip" android:gravity="center"
+			android:textSize="12sp" android:layout_marginLeft="10dip"
+			android:layout_gravity="center" android:layout_height="wrap_content"
+			android:layout_width="wrap_content"></TextView>
+			<TextView android:layout_alignParentLeft="true"
+			android:textColor="#FFFFFF" android:id="@+id/btn_info" android:text="Facebook"
+			android:layout_marginRight="10dip" android:gravity="center"
+			android:textSize="12sp" android:layout_marginLeft="10dip"
+			android:layout_gravity="center" android:layout_height="wrap_content"
+			android:layout_width="wrap_content"></TextView>
+			<TextView android:layout_alignParentLeft="true"
+			android:textColor="#FFFFFF" android:id="@+id/btn_info" android:text="Twitter"
+			android:layout_marginRight="10dip" android:gravity="center"
+			android:textSize="12sp" android:layout_marginLeft="10dip"
+			android:layout_gravity="center" android:layout_height="wrap_content"
+			android:layout_width="wrap_content"></TextView>
+			<TextView android:layout_alignParentLeft="true"
+			android:textColor="#FFFFFF" android:id="@+id/btn_info" android:text="Email"
+			android:layout_marginRight="10dip" android:gravity="center"
+			android:textSize="12sp" android:layout_marginLeft="10dip"
+			android:layout_gravity="center" android:layout_height="wrap_content"
+			android:layout_width="wrap_content"></TextView>
+		
+	</LinearLayout>
+
+
+
+
+
+
+
+
+</RelativeLayout>

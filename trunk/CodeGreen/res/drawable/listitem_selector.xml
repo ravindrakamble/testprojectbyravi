@@ -18,5 +18,5 @@
   <item android:state_window_focused="false" android:state_selected="true" android:drawable="@drawable/list_selected_back" /> 
   <item android:state_selected="true" android:drawable="@drawable/list_selected_back" /> 
   <item android:state_pressed="true" android:state_selected="false" android:drawable="@drawable/list_selected_back" /> 
-  <item android:state_selected="false" android:drawable="@drawable/list_unselected_back" /> 
+  <item android:state_selected="false" android:drawable="@color/white_color" /> 
  </selector>
