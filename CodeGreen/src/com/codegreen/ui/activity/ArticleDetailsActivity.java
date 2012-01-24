@@ -31,15 +31,23 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
+
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 
 public class ArticleDetailsActivity extends Activity implements Updatable{
@@ -58,13 +66,20 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private static final int MENU_OPTION_SAVE = 0x05;
 	ArticleDAO articleDetails;
 	TextView txt_player_select = null;
+	private GestureDetector gestureDetector;
+	View.OnTouchListener gestureListener;
 
+	private static final int SWIPE_MIN_DISTANCE = 120;
+	private static final int SWIPE_MAX_OFF_PATH = 250;
+	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 	private boolean savedArticle;
-
+	private ViewFlipper mFlipper;
 	private final int SHOW_PROGRESS = 1;
 	private final int REMOVE_PROGRESS = 2;
 
+	private List<ArticleDAO> listOfArticles ;
 	private ProgressDialog progressDialog;
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -74,6 +89,11 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			strSelectedArticleID = getIntent().getStringExtra("ArticleID");
 			savedArticle =  getIntent().getBooleanExtra("savedarticle", false);
 		}
+
+		listOfArticles = (List<ArticleDAO>)CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);
+		if(listOfArticles != null){
+			Constants.TOTAL_ARTICLES = listOfArticles.size();
+		}
 		if(strSelectedArticleType != null){
 			setContentView(R.layout.atrticle_text);
 			txtDetails = (TextView) findViewById(R.id.article_details_view);
@@ -82,6 +102,21 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			imageView.setBackgroundColor(Color.LTGRAY);
 			txt_reviews = (TextView)findViewById(R.id.txt_reviews);
 			txt_reviews.setVisibility(View.GONE);
+
+			mFlipper = ((ViewFlipper)findViewById(R.id.tutorial_flipper));
+			Animation anim = (Animation) AnimationUtils.loadAnimation(ArticleDetailsActivity.this, R.anim.push_left_in);
+			findViewById(R.id.content_container).startAnimation(anim);
+
+			gestureDetector = new GestureDetector(new MyGestureDetector());
+			gestureListener = new View.OnTouchListener() {
+				public boolean onTouch(View v, MotionEvent event) {
+					if (gestureDetector.onTouchEvent(event)) {
+						return true;
+					}
+					return false;
+				}
+			};
+
 			imageView.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -450,5 +485,73 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				}
 			});
 		}
+	}
+
+	private void showNextArticle(){
+		if(Constants.CURRENT_INDEX < Constants.TOTAL_ARTICLES){
+			mFlipper.clearAnimation();
+			mFlipper.setInAnimation(getApplicationContext(),R.anim.push_left_in);
+			mFlipper.setOutAnimation(getApplicationContext(),R.anim.push_left_out); 
+			mFlipper.showNext();
+			Constants.CURRENT_INDEX++;
+			getArticle();
+		}else{
+			Toast.makeText(this, "This is last article.", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+
+	private void getArticle(){
+		if(listOfArticles != null && Constants.CURRENT_INDEX < listOfArticles.size()){
+			this.articleDetails = listOfArticles.get(Constants.CURRENT_INDEX);
+			strSelectedArticleID = articleDetails.getArticleID();
+			strSelectedArticleType = articleDetails.getType();
+			txtDetails.setVisibility(View.GONE);
+			txt_reviews.setVisibility(View.GONE);
+			imageView.getDrawable().setCallback(null);
+			getArticleDetails();
+		}
+	}
+	private void showPreviousArticle(){
+		if(Constants.CURRENT_INDEX > 0){
+			mFlipper.clearAnimation();
+			mFlipper.setOutAnimation(getApplicationContext(),R.anim.push_right_out);
+			mFlipper.setInAnimation(getApplicationContext(),R.anim.push_right_in);
+			mFlipper.showPrevious();
+			Constants.CURRENT_INDEX--;
+			getArticle();
+		}else{
+			Toast.makeText(this, "This is first article.", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		if (gestureDetector.onTouchEvent(event))
+			return true;
+		else
+			return false;
+	}
+
+	class MyGestureDetector extends SimpleOnGestureListener {
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			Log.i("ON FLING", "GESTURE" + Math.abs(e1.getY() - e2.getY()));
+			try {
+				if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+					return false;
+				// right to left swipe
+				if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+					showNextArticle();
+				}  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+					showPreviousArticle();
+				}
+			} catch (Exception e) {
+			}
+			return false;
+
+		}
+
+
 	}
 }

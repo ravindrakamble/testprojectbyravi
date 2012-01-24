@@ -9,7 +9,7 @@
 package com.codegreen.util;
 
 
-public interface Constants {
+public class Constants {
 	/**
 	 * Request Constants 
 	 */
@@ -118,4 +118,7 @@ public interface Constants {
 	public static final String	OAUTH_CALLBACK_URL		= "";//OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
 
 
+	public static int CURRENT_INDEX = 0;
+	public static int TOTAL_ARTICLES = 0;
+	
 }

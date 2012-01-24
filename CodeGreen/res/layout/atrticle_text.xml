@@ -8,35 +8,47 @@
 		android:orientation="vertical" android:background="#FFFFFF">
 
 		<RelativeLayout android:id="@+id/codegreenTitle"
-			android:background="@drawable/bg_topbar" android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
+			android:layout_width="fill_parent" android:layout_height="40dip"
+			android:layout_gravity="center">
+			<TextView android:text="CodeGreen" android:textColor="#000000"
+				android:textStyle="bold" android:layout_height="wrap_content"
+				android:gravity="center" android:layout_centerInParent="true"
+				android:textSize="20dip" android:layout_width="wrap_content"></TextView>
 		</RelativeLayout>
-		<ScrollView android:layout_width="fill_parent"
-			android:layout_weight="1" android:layout_below="@+id/codegreenTitle"
-			android:layout_height="wrap_content">
-			<LinearLayout android:layout_width="fill_parent"
-				android:orientation="vertical" android:layout_height="fill_parent">
+<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:layout_weight="1"
+		android:gravity="center" android:orientation="vertical" android:id="@+id/content_container">
+		<ViewFlipper android:id="@+id/tutorial_flipper"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:outAnimation="@com.codegreen:anim/push_left_out"
+			android:inAnimation="@com.codegreen:anim/push_left_in">
+			<ScrollView android:layout_width="fill_parent"
+				android:layout_weight="1" android:layout_below="@+id/codegreenTitle"
+				android:layout_height="wrap_content">
+				<LinearLayout android:layout_width="fill_parent"
+					android:orientation="vertical" android:layout_height="fill_parent">
 
-				<ImageView android:layout_width="fill_parent" android:layout_marginTop="10dip"
-					android:layout_gravity="center" android:layout_marginLeft="15dip"
-					android:layout_marginRight="15dip" android:layout_height="200dip"
-					android:id="@+id/webview" android:visibility="gone"
-					android:gravity="center_horizontal" android:textSize="20dip" />
+					<ImageView android:layout_width="fill_parent"
+						android:layout_gravity="center" android:layout_marginLeft="15dip"
+						android:layout_marginRight="15dip" android:layout_height="200dip"
+						android:id="@+id/webview" android:visibility="gone"
+						android:gravity="center_horizontal" android:textSize="20dip" />
 
-				<TextView android:layout_width="fill_parent"
-					android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
-					android:layout_marginTop="15dip" android:layout_height="wrap_content"
-					android:id="@+id/article_details_view" android:textColor="#000000"
-					android:textSize="19dip" />
-				<TextView android:id="@+id/txt_reviews" android:visibility="gone"
-					android:layout_marginTop="15dip" android:layout_marginLeft="10dip"
-					android:layout_marginRight="10dip" android:layout_width="wrap_content"
-					android:layout_height="wrap_content" android:textColor="#00688B"
-					android:text="" android:textStyle="italic"
-					android:textSize="20dip" />
-			</LinearLayout>
-		</ScrollView>
-
+					<TextView android:layout_width="fill_parent"
+						android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
+						android:layout_marginTop="15dip" android:layout_height="wrap_content"
+						android:id="@+id/article_details_view" android:textColor="#000000"
+						android:textSize="19dip" />
+					<TextView android:id="@+id/txt_reviews"
+						android:visibility="gone" android:layout_marginTop="15dip"
+						android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:textColor="#00688B" android:text="Click here to see reviews..."
+						android:textStyle="italic" android:textSize="20dip" />
+				</LinearLayout>
+			</ScrollView>
+		</ViewFlipper>
+		</LinearLayout>
 		<LinearLayout android:visibility="gone"
 			android:orientation="horizontal" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:id="@+id/progress_lay"

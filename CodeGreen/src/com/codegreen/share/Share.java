@@ -69,7 +69,7 @@ public class Share {
 	private Facebook facebook;
 	private static Context context;
 	private String message;
-	private String subject = "RedEyeChicago : Share via Email";
+	private String subject = "Codegreen : Share via Email";
 	private CommonsHttpOAuthConsumer httpOauthConsumer;
 	private DefaultOAuthProvider httpOauthprovider;
 
