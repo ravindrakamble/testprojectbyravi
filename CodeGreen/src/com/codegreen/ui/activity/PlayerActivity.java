@@ -58,13 +58,11 @@ public class PlayerActivity extends Activity implements Updatable {
 			strSelectedArticleID = getIntent().getStringExtra("ArticleID");
 			locationOfData =  getIntent().getStringExtra("savedarticle");
 		}
-
-		showDialog(Constants.DIALOG_PROGRESS);
-
 		audioImg=(ImageView)findViewById(R.id.audioImg);
 
 		if(strSelectedArticleType != null && strSelectedArticleID != null){
 			if(locationOfData == null){
+				showDialog(Constants.DIALOG_PROGRESS);
 				getArticleDetails();
 			}else{
 				videoPlayer(locationOfData, "", true);
@@ -92,7 +90,10 @@ public class PlayerActivity extends Activity implements Updatable {
 		if(progressDialog == null){
 			progressDialog = new ProgressDialog(this);
 			progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			progressDialog.setMessage("Downloading video, please wait...");
+			if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO))
+				progressDialog.setMessage("Downloading video, please wait...");
+			else
+				progressDialog.setMessage("Downloading Audio, please wait...");
 			progressDialog.setIcon(android.R.id.icon);
 			progressDialog.setCancelable(false);
 			progressDialog.setOnKeyListener(new OnKeyListener() {

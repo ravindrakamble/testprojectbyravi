@@ -1,0 +1,19 @@
+<resources>
+<color name="dark_blue">#296a82</color>
+<color name="light_blue">#3b709c</color>
+<color name="dark_green">#1A5D1A</color>
+<color name="light_green">#4F805F</color>
+<color name="dark_purple">#584a7c</color>
+<color name="light_purple">#34324E</color>
+<color name="dark_brown">#7b5643</color>
+<color name="light_brown">#69593F</color>
+<color name="gray">#F0F0F0</color>
+<color name="light_black">#414040</color>
+<color name="white">#FFFFFF</color>
+<color name="black">#000000</color>
+<color name="grey">#666666</color>
+<color name="red">#FF0000</color>
+<color name="greyish_white">#EEEEEE</color>
+<color name="white_color">#fff</color>
+<color name="gray_color">#aaa</color>
+</resources>

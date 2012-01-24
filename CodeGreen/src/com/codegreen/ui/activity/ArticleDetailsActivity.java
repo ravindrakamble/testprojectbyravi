@@ -36,7 +36,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,6 +52,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private static final int MENU_OPTION_SAVED = 0x01;
 	private static final int MENU_OPTION_SEARCH = 0x02;
 	private static final int MENU_OPTION_SHARE = 0x03;
+	private static final int MENU_OPTION_PLAY = 0x06;
 	private TextView txt_reviews = null;
 	private static final int MENU_OPTION_ADD_REVIEW = 0x04;
 	private static final int MENU_OPTION_SAVE = 0x05;
@@ -90,10 +90,13 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						String urlToPlay = articleDetails.getUrl();
 						Log.e("---------Play Url------- ", urlToPlay);
 						if(urlToPlay.contains("youtube")){
-							Intent videoClient = new Intent(Intent.ACTION_VIEW); 
-							videoClient.setData(Uri.parse(urlToPlay)); 
-							videoClient.setClassName("com.google.anddroid.youtube", "com.google.android.youtube.WatchActivity"); 
-							startActivity(videoClient); 
+							try{
+								Intent videoClient = new Intent(Intent.ACTION_VIEW); 
+								videoClient.setData(Uri.parse(urlToPlay)); 
+								startActivity(videoClient);
+							}catch (Exception e) {
+								Toast.makeText(getApplicationContext(),"YouTube Player not found.", Toast.LENGTH_LONG).show();
+							}
 						}else{
 							Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
 							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -108,14 +111,14 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				}
 			});
 
-			txt_reviews.setOnClickListener(new OnClickListener() {
+			/*txt_reviews.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
-					getReviews(articleDetails);
+					//getReviews(articleDetails);
 				}
 			});
-		}
+*/		}
 
 		if(strSelectedArticleType != null && strSelectedArticleID != null){
 			if(!savedArticle){
@@ -134,8 +137,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		try{
 			menu.removeGroup(0);
-		//	menu.add(0, MENU_OPTION_SAVED,0 , "Saved Items").setIcon(android.R.drawable.ic_menu_gallery);
-			//menu.add(0, MENU_OPTION_SEARCH,0 , "Search").setIcon(android.R.drawable.ic_menu_search);
+			menu.add(0, MENU_OPTION_SEARCH,0 , "Comments").setIcon(android.R.drawable.ic_menu_gallery);
 			menu.add(0, MENU_OPTION_SHARE,0 , "Share").setIcon(android.R.drawable.ic_menu_share);
 			menu.add(0, MENU_OPTION_ADD_REVIEW,0 , "Add Review").setIcon(android.R.drawable.ic_menu_add);
 			menu.add(0, MENU_OPTION_SAVE,0 , "Save Article").setIcon(android.R.drawable.ic_menu_add);
@@ -186,7 +188,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						String strDetails = "";
 						articleDetails = (ArticleDAO) CacheManager.getInstance().get(Constants.C_ARTICLE_DETAILS);
 						if(articleDetails != null){
-							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals("") || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getThumbUrl().equals("") || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO) && !articleDetails.getThumbUrl().equals("") ){
+							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals("") && !articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT) || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getThumbUrl().equals("") || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO) && !articleDetails.getThumbUrl().equals("") ){
 								imageView.setVisibility(View.VISIBLE);
 								if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
 								}else if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
@@ -228,7 +230,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 									reviews.append(getString(R.string.submitted_by_anonymous));
 								}
 								if(!reviewDAO.getReviewDate().equals(""))
-									reviews.append("<br><i>" + "Submitted on:" + reviewDAO.getReviewDate() + "</i> <br><br>");
+									reviews.append("<br><i><b>" + "Submitted on:" + "</b>" + reviewDAO.getReviewDate() + "</i> <br><br>");
 
 							}
 
@@ -241,7 +243,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						//txt_reviews.setText();
 					}else if(callId == Constants.REQ_SUBMITREVIEW){
 						Utils.displayMessage(getApplicationContext(), getString(R.string.review_submitted));
-
 						//update the reviews
 						getReviews(articleDetails);
 					}else if(callId == Constants.REQ_DOWNLOADIMAGE){
@@ -281,6 +282,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case MENU_OPTION_SEARCH:
+			getReviews(articleDetails);
+			break;
 		case MENU_OPTION_SHARE:
 			showDialog(Constants.DIALOG_SHARE);
 			break;

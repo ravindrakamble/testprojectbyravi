@@ -60,7 +60,7 @@ public class FetchImage
 
 	}   
 
-	final int stub_id = R.drawable.stub;
+	final int stub_id = R.drawable.default_thumb;
 	
 	public void DisplayImage(ArticleDAO vo, Context activity, ImageView sponserImg)
 	{ 

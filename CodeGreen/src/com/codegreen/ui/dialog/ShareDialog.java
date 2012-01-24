@@ -1,17 +1,12 @@
 package com.codegreen.ui.dialog;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.security.KeyStore;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -19,12 +14,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import oauth.signpost.basic.DefaultOAuthProvider;
@@ -34,13 +24,13 @@ import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 import com.codegreen.R;
 import com.codegreen.businessprocess.objects.ArticleDAO;
-import com.codegreen.share.Facebook;
 import com.codegreen.share.Share;
 import com.codegreen.share.ShareData;
 import com.codegreen.share.DialogError;
-import com.codegreen.share.FacebookError;
-import com.codegreen.share.Facebook.DialogListener;
 import com.codegreen.util.Constants;
+import com.facebook.android.Facebook;
+import com.facebook.android.FacebookError;
+import com.facebook.android.Facebook.DialogListener;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -49,6 +39,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -111,11 +102,11 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 	 * @param context
 	 */
 	public ShareDialog(Context context, ArticleDAO articleDAO,SharedPreferences pref) {
-		super(context, android.R.style.Theme_Dialog); 
+		super(context); 
 		mContext = context;
 		this.articleDAO = articleDAO; 
-		facebook = new Facebook(APP_ID);
-		restoreCredentials(facebook);
+		/*facebook = new Facebook(APP_ID);
+		restoreCredentials(facebook);*/
 		String facebookMessage = "Posting Article " +  articleDAO.getDetailedDescription();
 		if (facebookMessage == null){
 			facebookMessage = "Test wall post";
@@ -171,7 +162,8 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 		if(view == btn_facebook){
 			this.cancel();
 			this.dismiss();
-			share();
+			//share();
+			onSelectFacebook();
 		}else if(view == btn_email){
 			onSelectEmail();
 			this.cancel();
@@ -196,47 +188,10 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 		emailIntent.setType("message/rfc822");
 		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
 		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
+		emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(articleDAO.getUrl()));
 		mContext.startActivity(Intent.createChooser(emailIntent, "Send Email.."));
 	}
 	
-	private void OnFaceBookSelection(){
-		
-	}
-
-	private void showLoginDialog() {
-
-		final Dialog dialog = new Dialog(mContext);
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		dialog.setContentView(R.layout.twitterlogin);
-
-		final TextView user = (TextView) dialog
-		.findViewById(R.id.usernameEditText);
-		final TextView pass = (TextView) dialog
-		.findViewById(R.id.passwordEditText);
-
-		Button button = (Button) dialog.findViewById(R.id.signinButton);
-
-		button.setOnClickListener(new Button.OnClickListener()
-		{
-
-			public void onClick(View v)
-			{
-				if ((user.getText() == null || pass.getText() == null) || (user.getText().toString().length() <= 0 || pass.getText().toString().length() <= 0))
-				{
-
-				}
-				else
-				{
-					userString = user.getText().toString();
-					passString = pass.getText().toString();
-					new DoShareTwitter().execute();
-				}
-			}
-		});
-		
-		dialog.show();
-	}
-
 	private void validateTwitter(String user, String pass){
 
 		try {
@@ -353,7 +308,7 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 	
 	private void onSelectTwitter(){
 		Share testShare = new Share(mContext);
-		testShare.share(message, Share.TYPE_TWITTER);
+		testShare.share(message, Share.TYPE_TWITTER,articleDAO);
 		/*ShareData shareData = ShareData.getShareData();
 		outerDialog = new Dialog(mContext);
 		showDialog(TWITTER_DIALOG);*/
@@ -376,18 +331,17 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 
 	
 	public void share(){
-		if (! facebook.isSessionValid()) {
-			loginAndPostToWall();
-		}
-		else {
+		/*if (! facebook.isSessionValid()) {*/
+			//loginAndPostToWall();
+	//	}
+		/*else {
 			postToWall(messageToPost);
-		}
+		}*/
 	}
 	
 	private void showDialog(int id){
 		switch (id){
 		case TWITTER_DIALOG:
-
 			outerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			outerDialog.setContentView(R.layout.twitterlogin);
 			final TextView user = (TextView) outerDialog.findViewById(R.id.usernameEditText);
@@ -468,17 +422,17 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 
 	}
 
-	public void loginAndPostToWall(){
+	/*public void loginAndPostToWall(){
 		 facebook.authorize((Activity)mContext, PERMISSIONS, new LoginDialogListener());
 	}
-
-	public void postToWall(String message){
+*/
+	/*public void postToWall(String message){
 		Bundle parameters = new Bundle();
                 parameters.putString("message", message);
                 parameters.putString("description", "topic share");
-				/*if (articleDAO.getTitle() != null)
+				if (articleDAO.getTitle() != null)
 					parameters.putString("message", articleDAO.getTitle());// the
-				*/if (articleDAO.getUrl() != null)
+				if (articleDAO.getUrl() != null)
 					parameters.putString("link",articleDAO.getUrl());
 				if (articleDAO.getThumbUrl() != null)
 					parameters.putString("picture", articleDAO.getThumbUrl());
@@ -491,6 +445,7 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
                 try {
         	        facebook.request("me");
 			String response = facebook.request("me/feed", parameters, "POST");
+                facebook.dialog(mContext, "stream.publish", parameters,this);
 			Log.d("Tests", "got response: " + response);
 			if (response == null || response.equals("") ||
 			        response.equals("false")) {
@@ -507,14 +462,38 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 			 dismiss();
 		        cancel();
 		}
-	}
+	}*/
 	
+	
+	/*
 	class LoginDialogListener implements DialogListener {
 	    public void onComplete(Bundle values) {
 	    	saveCredentials(facebook);
 	    	if (messageToPost != null){
 			postToWall(messageToPost);
-		}
+	    	Bundle parameters = new Bundle();
+            parameters.putString("message", message);
+            parameters.putString("description", "topic share");
+			if (articleDAO.getTitle() != null)
+				parameters.putString("message", articleDAO.getTitle());// the
+			if (articleDAO.getUrl() != null)
+				parameters.putString("link",articleDAO.getUrl());
+			if (articleDAO.getThumbUrl() != null)
+				parameters.putString("picture", articleDAO.getThumbUrl());
+			if (articleDAO.getTitle() != null)
+				parameters.putString("name", articleDAO.getTitle());
+			if (articleDAO.getShortDescription() != null)
+				parameters.putString("caption", "www.codegreenonline.com");
+			if (articleDAO.getDetailedDescription() != null)
+				parameters.putString("description", articleDAO.getDetailedDescription());
+            try {
+    	        facebook.request("me");
+		String response = facebook.request("me/feed", parameters, "POST");
+            facebook.dialog(mContext, "stream.publish", parameters,this);
+            }catch (Exception e) {
+            	
+			}
+		
 	    }
 	    public void onFacebookError(FacebookError error) {
 	    	showToast("Authentication with Facebook failed!");
@@ -532,7 +511,14 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 	        cancel();
 	    }
 	}
-
+*/
+	
+	private void onSelectFacebook(){
+		Share testShare = new Share(mContext);
+		testShare.share(message, Share.TYPE_FACEBOOK,articleDAO);
+    }
+    
+       
 	private void showToast(String message){
 		Toast.makeText(mContext.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 	} 

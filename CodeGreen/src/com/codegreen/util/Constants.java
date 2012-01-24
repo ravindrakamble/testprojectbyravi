@@ -103,6 +103,7 @@ public interface Constants {
 	public static final int DIALOG_REVIEW = 1;
 	public static final int DIALOG_SHARE = 2;
 	public static final int DIALOG_PROGRESS = 3;
+	public static final int DIALOG_MEDIA = 4;
 	
 	
 	public static final String CONSUMER_KEY = "1BjA123Qd4IFUuBZJUB47Q";//"ae4gN6w58zItdBH4gy3uA";//"Febkwo326bkuPDdsnJj1QA";
