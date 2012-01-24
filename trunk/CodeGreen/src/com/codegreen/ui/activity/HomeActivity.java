@@ -439,6 +439,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
 
+		Constants.CURRENT_INDEX = position;
 		// Launch details screen
 		//if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)||  articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
 		Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
