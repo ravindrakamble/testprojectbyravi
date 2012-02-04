@@ -2,7 +2,6 @@ package com.codegreen.ui.activity;
 
 import java.util.ArrayList;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -17,8 +16,10 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -97,9 +98,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	 * Initialize variables
 	 */
 	private void initWidgets() {
-
-		//progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
-
 		mBtnGreenBasic = (TextView)findViewById(R.id.btn_green_basics);
 		mBtnDesignArcht = (TextView)findViewById(R.id.btn_design);
 		mBtnScience = (TextView)findViewById(R.id.btn_secience);
@@ -178,12 +176,25 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				searchArticles(Constants.FOOD_AND_HEALTH);
 			}
 		});
-		ImageView btn_Media = (ImageView) findViewById(R.id.btn_media);
+		final ImageView btn_Media = (ImageView) findViewById(R.id.btn_media);
 		btn_Media.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				showMediaOptions();
+			}
+		});
+		
+		btn_Media.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if(event.getAction() == MotionEvent.ACTION_UP){
+					btn_Media.setBackgroundResource(R.drawable.norgie_off);
+				}else{
+					btn_Media.setBackgroundResource(R.drawable.norgie_on);
+				}
+				return false;
 			}
 		});
 		mBtnLatest = (TextView)findViewById(R.id.btn_latest);
