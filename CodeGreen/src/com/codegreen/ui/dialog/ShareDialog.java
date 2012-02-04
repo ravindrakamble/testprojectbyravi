@@ -182,7 +182,7 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 	 * On email selection
 	 */
 	private void onSelectEmail() {
-		Spanned message = Html.fromHtml("Article Title : " + articleDAO.getTitle() + "<br/>"+ "Article Description :" + articleDAO.getDetailedDescription());
+		Spanned message = Html.fromHtml("Article Title : " + articleDAO.getTitle() + "<br/><br/>"+ "Article Description :" + articleDAO.getDetailedDescription());
 		String subject = "Sending Article details of " + articleDAO.getTitle();
 		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 		emailIntent.setType("message/rfc822");
