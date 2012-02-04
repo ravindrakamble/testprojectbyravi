@@ -26,6 +26,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
@@ -50,7 +51,7 @@ public class PlayerActivity extends Activity implements Updatable {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.mainvideo);
 
 		if(getIntent() != null){

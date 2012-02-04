@@ -112,7 +112,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
-				refreshViews();
 				mBtnGreenBasic.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 1;
 				searchArticles(Constants.GREEN_BASICS);
@@ -122,7 +121,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
-				refreshViews();
 				mBtnDesignArcht.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 2;
 				searchArticles(Constants.DESIGN_AND_ARCHITECTURE);
@@ -132,7 +130,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
-				refreshViews();
 				mBtnScience.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 3;
 				searchArticles(Constants.SCIENCE_ANDECHNOLOGY);
@@ -142,7 +139,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
-				refreshViews();
 				mBtnTransport.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 4;
 				searchArticles(Constants.TRANSPORT);
@@ -152,7 +148,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
-				refreshViews();
 				mBtnBusiness.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 5;
 				searchArticles(Constants.BUSINESS);
@@ -162,7 +157,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
-				refreshViews();
 				mBtnPolitics.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 6;
 				searchArticles(Constants.POLITICS);
@@ -172,7 +166,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
-				refreshViews();
 				mBtnFood.setBackgroundResource(R.drawable.selectedbutton);
 				CURRENT_SELECTED_CATEGORY = 7;
 				searchArticles(Constants.FOOD_AND_HEALTH);
@@ -187,44 +180,18 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			}
 		});
 
-		btn_Media.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if(event.getAction() == MotionEvent.ACTION_UP){
-					btn_Media.setBackgroundResource(R.drawable.norgie_off);
-				}else{
-					btn_Media.setBackgroundResource(R.drawable.norgie_on);
-				}
-				return false;
-			}
-		});
 		mBtnLatest = (TextView)findViewById(R.id.btn_latest);
 		mBtnLatest.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				refreshViews();
 				mBtnLatest.setBackgroundResource(R.drawable.selectedbutton);
 				searchArticles(0);
 			}
 		});
 	}
 
-	/**
-	 * refresh image backgrounds 
-	 */
-	private void refreshViews() {
-		mBtnGreenBasic.setBackgroundDrawable(null);
-		mBtnDesignArcht.setBackgroundDrawable(null);
-		mBtnScience.setBackgroundDrawable(null);
-		mBtnTransport.setBackgroundDrawable(null);
-		mBtnBusiness.setBackgroundDrawable(null);
-		mBtnPolitics.setBackgroundDrawable(null);
-		mBtnLatest.setBackgroundDrawable(null);
-		mBtnFood.setBackgroundDrawable(null);
-	}
-
+	
 
 	private void showMediaOptions(){
 

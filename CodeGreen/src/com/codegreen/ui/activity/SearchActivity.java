@@ -13,6 +13,7 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -44,6 +45,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.search_view);
 		mSearchView = findViewById(R.id.search_view1);
 		mSearchText = (EditText)mSearchView.findViewById(R.id.search_editview);
