@@ -21,7 +21,7 @@
 				android:inAnimation="@com.codegreen:anim/push_left_in">
 				<ScrollView android:layout_width="fill_parent"
 					android:layout_weight="1" android:layout_height="wrap_content">
-					<LinearLayout android:layout_width="fill_parent"
+					<LinearLayout android:layout_width="fill_parent" android:id="@+id/scrollLinearlayout"
 						android:orientation="vertical" android:layout_height="fill_parent">
 
 						<ImageView android:layout_width="fill_parent"

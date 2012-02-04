@@ -70,8 +70,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private GestureDetector gestureDetector;
 	View.OnTouchListener gestureListener;
 
+	private LinearLayout scrollLinearlayout;
 	private static final int SWIPE_MIN_DISTANCE = 120;
-	private static final int SWIPE_MAX_OFF_PATH = 250;
+	private static final int SWIPE_MAX_OFF_PATH = 300;
 	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 	private boolean savedArticle;
 	private ViewFlipper mFlipper;
@@ -108,6 +109,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			
 			txt_reviews = (TextView)findViewById(R.id.txt_reviews);
 			txt_reviews.setVisibility(View.GONE);
+			
+			scrollLinearlayout = (LinearLayout)findViewById(R.id.scrollLinearlayout);
 
 			mFlipper = ((ViewFlipper)findViewById(R.id.tutorial_flipper));
 			Animation anim = (Animation) AnimationUtils.loadAnimation(ArticleDetailsActivity.this, R.anim.push_left_in);
@@ -116,13 +119,18 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			gestureDetector = new GestureDetector(new MyGestureDetector());
 			gestureListener = new View.OnTouchListener() {
 				public boolean onTouch(View v, MotionEvent event) {
-					if (gestureDetector.onTouchEvent(event)) {
-						return true;
-					}
+					boolean rv = gestureDetector.onTouchEvent(event);
+					//if (rv) {
+						event.setAction(MotionEvent.ACTION_CANCEL);
+					//}
 					return false;
 				}
+				
 			};
-
+			txtDetails.setOnTouchListener(gestureListener);
+			mFlipper.setOnTouchListener(gestureListener);
+			scrollLinearlayout.setOnTouchListener(gestureListener);
+			imageView.setOnTouchListener(gestureListener);
 			imageView.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -242,7 +250,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							}else
 								imageView.setVisibility(View.GONE);
 
-							strDetails = "<b>Title : </b>"+ articleDetails.getTitle() + "<br/>"+ "<b>Date :</b>" + articleDetails.getPublishedDate() + "<br/>" + articleDetails.getDetailedDescription();
+							strDetails = "Title :<b> "+ articleDetails.getTitle() + "</b><br/>"+ "Date :" + articleDetails.getPublishedDate() + "<br/>" + articleDetails.getDetailedDescription();
 							if(strDetails != null && !strDetails.equals("")){
 								txtDetails.setVisibility(View.VISIBLE);
 								txtDetails.setText(Html.fromHtml(strDetails));
@@ -515,6 +523,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			txtDetails.setVisibility(View.GONE);
 			txt_reviews.setVisibility(View.GONE);
 			imageView.getDrawable().setCallback(null);
+			imageView.setImageResource(R.drawable.bg_images_sample);
 			getArticleDetails();
 		}
 	}
@@ -536,9 +545,14 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		if (gestureDetector.onTouchEvent(event))
 			return true;
 		else
-			return false;
+			return super.onTouchEvent(event);
 	}
 
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev){
+	    super.dispatchTouchEvent(ev);
+	    return gestureDetector.onTouchEvent(ev);
+	} 
 	class MyGestureDetector extends SimpleOnGestureListener {
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -559,5 +573,11 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 
 
+		@Override
+		public boolean onScroll(MotionEvent e1, MotionEvent e2,
+				float distanceX, float distanceY) {
+			//Log.i("OnScroll", "distanceX : " + distanceX + " distanceY : " + distanceY);
+			return super.onScroll(e1, e2, distanceX, distanceY);
+		}
 	}
 }
