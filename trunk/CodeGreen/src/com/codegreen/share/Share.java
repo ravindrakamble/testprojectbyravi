@@ -45,6 +45,7 @@ import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Facebook.DialogListener;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
@@ -196,10 +197,12 @@ public class Share {
 		@Override
 		public void onError(com.facebook.android.DialogError arg0) {
 		}
+
 		@Override
 		public void onFacebookError(FacebookError arg0) {
 			Toast.makeText(context, "Facebook Error--" + arg0.getMessage(), Toast.LENGTH_LONG).show();
 			releaseFacebook();
+			
 		} 
 
 	}

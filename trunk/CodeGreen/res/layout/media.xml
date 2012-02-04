@@ -13,30 +13,30 @@
 			android:textSize="15dip" android:layout_marginBottom="15dip"></TextView>
 
 		<Button android:id="@+id/btn_txt" android:layout_height="wrap_content"
-			android:background="@android:drawable/btn_default" android:text="Text"
+			android:background="@android:drawable/btn_default" android:text="All"
 			android:layout_width="250dip" android:layout_centerHorizontal="true"
 			android:layout_below="@+id/txtTitle"></Button>
 
 		<Button android:id="@+id/btn_image" android:layout_height="wrap_content"
-			android:background="@android:drawable/btn_default" android:text="Image"
+			android:background="@android:drawable/btn_default" android:text="Multimedia"
 			android:layout_width="250dip" android:layout_centerHorizontal="true"
 			android:layout_below="@+id/btn_txt"></Button>
 
 		<Button android:id="@+id/btn_audio" android:layout_height="wrap_content"
-			android:background="@android:drawable/btn_default" android:text="Audio"
+			android:background="@android:drawable/btn_default" android:text="Articles"
 			android:layout_width="250dip" android:layout_centerHorizontal="true"
 			android:layout_below="@+id/btn_image"></Button>
 
-		<Button android:id="@+id/btn_video" android:layout_height="wrap_content"
+		<!--<Button android:id="@+id/btn_video" android:layout_height="wrap_content"
 			android:background="@android:drawable/btn_default" android:text="Video"
 			android:layout_width="250dip" android:layout_centerHorizontal="true"
 			android:layout_below="@+id/btn_audio"></Button>
 
 
-		<Button android:id="@+id/btn_cancel" android:layout_marginTop="15dip"
+		--><Button android:id="@+id/btn_cancel" android:layout_marginTop="15dip"
 			android:layout_height="wrap_content" android:background="@android:drawable/btn_default"
 			android:text="Cancel" android:layout_width="250dip"
-			android:layout_centerHorizontal="true" android:layout_below="@+id/btn_video"></Button>
+			android:layout_centerHorizontal="true" android:layout_below="@+id/btn_audio"></Button>
 
 	</RelativeLayout>
 

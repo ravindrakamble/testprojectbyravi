@@ -37,6 +37,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
 
@@ -83,7 +84,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		if(getIntent() != null){
 			strSelectedArticleType = getIntent().getStringExtra(Constants.CURRENT_ARTICLE_TYPE);
 			strSelectedArticleID = getIntent().getStringExtra("ArticleID");
