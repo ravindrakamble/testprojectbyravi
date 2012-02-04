@@ -29,7 +29,8 @@
 							android:layout_marginRight="15dip" android:layout_height="200dip"
 							android:id="@+id/webview" android:visibility="gone"
 							android:gravity="center_horizontal" android:textSize="20dip"
-							android:src="@drawable/bg_images_sample" android:layout_marginTop="5dip"/>
+						
+							android:layout_marginTop="5dip" />
 
 						<TextView android:layout_width="fill_parent"
 							android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
