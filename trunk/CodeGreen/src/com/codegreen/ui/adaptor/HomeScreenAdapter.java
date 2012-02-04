@@ -78,30 +78,26 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 			convertView.buildDrawingCache();
 			holder = (ListHolder) convertView.getTag();
 		}
-		
-		
+
+
 		holder.layout_main.setBackgroundResource(R.drawable.listitem_selector);
 
 		// set Values 
 		ArticleDAO data = mArticleList.get(position);
 		if(data!= null){ 
-			
+
 			holder.img_thumbnail.setVisibility(View.VISIBLE);
 			holder.txt_articleName.setText(data.getTitle());
 			holder.txt_articleDesc.setText(data.getShortDescription());
-			if(!data.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
-				if(data.getThumbUrl() == null){
-					holder.img_thumbnail.setVisibility(View.GONE);
-				}else{
-					holder.img_thumbnail.setVisibility(View.VISIBLE);
-					if(data.getDownloadedImage() == null){ 
-						imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
-					}else {
-						holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
-					}
-				}
-			}else{
+			if(data.getThumbUrl() == null){
 				holder.img_thumbnail.setVisibility(View.GONE);
+			}else{
+				holder.img_thumbnail.setVisibility(View.VISIBLE);
+				if(data.getDownloadedImage() == null){ 
+					imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
+				}else {
+					holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
+				}
 			}
 		}
 		return convertView;
