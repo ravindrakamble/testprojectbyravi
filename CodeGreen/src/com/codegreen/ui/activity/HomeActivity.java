@@ -18,13 +18,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
@@ -43,8 +44,8 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	HomeScreenAdapter mAdapter = null;
 	String TAG = "HomeActivity";
 	private static String CurrentTabSelected = Constants.ARTCLETYPE_TEXT;
-	
-	
+
+
 
 	private static final int MENU_OPTION_SAVED = 0x01;
 	private static final int MENU_OPTION_SEARCH = 0x02;
@@ -69,6 +70,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
 		initWidgets();
 		// Call the data by category default
@@ -76,7 +78,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		getListView().setCacheColorHint(0);
 
 	}
-	
+
 	private void showProgressBar(){
 		if(progressDialog == null){
 			progressDialog = new ProgressDialog(this);
@@ -184,9 +186,9 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				showMediaOptions();
 			}
 		});
-		
+
 		btn_Media.setOnTouchListener(new OnTouchListener() {
-			
+
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				if(event.getAction() == MotionEvent.ACTION_UP){
@@ -225,7 +227,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 
 	private void showMediaOptions(){
-		
+
 		showDialog(Constants.DIALOG_MEDIA);
 		/*final CharSequence[] items = {"Text", "Image", "Audio", "Video"};
 
@@ -255,8 +257,8 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		AlertDialog alert = builder.create();
 
 		alert.show();
-		
-*/	}
+
+		 */	}
 
 
 
@@ -382,8 +384,8 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			MediaDialog media = new MediaDialog(this);
 			media.registerListner(this);
 			return media;
-			 default:
-				 break;
+		default:
+			break;
 		}
 		return null;
 	}
@@ -434,10 +436,24 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				});
 			}
 		}else if(errorCode == Constants.ERR_NETWORK_FAILURE){
-			Toast.makeText(this, "No Network Available.", Toast.LENGTH_LONG).show();	
+			runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					Toast.makeText(HomeActivity.this, "No Network Available.", Toast.LENGTH_LONG).show();
+				}
+			});
+
 		}
 		else{
-			Toast.makeText(this, "No news data found", Toast.LENGTH_LONG).show();
+			runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					Toast.makeText(HomeActivity.this, "No news data found", Toast.LENGTH_LONG).show();
+				}
+			});
+
 		}
 
 		//Send message to remove progress bar
@@ -524,21 +540,15 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 	@Override
 	public void handleDialogClick(int item) {
-		if(item == 0){
-			getArticleData(Constants.ARTICAL_TYPE_TEXT);
+		if(item == 0){//All
+			CURRENT_SELECTED_MEDIA = "ALL";
+		}
+		else if(item == 1){//Multimedia
+			CURRENT_SELECTED_MEDIA =  "multimedia";
+		}	
+		else if(item == 2){//text
 			CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_TEXT;
 		}
-		else if(item == 2){
-			getArticleData(Constants.ARTICAL_TYPE_AUDIO);
-			CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_AUDIO;
-		}
-		else if(item == 3){
-			getArticleData(Constants.ARTICAL_TYPE_VEDIO);
-			CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_VEDIO;
-		}
-		else if(item == 1){
-			CURRENT_SELECTED_MEDIA =  Constants.ARTICAL_TYPE_IMAGE;
-			getArticleData(Constants.ARTICAL_TYPE_IMAGE);
-		}		
+		getArticleData(CURRENT_SELECTED_MEDIA);
 	}
 }

@@ -55,13 +55,13 @@ public class MediaDialog extends AlertDialog implements OnClickListener{
 		btn_image = (Button)findViewById(R.id.btn_image);
 
 		btn_audio = (Button)findViewById(R.id.btn_audio);
-		btn_vedio = (Button)findViewById(R.id.btn_video);
+		//btn_vedio = (Button)findViewById(R.id.btn_video);
 		btn_cancel = (Button)findViewById(R.id.btn_cancel);
 
 		btn_txt.setOnClickListener(this);
 		btn_image.setOnClickListener(this);
 		btn_audio.setOnClickListener(this);
-		btn_vedio.setOnClickListener(this);
+		//btn_vedio.setOnClickListener(this);
 		btn_cancel.setOnClickListener(this);
 		 
 		}	

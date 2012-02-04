@@ -2,6 +2,8 @@ package com.codegreen.network;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
@@ -33,14 +35,15 @@ public class FetchImage
 		{ 
 			//Log.e("GetBitmap :: ", url);
 			url.replaceAll(" ", "%20");
+			//url = URLEncoder.encode(url);
 			InputStream is=new URL(url).openStream(); 
 			BufferedInputStream bis = new BufferedInputStream(is);  
 			return bitmap = BitmapFactory.decodeStream(bis);
 		}
 		catch (Exception ex)
 		{
-			Log.e("OOOps Error : ", ex.toString());
-			ex.printStackTrace();
+			//Log.e("OOOps Error : ", ex.toString());
+			//ex.printStackTrace();
 			return null;
 		}
 	}
