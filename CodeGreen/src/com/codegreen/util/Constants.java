@@ -121,4 +121,8 @@ public class Constants {
 	public static int CURRENT_INDEX = 0;
 	public static int TOTAL_ARTICLES = 0;
 	
+	 public  static String  SANS_BOLD = "fonts/Stag Sans-Bold.otf";
+	 public  static String  SANS_BOOK = "fonts/Stag Sans-Book.otf";
+	 public  static String  SANS_SEMIBOLD =  "fonts/Stag Sans-Semibold.otf";
+	
 }
