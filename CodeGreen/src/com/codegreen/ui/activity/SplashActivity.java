@@ -14,6 +14,7 @@ public class SplashActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    	getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.splash);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.splash);

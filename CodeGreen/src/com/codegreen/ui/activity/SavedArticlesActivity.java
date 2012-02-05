@@ -3,11 +3,8 @@ package com.codegreen.ui.activity;
 import com.codegreen.R;
 import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.common.CacheManager;
-import com.codegreen.ui.adaptor.HomeScreenAdapter;
 import com.codegreen.ui.adaptor.SavedArticlesAdapter;
 import com.codegreen.util.Constants;
-
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
