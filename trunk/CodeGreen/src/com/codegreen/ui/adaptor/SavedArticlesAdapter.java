@@ -143,21 +143,20 @@ public class SavedArticlesAdapter extends BaseAdapter{
 
 		// set Values 
 		ArticleDAO data = mArticleList.get(position);
-		if(data!= null){ 
-
+		if(data!= null){  
 			holder.img_thumbnail.setVisibility(View.VISIBLE);
 			holder.txt_articleName.setText(data.getTitle());
 			holder.txt_articleDesc.setText(data.getShortDescription());
-			if(data.getThumbUrl() == null){
+			/*if(data.getThumbUrl() == null){
 				holder.img_thumbnail.setVisibility(View.GONE);
-			}else{
+			}else{*/
 				holder.img_thumbnail.setVisibility(View.VISIBLE);
 				if(data.getDownloadedImage() == null){ 
 					imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
 				}else {
 					holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
 				}
-			}
+			//}
 		}
 		return convertView;
 	}

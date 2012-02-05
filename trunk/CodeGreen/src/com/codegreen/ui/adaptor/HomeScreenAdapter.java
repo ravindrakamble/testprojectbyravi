@@ -1,8 +1,6 @@
 package com.codegreen.ui.adaptor;
 import java.util.ArrayList;
 
-import twitter4j.RelatedResults;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,10 +86,10 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 
 			holder.img_thumbnail.setVisibility(View.VISIBLE);
 			holder.txt_articleName.setText(data.getTitle());
-			holder.txt_articleDesc.setText(data.getShortDescription());
+			holder.txt_articleDesc.setText(data.getShortDescription());/*
 			if(data.getThumbUrl() == null){
 				holder.img_thumbnail.setVisibility(View.GONE);
-			}else{
+			}else{*/
 				holder.img_thumbnail.setVisibility(View.VISIBLE);
 				if(data.getDownloadedImage() == null){ 
 					imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
@@ -99,7 +97,7 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 					holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
 				}
 			}
-		}
+		//}
 		return convertView;
 	}
 

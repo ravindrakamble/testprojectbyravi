@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnKeyListener;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,16 +18,13 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
@@ -49,7 +48,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 	private static final int MENU_OPTION_SAVED = 0x01;
 	private static final int MENU_OPTION_SEARCH = 0x02;
-	private static final int MENU_OPTION_SHARE = 0x03;
 	private static final int MENU_OPTION_INFO = 0x04;
 
 	TextView mBtnGreenBasic = null;
@@ -60,9 +58,8 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	TextView mBtnPolitics = null;
 	TextView mBtnFood = null;
 	TextView mBtnLatest = null;
-	//LinearLayout progress_Lay = null;
 
-	private static int CURRENT_SELECTED_CATEGORY = 1;
+	private static int CURRENT_SELECTED_CATEGORY = 0;
 	private static String CURRENT_SELECTED_MEDIA = "";
 	private TextView mNoItems = null;
 	private ProgressDialog progressDialog;
@@ -73,10 +70,8 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
 		initWidgets();
-		// Call the data by category default
-		searchArticles(Constants.GREEN_BASICS);
+		getArticleData("");
 		getListView().setCacheColorHint(0);
-
 	}
 
 	private void showProgressBar(){
@@ -94,7 +89,8 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		}
 	}
 
-
+	ImageView btn_left_arrow = null;
+	ImageView btn_right_arrow = null;
 
 	/**
 	 * Initialize variables
@@ -108,67 +104,92 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		mBtnPolitics = (TextView)findViewById(R.id.btn_politics);
 		mBtnFood = (TextView)findViewById(R.id.btn_food);
 		mNoItems =(TextView) findViewById(android.R.id.empty);
+		btn_left_arrow = (ImageView)findViewById(R.id.btn_left_arrow);
+		btn_right_arrow = (ImageView)findViewById(R.id.btn_right_arrow);
+		
+		// set default as off 
+		btn_left_arrow.setBackgroundResource(R.drawable.left_arrow_off);
+		
+		
 		mBtnGreenBasic.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				mBtnGreenBasic.setBackgroundResource(R.drawable.selectedbutton);
+				btn_left_arrow.setBackgroundResource(R.drawable.left_arrow_on);
+				refreshViews();
+				mBtnGreenBasic.setBackgroundResource(R.drawable.scrollbutton_off);
+				//mBtnGreenBasic.setTextColor(Color.GREEN);
 				CURRENT_SELECTED_CATEGORY = 1;
-				searchArticles(Constants.GREEN_BASICS);
+				getArticleData("");
 			}
 		});
 		mBtnDesignArcht.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				mBtnDesignArcht.setBackgroundResource(R.drawable.selectedbutton);
+				
+				refreshViews();
+				mBtnDesignArcht.setBackgroundResource(R.drawable.scrollbutton_off);
+				//mBtnDesignArcht.setTextColor(Color.GREEN);
 				CURRENT_SELECTED_CATEGORY = 2;
-				searchArticles(Constants.DESIGN_AND_ARCHITECTURE);
+				getArticleData("");
 			}
 		});
 		mBtnScience.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				mBtnScience.setBackgroundResource(R.drawable.selectedbutton);
+				refreshViews();
+				mBtnScience.setBackgroundResource(R.drawable.scrollbutton_off);
+				//mBtnScience.setTextColor(Color.GREEN);
 				CURRENT_SELECTED_CATEGORY = 3;
-				searchArticles(Constants.SCIENCE_ANDECHNOLOGY);
+				getArticleData("");
 			}
 		});
 		mBtnTransport.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				mBtnTransport.setBackgroundResource(R.drawable.selectedbutton);
+				refreshViews();
+				mBtnTransport.setBackgroundResource(R.drawable.scrollbutton_off);
+				//mBtnTransport.setTextColor(Color.GREEN);
 				CURRENT_SELECTED_CATEGORY = 4;
-				searchArticles(Constants.TRANSPORT);
+				getArticleData("");
 			}
 		});
 		mBtnBusiness.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				mBtnBusiness.setBackgroundResource(R.drawable.selectedbutton);
+				refreshViews();
+				mBtnBusiness.setBackgroundResource(R.drawable.scrollbutton_off);
+				//mBtnBusiness.setTextColor(Color.GREEN);
 				CURRENT_SELECTED_CATEGORY = 5;
-				searchArticles(Constants.BUSINESS);
+				getArticleData("");
 			}
 		});
 		mBtnPolitics.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				mBtnPolitics.setBackgroundResource(R.drawable.selectedbutton);
+				btn_right_arrow.setBackgroundResource(R.drawable.right_arrow_on);
+				refreshViews();
+				mBtnPolitics.setBackgroundResource(R.drawable.scrollbutton_off);
+				//mBtnPolitics.setTextColor(Color.GREEN);
 				CURRENT_SELECTED_CATEGORY = 6;
-				searchArticles(Constants.POLITICS);
+				getArticleData("");
 			}
 		});
 		mBtnFood.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				mBtnFood.setBackgroundResource(R.drawable.selectedbutton);
+				btn_right_arrow.setBackgroundResource(R.drawable.right_arrow_off);
+				refreshViews();
+				mBtnFood.setBackgroundResource(R.drawable.scrollbutton_off);
+			//	mBtnFood.setTextColor(Color.GREEN);
 				CURRENT_SELECTED_CATEGORY = 7;
-				searchArticles(Constants.FOOD_AND_HEALTH);
+				getArticleData("");
 			}
 		});
 		final ImageView btn_Media = (ImageView) findViewById(R.id.btn_media);
@@ -181,54 +202,50 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		});
 
 		mBtnLatest = (TextView)findViewById(R.id.btn_latest);
+		
 		mBtnLatest.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				mBtnLatest.setBackgroundResource(R.drawable.selectedbutton);
-				searchArticles(0);
+				btn_left_arrow.setBackgroundResource(R.drawable.left_arrow_off);
+				refreshViews();
+				mBtnLatest.setBackgroundResource(R.drawable.scrollbutton_off);
+				//mBtnLatest.setTextColor(Color.GREEN);
+				getArticleData("");
 			}
 		});
+		refreshViews();
+		mBtnLatest.setBackgroundResource(R.drawable.scrollbutton_off);
+		//mBtnLatest.setTextColor(Color.GREEN);
 	}
 
 	
+	private void refreshViews(){
+		mBtnBusiness.setTextColor(Color.WHITE);
+		mBtnDesignArcht.setTextColor(Color.WHITE);
+		mBtnFood.setTextColor(Color.WHITE);
+		mBtnGreenBasic.setTextColor(Color.WHITE);
+		mBtnLatest.setTextColor(Color.WHITE);
+		mBtnPolitics.setTextColor(Color.WHITE);
+		mBtnScience.setTextColor(Color.WHITE);
+		mBtnTransport.setTextColor(Color.WHITE);
+		mBtnBusiness.setBackgroundDrawable(null);
+		mBtnDesignArcht.setBackgroundDrawable(null);
+		mBtnFood.setBackgroundDrawable(null);
+		mBtnGreenBasic.setBackgroundDrawable(null);
+		mBtnLatest.setBackgroundDrawable(null);
+		mBtnPolitics.setBackgroundDrawable(null);
+		mBtnScience.setBackgroundDrawable(null);
+		mBtnTransport.setBackgroundDrawable(null);
+	}
+	
 
 	private void showMediaOptions(){
-
 		showDialog(Constants.DIALOG_MEDIA);
-		/*final CharSequence[] items = {"Text", "Image", "Audio", "Video"};
-
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Media Options :");
-		builder.setIcon(android.R.drawable.ic_media_rew);
-		builder.setItems(items, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int item) {
-				if(item == 0){
-					getArticleData(Constants.ARTICAL_TYPE_TEXT);
-					CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_TEXT;
-				}
-				else if(item == 2){
-					getArticleData(Constants.ARTICAL_TYPE_AUDIO);
-					CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_AUDIO;
-				}
-				else if(item == 3){
-					getArticleData(Constants.ARTICAL_TYPE_VEDIO);
-					CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_VEDIO;
-				}
-				else if(item == 1){
-					CURRENT_SELECTED_MEDIA =  Constants.ARTICAL_TYPE_IMAGE;
-					getArticleData(Constants.ARTICAL_TYPE_IMAGE);
-				}
-			}
-		});
-		AlertDialog alert = builder.create();
-
-		alert.show();
-
-		 */	}
+		}
 
 
-
+     
 	private void searchArticles(int type){
 		try {
 			HttpHandler httpHandler =  HttpHandler.getInstance();
@@ -300,7 +317,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			menu.removeGroup(0);
 			menu.add(0, MENU_OPTION_SAVED,0 , "Saved Items").setIcon(android.R.drawable.ic_menu_gallery);
 			menu.add(0, MENU_OPTION_SEARCH,0 , "Search").setIcon(android.R.drawable.ic_menu_search);
-			//menu.add(0, MENU_OPTION_SHARE,0 , "Share").setIcon(android.R.drawable.ic_menu_share);
 			menu.add(0, MENU_OPTION_INFO,0 , "Info").setIcon(android.R.drawable.ic_menu_help);
 			return true;
 		}
@@ -320,12 +336,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			break;
 		case MENU_OPTION_SEARCH:
 			launchSearchActivity();
-			break;
-
-			/*case MENU_OPTION_SHARE:
-			showDialog(Constants.DIALOG_SHARE);
-			break;
-			 */
+			break; 
 		case MENU_OPTION_INFO:
 			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
 			break;
@@ -435,7 +446,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 		Constants.CURRENT_INDEX = position;
 		// Launch details screen
-		//if(articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)||  articleEntry != null && articleEntry.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
 		Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
@@ -458,20 +468,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			}
 		};
 	};
-
-
-	//@Override
-	/*public boolean onKeyDown(int keyCode, KeyEvent event){
-		try{
-			if(keyCode == KeyEvent.KEYCODE_SEARCH){
-				launchSearchActivity();
-				return true;
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		}    		
-		return false;
-	}*/
+ 
 
 	/**
 	 *  Launch SearchCallhistoryActivity 

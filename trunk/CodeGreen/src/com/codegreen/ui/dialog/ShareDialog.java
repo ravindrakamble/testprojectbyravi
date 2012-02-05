@@ -1,10 +1,14 @@
 package com.codegreen.ui.dialog;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.HttpResponse;
@@ -42,7 +46,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.content.SharedPreferences.Editor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
@@ -78,8 +84,8 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 	private static final String[] PERMISSIONS = new String[] {"publish_stream"};
 
 	private static final String TOKEN = "access_token";
-        private static final String EXPIRES = "expires_in";
-        private static final String KEY = "facebook-credentials";
+	private static final String EXPIRES = "expires_in";
+	private static final String KEY = "facebook-credentials";
 
 	private Facebook facebook;
 	private String messageToPost;
@@ -91,7 +97,7 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 
 
 
-	
+
 	protected ShareDialog(Context context) {
 		super(context);
 	}
@@ -142,8 +148,8 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 		btn_twitter.setOnClickListener(this);
 		btn_email.setOnClickListener(this);
 		btn_cancel.setOnClickListener(this);
-		
-		
+
+
 	}	
 
 
@@ -188,17 +194,57 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 		emailIntent.setType("message/rfc822");
 		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
 		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
-		emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(articleDAO.getUrl()));
+		/*File pictureFile = setImageData(articleDAO.getUrl());
+		Uri pictureUri = Uri.fromFile(pictureFile);*/
+		emailIntent.putExtra(Intent.EXTRA_STREAM, articleDAO.getUrl()); 
 		mContext.startActivity(Intent.createChooser(emailIntent, "Send Email.."));
 	}
-	
+
+
+
+
+
+/*	private File setImageData(final String strUrl){
+		
+		File rootSdDirectory = Environment.getExternalStorageDirectory();  
+		final File pictureFile = new File(rootSdDirectory, "attachment.jpg");  
+		
+		Thread downloadFile = new Thread(){
+			public void run(){ 
+				try {    
+					if (pictureFile.exists()) {  
+						pictureFile.delete();  
+					}  
+					pictureFile.createNewFile();     
+					FileOutputStream fos = new FileOutputStream(pictureFile);  
+					URL url = new URL(strUrl);  
+					HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
+					connection.setRequestMethod("GET");    
+					connection.setDoOutput(true); 
+					connection.connect();    
+					InputStream in = connection.getInputStream();  
+					byte[] buffer = new byte[1024];     int size = 0;   
+					while ((size = in.read(buffer)) > 0) {     
+						fos.write(buffer, 0, size);    
+					}     fos.close(); 
+				}
+				catch (Exception e) { 
+					e.printStackTrace();
+				}
+			}
+		};
+		downloadFile.start();
+		
+		return pictureFile; 
+	}*/
+ 
 	private void validateTwitter(String user, String pass){
 
 		try {
 			httpOauthConsumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
 			httpOauthprovider = new DefaultOAuthProvider("https://twitter.com/oauth/request_token", 
 					"https://twitter.com/oauth/access_token", 
-					"https://twitter.com/oauth/authorize");
+			"https://twitter.com/oauth/authorize");
 			String authUrl = httpOauthprovider.retrieveRequestToken(httpOauthConsumer, "oob");
 
 			System.out.println("-------------------------------------------------------" + authUrl + "---------------------------------------");
@@ -234,27 +280,27 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 				response = client.execute(post);
 
 				buffer = getBody(response);
-				
-				if(buffer.indexOf("\"oauth_pin\"") > 0){
-		    		temp = buffer.substring(buffer.indexOf("\"oauth_pin\""));
-		    		System.out.println("====================" + temp +"----------------------");
-		    		temp = temp.substring(temp.indexOf(">")+1,temp.indexOf("<"));
-		    		temp = temp.trim();
-		    		System.out.println("====================" + temp +"----------------------");
-		    		httpOauthprovider.retrieveAccessToken(httpOauthConsumer, temp);
 
-		    		AccessToken accessToken = new AccessToken(httpOauthConsumer.getToken(), httpOauthConsumer.getTokenSecret());
-		    		
-		    		ShareData.getShareData().put("Twitter_Token", accessToken);
-		    		
-		    		postTweet(accessToken);
-	    		}
-	    		else{
-	    			toast_message=  "Wrong username/email or password";
+				if(buffer.indexOf("\"oauth_pin\"") > 0){
+					temp = buffer.substring(buffer.indexOf("\"oauth_pin\""));
+					System.out.println("====================" + temp +"----------------------");
+					temp = temp.substring(temp.indexOf(">")+1,temp.indexOf("<"));
+					temp = temp.trim();
+					System.out.println("====================" + temp +"----------------------");
+					httpOauthprovider.retrieveAccessToken(httpOauthConsumer, temp);
+
+					AccessToken accessToken = new AccessToken(httpOauthConsumer.getToken(), httpOauthConsumer.getTokenSecret());
+
+					ShareData.getShareData().put("Twitter_Token", accessToken);
+
+					postTweet(accessToken);
+				}
+				else{
+					toast_message=  "Wrong username/email or password";
 					Message msg = new Message();
 					msg.what = TOASET_MSG;
 					screenHandler.sendMessage(msg);
-	    		}
+				}
 			}
 		}catch (Exception e){
 			toast_message=  e.getMessage();
@@ -264,8 +310,8 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	private StringBuilder getBody(HttpResponse response) throws Exception {
 		InputStream content = response.getEntity().getContent();
 		InputStreamReader reader = new InputStreamReader(content, HTTP.DEFAULT_CONTENT_CHARSET);
@@ -305,7 +351,7 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 
 
 	Dialog outerDialog;
-	
+
 	private void onSelectTwitter(){
 		Share testShare = new Share(mContext);
 		testShare.share(message, Share.TYPE_TWITTER,articleDAO);
@@ -313,32 +359,32 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 		outerDialog = new Dialog(mContext);
 		showDialog(TWITTER_DIALOG);*/
 	}
-	
-	
+
+
 	public boolean saveCredentials(Facebook facebook) {
-    	Editor editor = mContext.getApplicationContext().getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
-    	editor.putString(TOKEN, facebook.getAccessToken());
-    	editor.putLong(EXPIRES, facebook.getAccessExpires());
-    	return editor.commit();
+		Editor editor = mContext.getApplicationContext().getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
+		editor.putString(TOKEN, facebook.getAccessToken());
+		editor.putLong(EXPIRES, facebook.getAccessExpires());
+		return editor.commit();
 	}
 
 	public boolean restoreCredentials(Facebook facebook) {
-    	SharedPreferences sharedPreferences = mContext.getApplicationContext().getSharedPreferences(KEY, Context.MODE_PRIVATE);
-    	facebook.setAccessToken(sharedPreferences.getString(TOKEN, null));
-    	facebook.setAccessExpires(sharedPreferences.getLong(EXPIRES, 0));
-    	return facebook.isSessionValid();
+		SharedPreferences sharedPreferences = mContext.getApplicationContext().getSharedPreferences(KEY, Context.MODE_PRIVATE);
+		facebook.setAccessToken(sharedPreferences.getString(TOKEN, null));
+		facebook.setAccessExpires(sharedPreferences.getLong(EXPIRES, 0));
+		return facebook.isSessionValid();
 	}
 
-	
+
 	public void share(){
 		/*if (! facebook.isSessionValid()) {*/
-			//loginAndPostToWall();
-	//	}
+		//loginAndPostToWall();
+		//	}
 		/*else {
 			postToWall(messageToPost);
 		}*/
 	}
-	
+
 	private void showDialog(int id){
 		switch (id){
 		case TWITTER_DIALOG:
@@ -425,7 +471,7 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 	/*public void loginAndPostToWall(){
 		 facebook.authorize((Activity)mContext, PERMISSIONS, new LoginDialogListener());
 	}
-*/
+	 */
 	/*public void postToWall(String message){
 		Bundle parameters = new Bundle();
                 parameters.putString("message", message);
@@ -463,8 +509,8 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 		        cancel();
 		}
 	}*/
-	
-	
+
+
 	/*
 	class LoginDialogListener implements DialogListener {
 	    public void onComplete(Bundle values) {
@@ -491,9 +537,9 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 		String response = facebook.request("me/feed", parameters, "POST");
             facebook.dialog(mContext, "stream.publish", parameters,this);
             }catch (Exception e) {
-            	
+
 			}
-		
+
 	    }
 	    public void onFacebookError(FacebookError error) {
 	    	showToast("Authentication with Facebook failed!");
@@ -511,17 +557,17 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 	        cancel();
 	    }
 	}
-*/
-	
+	 */
+
 	private void onSelectFacebook(){
 		Share testShare = new Share(mContext);
 		testShare.share(message, Share.TYPE_FACEBOOK,articleDAO);
-    }
-    
-       
+	}
+
+
 	private void showToast(String message){
 		Toast.makeText(mContext.getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 	} 
-	
+
 
 }
