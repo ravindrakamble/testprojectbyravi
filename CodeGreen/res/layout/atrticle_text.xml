@@ -43,7 +43,7 @@
 							android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
 							android:layout_marginTop="15dip" android:layout_height="wrap_content"
 							android:id="@+id/article_date_view" android:textColor="#000000"
-							android:textSize="15dip" />
+							android:textSize="14dip" />
 						<TextView android:layout_width="fill_parent"
 							android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
 							android:layout_marginTop="15dip" android:layout_height="wrap_content"
