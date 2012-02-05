@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnKeyListener;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -78,14 +79,20 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private ViewFlipper mFlipper;
 	private final int SHOW_PROGRESS = 1;
 	private final int REMOVE_PROGRESS = 2;
-
+	TextView txtDetails = null;
+	TextView txtTitle = null;
+	TextView txtDate = null;
 	private List<ArticleDAO> listOfArticles ;
 	private ProgressDialog progressDialog;
+	Typeface _tfBigBold, _tfMediumBold, _tfSmallNormal;
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		_tfBigBold = Typeface.createFromAsset(getAssets(), Constants.SANS_BOLD); 
+		_tfMediumBold =  Typeface.createFromAsset(getAssets(), Constants.SANS_SEMIBOLD);
+		_tfSmallNormal = Typeface.createFromAsset(getAssets(), Constants.SANS_BOOK);
 		if(getIntent() != null){
 			strSelectedArticleType = getIntent().getStringExtra(Constants.CURRENT_ARTICLE_TYPE);
 			strSelectedArticleID = getIntent().getStringExtra("ArticleID");
@@ -99,6 +106,14 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		if(strSelectedArticleType != null){
 			setContentView(R.layout.atrticle_text);
 			txtDetails = (TextView) findViewById(R.id.article_details_view);
+			txtDetails.setTypeface(_tfMediumBold);
+			
+			txtTitle = (TextView) findViewById(R.id.article_title_view);
+			txtTitle.setTypeface(_tfBigBold);
+			
+			txtDate = (TextView) findViewById(R.id.article_date_view);
+			txtDate.setTypeface(_tfSmallNormal);
+			
 			progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
 			imageView = (ImageView)findViewById(R.id.webview);
 			if(strSelectedArticleType == Constants.ARTCLETYPE_TEXT){
@@ -178,7 +193,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 	}
 
-	TextView txtDetails = null;
+	
 
 
 
@@ -250,8 +265,14 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							}else
 								imageView.setVisibility(View.GONE);
 
-							strDetails = "Title :<b> "+ articleDetails.getTitle() + "</b><br/>"+ "Date :" + articleDetails.getPublishedDate() + "<br/>" + articleDetails.getDetailedDescription();
+							txtTitle.setText("Title : "+ articleDetails.getTitle());
+							txtDate.setText("Date :" + articleDetails.getPublishedDate());
+							txtTitle.setVisibility(View.VISIBLE);
+							txtDate.setVisibility(View.VISIBLE);
+							
+							strDetails =  articleDetails.getDetailedDescription();
 							if(strDetails != null && !strDetails.equals("")){
+								
 								txtDetails.setVisibility(View.VISIBLE);
 								txtDetails.setText(Html.fromHtml(strDetails));
 							}
@@ -296,6 +317,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						getReviews(articleDetails);
 					}else if(callId == Constants.REQ_DOWNLOADIMAGE){
 						if(CacheManager.getInstance().getLatestArticleBitmap() != null){
+							if(imageView.getDrawable() != null){
+								imageView.getDrawable().setCallback(null);
+							}
 							imageView.setImageBitmap(CacheManager.getInstance().getLatestArticleBitmap());
 						}
 					}else if(callId == Constants.REQ_DOWNLOADARTICLE){
@@ -516,15 +540,20 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 
 	private void getArticle(){
-		if(listOfArticles != null && Constants.CURRENT_INDEX < listOfArticles.size()){
-			this.articleDetails = listOfArticles.get(Constants.CURRENT_INDEX);
-			strSelectedArticleID = articleDetails.getArticleID();
-			strSelectedArticleType = articleDetails.getType();
-			txtDetails.setVisibility(View.GONE);
-			txt_reviews.setVisibility(View.GONE);
-			imageView.getDrawable().setCallback(null);
-			imageView.setImageResource(R.drawable.bg_images_sample);
-			getArticleDetails();
+		try {
+			if(listOfArticles != null && Constants.CURRENT_INDEX < listOfArticles.size()){
+				this.articleDetails = listOfArticles.get(Constants.CURRENT_INDEX);
+				strSelectedArticleID = articleDetails.getArticleID();
+				strSelectedArticleType = articleDetails.getType();
+				txtDetails.setVisibility(View.GONE);
+				txtTitle.setVisibility(View.GONE);
+				txtDate.setVisibility(View.GONE);
+				txt_reviews.setVisibility(View.GONE);
+				imageView.setImageResource(R.drawable.bg_images_sample);
+				getArticleDetails();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	private void showPreviousArticle(){
@@ -567,6 +596,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					showPreviousArticle();
 				}
 			} catch (Exception e) {
+				
 			}
 			return false;
 

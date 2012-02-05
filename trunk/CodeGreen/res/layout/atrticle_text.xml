@@ -21,22 +21,34 @@
 				android:inAnimation="@com.codegreen:anim/push_left_in">
 				<ScrollView android:layout_width="fill_parent"
 					android:layout_weight="1" android:layout_height="wrap_content">
-					<LinearLayout android:layout_width="fill_parent" android:id="@+id/scrollLinearlayout"
-						android:orientation="vertical" android:layout_height="fill_parent">
+					<LinearLayout android:layout_width="fill_parent"
+						android:id="@+id/scrollLinearlayout" android:orientation="vertical"
+						android:layout_height="fill_parent">
 
 						<ImageView android:layout_width="fill_parent"
 							android:layout_gravity="center" android:layout_marginLeft="15dip"
 							android:layout_marginRight="15dip" android:layout_height="200dip"
 							android:id="@+id/webview" android:visibility="gone"
 							android:gravity="center_horizontal" android:textSize="20dip"
-						
+
 							android:layout_marginTop="5dip" />
 
 						<TextView android:layout_width="fill_parent"
 							android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
 							android:layout_marginTop="15dip" android:layout_height="wrap_content"
-							android:id="@+id/article_details_view" android:textColor="#000000"
+							android:id="@+id/article_title_view" android:textColor="#000000"
 							android:textSize="19dip" />
+
+						<TextView android:layout_width="fill_parent"
+							android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
+							android:layout_marginTop="15dip" android:layout_height="wrap_content"
+							android:id="@+id/article_date_view" android:textColor="#000000"
+							android:textSize="15dip" />
+						<TextView android:layout_width="fill_parent"
+							android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
+							android:layout_marginTop="15dip" android:layout_height="wrap_content"
+							android:id="@+id/article_details_view" android:textColor="#000000"
+							android:textSize="17dip" />
 						<TextView android:id="@+id/txt_reviews"
 							android:visibility="gone" android:layout_marginTop="15dip"
 							android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
