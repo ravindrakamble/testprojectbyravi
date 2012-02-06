@@ -70,6 +70,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	TextView txt_player_select = null;
 	private GestureDetector gestureDetector;
 	View.OnTouchListener gestureListener;
+	private boolean notAFling = false;
 
 	private LinearLayout scrollLinearlayout;
 	private static final int SWIPE_MIN_DISTANCE = 120;
@@ -135,9 +136,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			gestureListener = new View.OnTouchListener() {
 				public boolean onTouch(View v, MotionEvent event) {
 					boolean rv = gestureDetector.onTouchEvent(event);
-					//if (rv) {
+					if (rv) {
 						event.setAction(MotionEvent.ACTION_CANCEL);
-					//}
+					}
 					return false;
 				}
 				
@@ -145,33 +146,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			txtDetails.setOnTouchListener(gestureListener);
 			mFlipper.setOnTouchListener(gestureListener);
 			scrollLinearlayout.setOnTouchListener(gestureListener);
-			imageView.setOnTouchListener(gestureListener);
+			//imageView.setOnTouchListener(gestureListener);
 			imageView.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
-
-						String urlToPlay = articleDetails.getUrl();
-						Log.e("---------Play Url------- ", urlToPlay);
-						if(urlToPlay.contains("youtube")){
-							try{
-								Intent videoClient = new Intent(Intent.ACTION_VIEW); 
-								videoClient.setData(Uri.parse(urlToPlay)); 
-								startActivity(videoClient);
-							}catch (Exception e) {
-								Toast.makeText(getApplicationContext(),"YouTube Player not found.", Toast.LENGTH_LONG).show();
-							}
-						}else{
-							Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
-							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, strSelectedArticleType);
-							intent.putExtra("ArticleID", strSelectedArticleID);
-							if(savedArticle){
-								intent.putExtra("savedarticle", articleDetails.getUrl());
-							}
-							startActivity(intent);
-						}
-					}
+					notAFling = true;
+					startPlayer();
 				}
 			});
 
@@ -476,15 +456,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 	}
 
-	private void shareDialog(){
-		Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
-		shareIntent.setType("text/plain");
-		shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Sample text");
-		shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Example text");    
-
-		startActivity(Intent.createChooser(shareIntent, "TestApp"));
-	}
-
 	private Handler handler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
 			int what = msg.what;
@@ -510,6 +481,40 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		};
 	};
 
+	private void startPlayer(){
+		new Handler().postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				if(notAFling){
+					if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) 
+							|| strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+
+						String urlToPlay = articleDetails.getUrl();
+						Log.e("---------Play Url------- ", urlToPlay);
+						if(urlToPlay.contains("youtube")){
+							try{
+								Intent videoClient = new Intent(Intent.ACTION_VIEW); 
+								videoClient.setData(Uri.parse(urlToPlay)); 
+								startActivity(videoClient);
+							}catch (Exception e) {
+								Toast.makeText(getApplicationContext(),"YouTube Player not found.", Toast.LENGTH_LONG).show();
+							}
+						}else{
+							Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, strSelectedArticleType);
+							intent.putExtra("ArticleID", strSelectedArticleID);
+							if(savedArticle){
+								intent.putExtra("savedarticle", articleDetails.getUrl());
+							}
+							startActivity(intent);
+						}
+					}
+				}
+			}
+		},  1000);
+	}
 	private void showProgressBar(){
 		if(progressDialog == null){
 			progressDialog = new ProgressDialog(this);
@@ -586,9 +591,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			Log.i("ON FLING", "GESTURE" + Math.abs(e1.getY() - e2.getY()));
+			notAFling = true;
 			try {
-				if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+				if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH){
 					return false;
+				}
+				notAFling = false;
 				// right to left swipe
 				if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 					showNextArticle();
@@ -598,7 +606,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			} catch (Exception e) {
 				
 			}
-			return false;
+			return true;
 
 		}
 
