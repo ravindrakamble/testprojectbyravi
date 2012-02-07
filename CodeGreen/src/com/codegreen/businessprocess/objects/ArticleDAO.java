@@ -18,6 +18,7 @@ public class ArticleDAO {
 	private ImageView imagedrawable = null;
 	private Bitmap downloadedImage = null;
 	private String categoryID = "";
+	private String dbArticleID;
 	
 	public String getCategoryID() {
 		return categoryID;
@@ -97,4 +98,12 @@ public class ArticleDAO {
 	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
 	}
+	public String getDbArticleID() {
+		return dbArticleID;
+	}
+	public void setDbArticleID(String dbArticleID) {
+		this.dbArticleID = dbArticleID;
+	}
+	
+	
 }

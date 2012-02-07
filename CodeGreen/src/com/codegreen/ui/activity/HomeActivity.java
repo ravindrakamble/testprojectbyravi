@@ -450,6 +450,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
 		intent.putExtra("ArticleID", articleEntry.getArticleID());
+		intent.putExtra("desc", articleEntry.getShortDescription());
 		startActivity(intent);
 	} 
 
