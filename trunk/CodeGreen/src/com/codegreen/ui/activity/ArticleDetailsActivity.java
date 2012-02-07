@@ -232,9 +232,10 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					progress_Lay.setVisibility(View.GONE);
 					if(callId == Constants.REQ_GETARTICLEDETAILS){
 						String strDetails = "";
+						imageView.setVisibility(View.GONE);
 						articleDetails = (ArticleDAO) CacheManager.getInstance().get(Constants.C_ARTICLE_DETAILS);
 						if(articleDetails != null){
-							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals("") && !articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT) || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getThumbUrl().equals("") || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO) && !articleDetails.getThumbUrl().equals("") ){
+							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals("")){
 								imageView.setVisibility(View.VISIBLE);
 								if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
 								}else if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
@@ -244,9 +245,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 									PlayerActivity.streamUrl = articleDetails.getUrl();
 									PlayerActivity.isAudio = false;
 								}
-							}else
+							}else{
 								imageView.setVisibility(View.GONE);
-
+							}
 							txtTitle.setText("Title : "+ articleDetails.getTitle());
 							txtDate.setText("Date :" + articleDetails.getPublishedDate());
 							txtTitle.setVisibility(View.VISIBLE);
@@ -451,12 +452,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			//Cancel previous request;
 			httpHandler.cancelRequest();
 			String url = null;
-			if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
-				url = articleDetails.getUrl();
-			}else{
-				url = articleDetails.getThumbUrl();
-			}
-			httpHandler.handleEvent(url, Constants.REQ_DOWNLOADIMAGE, ArticleDetailsActivity.this);
+			url = articleDetails.getUrl();
+			if(url != null && !url.equals(""))
+				httpHandler.handleEvent(url, Constants.REQ_DOWNLOADIMAGE, ArticleDetailsActivity.this);
 		}
 	}
 
@@ -493,13 +491,15 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				if(notAFling){
 					if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) 
 							|| strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
-
+						
+						progress_Lay.setVisibility(View.VISIBLE);
 						String urlToPlay = articleDetails.getUrl();
 						Log.e("---------Play Url------- ", urlToPlay);
 						if(urlToPlay.contains("youtube")){
 							try{
 								Intent videoClient = new Intent(Intent.ACTION_VIEW); 
-								videoClient.setData(Uri.parse(urlToPlay)); 
+								videoClient.setData(Uri.parse(urlToPlay));
+								progress_Lay.setVisibility(View.GONE);
 								startActivity(videoClient);
 							}catch (Exception e) {
 								Toast.makeText(getApplicationContext(),"YouTube Player not found.", Toast.LENGTH_LONG).show();
@@ -512,6 +512,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							if(savedArticle){
 								intent.putExtra("savedarticle", articleDetails.getUrl());
 							}
+							progress_Lay.setVisibility(View.GONE);
 							startActivity(intent);
 						}
 					}
