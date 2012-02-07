@@ -30,6 +30,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -46,6 +47,7 @@ public class PlayerActivity extends Activity implements Updatable {
 	private final String TAG = "PlayerActivity";
 	ImageView audioImg = null;
 	ProgressDialog progressDialog;
+	private TextView txtTitle;
 
 	private String locationOfData;
 	@Override
@@ -60,7 +62,7 @@ public class PlayerActivity extends Activity implements Updatable {
 			locationOfData =  getIntent().getStringExtra("savedarticle");
 		}
 		audioImg=(ImageView)findViewById(R.id.audioImg);
-
+		txtTitle = (TextView)findViewById(R.id.player_title_view);
 		if(strSelectedArticleType != null && strSelectedArticleID != null){
 			if(locationOfData == null){
 				showDialog(Constants.DIALOG_PROGRESS);
@@ -185,6 +187,8 @@ public class PlayerActivity extends Activity implements Updatable {
 						String strDetails = "";
 						articleDetails = (ArticleDAO) CacheManager.getInstance().get(Constants.C_ARTICLE_DETAILS);
 						if(articleDetails != null){
+							txtTitle.setText(articleDetails.getTitle());
+							
 							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals("")){
 
 								if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO))

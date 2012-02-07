@@ -80,7 +80,7 @@ public class NetworkTask extends Task {
 				handler.handleCallback(null, requestId, ERROR_CODE);
 				return;
 			}
-			
+			Log.e("Request", req);
 			ByteArrayOutputStream requestbaos = new ByteArrayOutputStream();
 			requestbaos.write(req.getBytes(), 0, req.getBytes().length);
 			
