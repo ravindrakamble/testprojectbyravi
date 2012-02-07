@@ -286,7 +286,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 							}
 
-							txt_reviews.setTextColor(Color.BLACK);
+							txt_reviews.setTextColor(Color.WHITE);
 							txt_reviews.setTextSize(15);
 							txt_reviews.setText(Html.fromHtml(reviews.toString()));
 						}else{
