@@ -43,6 +43,16 @@ public class SavedArticlesAdapter extends BaseAdapter{
 		}
 	}
 
+	public void removeItemAt(int position){
+		mArticleList.remove(position);
+		notifyDataSetChanged();
+	}
+	
+	public void removeAll(){
+		mArticleList.clear();
+		notifyDataSetChanged();
+	}
+
 	/**
 	 *  Apply Filtering  
 	 * @param filterStr

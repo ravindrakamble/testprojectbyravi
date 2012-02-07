@@ -86,6 +86,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private List<ArticleDAO> listOfArticles ;
 	private ProgressDialog progressDialog;
 	Typeface _tfBigBold, _tfMediumBold, _tfSmallNormal;
+	private String shortDesc = null;
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +99,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			strSelectedArticleType = getIntent().getStringExtra(Constants.CURRENT_ARTICLE_TYPE);
 			strSelectedArticleID = getIntent().getStringExtra("ArticleID");
 			savedArticle =  getIntent().getBooleanExtra("savedarticle", false);
+			shortDesc = getIntent().getStringExtra("desc");
 		}
 
 		listOfArticles = (List<ArticleDAO>)CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);
@@ -300,6 +302,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							if(imageView.getDrawable() != null){
 								imageView.getDrawable().setCallback(null);
 							}
+							imageView.setBackgroundDrawable(null);
 							imageView.setImageBitmap(CacheManager.getInstance().getLatestArticleBitmap());
 						}
 					}else if(callId == Constants.REQ_DOWNLOADARTICLE){
@@ -388,6 +391,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 		String toastMessage = null;
 		if(count == 0){
+			article.setShortDescription(shortDesc);
 			dbAdapter.insertArticle(article);
 			toastMessage = getString(R.string.record_saved);
 		}else{

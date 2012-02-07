@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 import com.codegreen.R;
@@ -124,8 +125,10 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 		if (convertView == null) {
 			convertView = mLayoutInflator.inflate(R.layout.listitemrow,null);
 			holder = new ListHolder();
+			holder.layout_main = (RelativeLayout) convertView.findViewById(R.id.list_row);
 			holder.txt_articleName = (TextView) convertView.findViewById(R.id.textArticle);
 			holder.img_thumbnail = (ImageView) convertView.findViewById(R.id.ImgThumbnail);
+			holder.txt_articleDesc = (TextView)convertView.findViewById(R.id.textArticledesc);
 			convertView.setTag(holder);
 
 		} else {
@@ -133,27 +136,23 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 			holder = (ListHolder) convertView.getTag();
 		}
 
+		holder.layout_main.setBackgroundResource(R.drawable.listitem_selector);
+
 		// set Values 
 		ArticleDAO data = mArticleList.get(position);
 		if(data!= null){ 
-			holder.txt_articleName.setText(data.getShortDescription().toString());
-			holder.img_thumbnail.setVisibility(View.VISIBLE);
 
-			if(!data.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
-				if(data.getThumbUrl() == null){
-					holder.img_thumbnail.setVisibility(View.GONE);
-				}else{
-					holder.img_thumbnail.setVisibility(View.VISIBLE);
-					if(data.getDownloadedImage() == null){ 
-						imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
-					}else {
-						holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
-					}
-				}
-			}else{
-				holder.img_thumbnail.setVisibility(View.GONE);
+			holder.img_thumbnail.setVisibility(View.VISIBLE);
+			holder.txt_articleName.setText(data.getTitle());
+			holder.txt_articleDesc.setText(data.getShortDescription());
+			holder.img_thumbnail.setVisibility(View.VISIBLE);
+			if(data.getDownloadedImage() == null){ 
+				imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
+			}else {
+				holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
 			}
 		}
+
 		return convertView;
 	}
 
@@ -169,9 +168,12 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 	}
 
 	static class ListHolder {
+		RelativeLayout layout_main;
 		TextView txt_articleName;
 		ImageView img_thumbnail;
+		TextView txt_articleDesc;
 	}
+
 
 	@Override
 	public int getPositionForSection(int arg0) {

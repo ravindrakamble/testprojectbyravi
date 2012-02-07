@@ -28,7 +28,7 @@ public class DBAdapter
 	static DBAdapter dbAdapter;
 
 	//Create table strings
-	static final String articles = "CREATE TABLE ARTICLES (_articleID integer , articletype varchar, ";
+	static final String articles = "CREATE TABLE ARTICLES (dbArticleID integer primary key autoincrement, _articleID integer , articletype varchar, ";
 	static final String Review = "CREATE TABLE Review (_reviewID integer primary key, ";
 	static final String PublishedDates = "CREATE TABLE PUBLISHEDDATES (textDate varchar, imageDate varchar, audioDate varchar, videoDate varchar);";
 
@@ -153,12 +153,12 @@ public class DBAdapter
 	}
 
 	public boolean deleteArticle(ArticleDAO articleDAO){
-		return db.delete("ARTICLES", articleDAO.getArticleID() , null) > 0;
+		return db.delete("ARTICLES", "dbArticleID=" +articleDAO.getDbArticleID() , null) > 0;
 	}
 
 	public int getArticles(ArticleDAO articleDAO){
-		Cursor articles = db.query("ARTICLES", null, "_articleID="+articleDAO.getArticleID()
-				+" and articletype='" + articleDAO.getType()+ "'", null, null, null, null);
+		Cursor articles = db.query("ARTICLES", null, "dbArticleID="+articleDAO.getDbArticleID()
+				, null, null, null, null);
 		if(articles != null ){
 			return articles.getCount();
 		}else{
@@ -198,17 +198,20 @@ public class DBAdapter
 
 		List<ArticleDAO> articleList = new ArrayList<ArticleDAO>();
 		if(articles != null){
+			int index = 0;
 			while(articles.moveToNext()){
+				index = 0;
 				articleDAO = new ArticleDAO();
-				articleDAO.setArticleID(articles.getString(0));
-				articleDAO.setType(articles.getString(1));
-				articleDAO.setTitle(articles.getString(2));
-				articleDAO.setShortDescription(articles.getString(3));
-				articleDAO.setDetailedDescription(articles.getString(4));
-				articleDAO.setThumbUrl(articles.getString(5));
-				articleDAO.setUrl(articles.getString(6));
-				articleDAO.setPublishedDate(articles.getString(7));
-				articleDAO.setCreatedDate(articles.getString(8));
+				articleDAO.setDbArticleID(articles.getString(index++));
+				articleDAO.setArticleID(articles.getString(index++));
+				articleDAO.setType(articles.getString(index++));
+				articleDAO.setTitle(articles.getString(index++));
+				articleDAO.setShortDescription(articles.getString(index++));
+				articleDAO.setDetailedDescription(articles.getString(index++));
+				articleDAO.setThumbUrl(articles.getString(index++));
+				articleDAO.setUrl(articles.getString(index++));
+				articleDAO.setPublishedDate(articles.getString(index++));
+				articleDAO.setCreatedDate(articles.getString(index++));
 				articleList.add(articleDAO);
 			}
 		}
