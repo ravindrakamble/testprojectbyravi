@@ -257,7 +257,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							if(strDetails != null && !strDetails.equals("")){
 								
 								txtDetails.setVisibility(View.VISIBLE);
-								txtDetails.setText(Html.fromHtml(strDetails));
+								txtDetails.setText(strDetails);
 							}
 							else{
 								txtDetails.setVisibility(View.GONE);

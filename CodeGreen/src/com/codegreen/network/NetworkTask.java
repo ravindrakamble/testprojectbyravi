@@ -177,6 +177,7 @@ public class NetworkTask extends Task {
 				}
 			}
 		}catch(Exception e){
+			handler.handleCallback(null, requestId, (byte)Constants.NETWORK_ERROR);
 			e.printStackTrace();
 		}
 		

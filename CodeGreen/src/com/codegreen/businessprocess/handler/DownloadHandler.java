@@ -49,7 +49,7 @@ public class DownloadHandler implements Handler{
 			DownloadInfoDAO dao = new DownloadInfoDAO();
 
 			dao.setType(articleDAO.getType());
-			if(!articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+			if(articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
 				dao.setUrlToDownload(articleDAO.getUrl());
 
 				downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_DATA);
