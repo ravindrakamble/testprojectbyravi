@@ -34,10 +34,11 @@ public class FetchImage
 		try 
 		{ 
 			//Log.e("GetBitmap :: ", url);
-			url.replaceAll(" ", "%20");
+			url = url.replaceAll(" ", "%20");
 			//url = URLEncoder.encode(url);
 			InputStream is=new URL(url).openStream(); 
 			BufferedInputStream bis = new BufferedInputStream(is);  
+			Log.e("Image downloaded:", "" + url);
 			return bitmap = BitmapFactory.decodeStream(bis);
 		}
 		catch (Exception ex)
@@ -73,6 +74,7 @@ public class FetchImage
 
 	private void queuePhoto(ArticleDAO vo, Context activity, ImageView sponserImg)
 	{ 
+		Log.e("Image queued:", "" + vo.getThumbUrl());
 		vo.setImagedrawable(sponserImg);
 
 		synchronized(photosQueue.imageDowload)
@@ -101,7 +103,7 @@ public class FetchImage
 					if(photosQueue.imageDowload.size()!=0 && currentIndex < photosQueue.imageDowload.size())
 						{
 						//Log.e("******** Downloading sponsor images here : ", photosQueue.imageDowload.get(currentIndex).getThumbUrl());
-						Bitmap bmp=getBitmap(photosQueue.imageDowload.get(currentIndex).getThumbUrl()); 
+						Bitmap bmp = getBitmap(photosQueue.imageDowload.get(currentIndex).getThumbUrl()); 
 						if(bmp != null)
 						{
 							photosQueue.imageDowload.get(currentIndex).setDownloadedImage(bmp) ; 
@@ -129,7 +131,10 @@ public class FetchImage
 	{
 		Bitmap bitmap;
 		ImageView imageView;
-		public BitmapDisplayer(Bitmap b, ImageView i){bitmap=b;imageView=i;}
+		public BitmapDisplayer(Bitmap b, ImageView i){
+			bitmap=b;
+			imageView=i;
+			}
 		public void run()
 		{
 			if(bitmap!=null)

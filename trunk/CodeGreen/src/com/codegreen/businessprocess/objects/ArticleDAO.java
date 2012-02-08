@@ -19,6 +19,7 @@ public class ArticleDAO {
 	private Bitmap downloadedImage = null;
 	private String categoryID = "";
 	private String dbArticleID;
+	private boolean dataAddedToQueue;
 	
 	public String getCategoryID() {
 		return categoryID;
@@ -103,6 +104,12 @@ public class ArticleDAO {
 	}
 	public void setDbArticleID(String dbArticleID) {
 		this.dbArticleID = dbArticleID;
+	}
+	public boolean isDataAddedToQueue() {
+		return dataAddedToQueue;
+	}
+	public void setDataAddedToQueue(boolean dataAddedToQueue) {
+		this.dataAddedToQueue = dataAddedToQueue;
 	}
 	
 	

@@ -30,6 +30,7 @@ public class DownloadImageTask extends Task {
 		try {
 			if(imageUrl != null){
 				if(imageUrl.startsWith("http")){
+					imageUrl = imageUrl.replaceAll(" ", "%20");
 					is = new URL(imageUrl).openStream();
 					BufferedInputStream bis = new BufferedInputStream(is);  
 					bitmap = BitmapFactory.decodeStream(bis);

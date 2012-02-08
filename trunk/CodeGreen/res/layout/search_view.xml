@@ -4,7 +4,12 @@
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:orientation="vertical" android:background="#FFFFFF">
 	
-	<include android:id="@+id/search_view1" layout="@layout/search_layout" />
+	<RelativeLayout android:id="@+id/codegreenTitle"  android:background="@drawable/bg_topbar"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		>
+	</RelativeLayout>
+	
+	<include android:id="@+id/search_view1" layout="@layout/search_layout" android:layout_below="@+id/codegreenTitle"/>
 	
 	<ListView android:layout_width="wrap_content" android:layout_below="@+id/search_view1"
 		android:layout_height="wrap_content" android:layout_alignParentLeft="true"

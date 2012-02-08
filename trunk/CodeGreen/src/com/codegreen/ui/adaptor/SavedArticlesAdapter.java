@@ -4,6 +4,10 @@ package com.codegreen.ui.adaptor;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +40,7 @@ public class SavedArticlesAdapter extends BaseAdapter{
 			dbAdapter.open();
 			mArticleList = (ArrayList<ArticleDAO>)dbAdapter.getArticles();
 			dbAdapter.close();
-			imageLoader=new FetchImage(mContext);
+		//	imageLoader=new FetchImage(mContext);
 		
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -157,16 +161,11 @@ public class SavedArticlesAdapter extends BaseAdapter{
 			holder.img_thumbnail.setVisibility(View.VISIBLE);
 			holder.txt_articleName.setText(data.getTitle());
 			holder.txt_articleDesc.setText(data.getShortDescription());
-			/*if(data.getThumbUrl() == null){
-				holder.img_thumbnail.setVisibility(View.GONE);
-			}else{*/
-				holder.img_thumbnail.setVisibility(View.VISIBLE);
-				if(data.getDownloadedImage() == null){ 
-					imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
-				}else {
-					holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
-				}
-			//}
+			holder.img_thumbnail.setVisibility(View.VISIBLE);
+	        Resources res = mContext.getResources(); 
+	        Bitmap bitmap = BitmapFactory.decodeFile(data.getThumbUrl()); 
+	        BitmapDrawable bd = new BitmapDrawable(res, bitmap); 
+			holder.img_thumbnail.setImageDrawable(bd);
 		}
 		return convertView;
 	}

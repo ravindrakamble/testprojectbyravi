@@ -68,7 +68,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 				searchArticles(mSearchText.getText().toString().trim(), CURRENT_SELECTED_CATEGORY);
 			}
 		});
-		mSearchText.setFilters(new InputFilter[] {mSearchTextFilter , mSearchTextLengthFilter});
+	//	mSearchText.setFilters(new InputFilter[] {mSearchTextFilter , mSearchTextLengthFilter});
 		mNoItems = (TextView) findViewById(android.R.id.empty);
 		// First time display no match found 
 		mNoItems.setText(Constants.NO_MATCH_FOUND);  
@@ -118,7 +118,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 	/**
 	 * Length Filter
 	 */
-	private InputFilter mSearchTextLengthFilter = new InputFilter.LengthFilter(30);
+	//private InputFilter mSearchTextLengthFilter = new InputFilter.LengthFilter(30);
 
 
 

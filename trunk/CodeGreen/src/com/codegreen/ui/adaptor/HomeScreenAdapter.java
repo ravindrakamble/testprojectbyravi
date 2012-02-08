@@ -86,18 +86,18 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 
 			holder.img_thumbnail.setVisibility(View.VISIBLE);
 			holder.txt_articleName.setText(data.getTitle());
-			holder.txt_articleDesc.setText(data.getShortDescription());/*
-			if(data.getThumbUrl() == null){
-				holder.img_thumbnail.setVisibility(View.GONE);
-			}else{*/
-				holder.img_thumbnail.setVisibility(View.VISIBLE);
-				if(data.getDownloadedImage() == null){ 
+			holder.txt_articleDesc.setText(data.getShortDescription());
+			holder.img_thumbnail.setVisibility(View.VISIBLE);
+			if(data.getDownloadedImage() == null){ 
+				if(!data.isDataAddedToQueue()){
 					imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
-				}else {
-					holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
+					data.setDataAddedToQueue(true);
 				}
+				holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
+			}else {
+				holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
 			}
-		//}
+		}
 		return convertView;
 	}
 
