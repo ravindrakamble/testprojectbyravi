@@ -8,6 +8,8 @@
  */
 package com.codegreen.services;
 
+import android.content.Context;
+
 import com.codegreen.businessprocess.handler.Handler;
 import com.codegreen.common.TaskExecutor;
 import com.codegreen.network.DownloadImageTask;
@@ -30,11 +32,14 @@ public class WebServiceFacade {
 	private WebServiceFacade(){
 	}
 	
+	static Context mContext = null;
+	
 	/**
 	 * Returns the singleton instance of the Web service Facade.
 	 * @return
 	 */
-	public static WebServiceFacade getInstance(){
+	public static WebServiceFacade getInstance(Context context){
+		mContext = context;
 		return webServiceFacade; 
 	}
 	
@@ -45,7 +50,7 @@ public class WebServiceFacade {
 	 */
 	public void getArticlesByType(Object params, Handler handler){
 		SOAPRequest request = RequestBuilder.getInstance().createRequest(Constants.REQ_GETARTICLESBYTYPE, params);
-		NetworkTask articlesTask = new NetworkTask(request,handler);
+		NetworkTask articlesTask = new NetworkTask(request,handler,mContext);
 		taskExecutor.execute(articlesTask);
 	}
 	
@@ -56,7 +61,7 @@ public class WebServiceFacade {
 	 */
 	public void getArticleDetails(Object params, Handler handler){
 		SOAPRequest request = RequestBuilder.getInstance().createRequest(Constants.REQ_GETARTICLEDETAILS, params);
-		NetworkTask articlesTask = new NetworkTask(request,handler);
+		NetworkTask articlesTask = new NetworkTask(request,handler,mContext);
 		taskExecutor.execute(articlesTask);
 	}
 	
@@ -67,7 +72,7 @@ public class WebServiceFacade {
 	 */
 	public void searchArticles(Object params, Handler handler){
 		SOAPRequest request = RequestBuilder.getInstance().createRequest(Constants.REQ_SEARCHARTICLES, params);
-		NetworkTask articlesTask = new NetworkTask(request,handler);
+		NetworkTask articlesTask = new NetworkTask(request,handler,mContext);
 		taskExecutor.execute(articlesTask);
 	}
 	
@@ -78,7 +83,7 @@ public class WebServiceFacade {
 	 */
 	public void getReviews(Object params, Handler handler){
 		SOAPRequest request = RequestBuilder.getInstance().createRequest(Constants.REQ_GETREVIEWS, params);
-		NetworkTask reviewTask = new NetworkTask(request,handler);
+		NetworkTask reviewTask = new NetworkTask(request,handler,mContext);
 		taskExecutor.execute(reviewTask);
 	}
 	
@@ -89,7 +94,7 @@ public class WebServiceFacade {
 	 */
 	public void submitReviews(Object params, Handler handler){
 		SOAPRequest request = RequestBuilder.getInstance().createRequest(Constants.REQ_SUBMITREVIEW, params);
-		NetworkTask reviewTask = new NetworkTask(request,handler);
+		NetworkTask reviewTask = new NetworkTask(request,handler,mContext);
 		taskExecutor.execute(reviewTask);
 	}
 	

@@ -19,48 +19,50 @@ import java.util.TimeZone;
 import java.util.Vector;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.widget.Toast;
 
 
 
 public class Utils {
-        /**
-    	 * Creation/Expiration date constants.
-    	 */
-    	public static int CREATION_YEAR = 0;
-    	public static int CREATION_MONTH = 0;
-    	public static int EXPIRATION_YEAR = 0;
-    	public static int EXPIRATION_MONTH = 0;
-    	
-    	public static String MIME_BOUNDARY = "";
-        
-    	public static void CopyStream(InputStream is, OutputStream os)
-        {
-            final int buffer_size=1024;
-            try
-            {
-                byte[] bytes=new byte[buffer_size];
-                for(;;)
-                {
-                  int count=is.read(bytes, 0, buffer_size);
-                  if(count==-1)
-                      break;
-                  os.write(bytes, 0, count);
-                }
-            }
-            catch(Exception ex){}
-        }
-        /**
-         * 
-         * @return
-         */
-        public static boolean isNOTNullAndEmpty(String str){
-                boolean isNotNullAndEmpty = false;
-                if(str != null && str.length() > 0){
-                        isNotNullAndEmpty = true;
-                }
-                return isNotNullAndEmpty;
-        }
+	/**
+	 * Creation/Expiration date constants.
+	 */
+	public static int CREATION_YEAR = 0;
+	public static int CREATION_MONTH = 0;
+	public static int EXPIRATION_YEAR = 0;
+	public static int EXPIRATION_MONTH = 0;
+
+	public static String MIME_BOUNDARY = "";
+
+	public static void CopyStream(InputStream is, OutputStream os)
+	{
+		final int buffer_size=1024;
+		try
+		{
+			byte[] bytes=new byte[buffer_size];
+			for(;;)
+			{
+				int count=is.read(bytes, 0, buffer_size);
+				if(count==-1)
+					break;
+				os.write(bytes, 0, count);
+			}
+		}
+		catch(Exception ex){}
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public static boolean isNOTNullAndEmpty(String str){
+		boolean isNotNullAndEmpty = false;
+		if(str != null && str.length() > 0){
+			isNotNullAndEmpty = true;
+		}
+		return isNotNullAndEmpty;
+	}
 
 	/**
 	 * This will replace all occourences of pattern from source string with the replacement string.
@@ -100,7 +102,7 @@ public class Utils {
 		}
 		return String.valueOf(random.nextLong());
 	}
-	
+
 
 	/**
 	 * It validates the given email-ID and returns boolean value true or false.
@@ -569,23 +571,25 @@ public class Utils {
 
 		|| ".-~_".indexOf(b) >= 0;
 	}
-	
-	 /**
+
+	/**
 	 * Check Internet is available or not. If not then doesn't show a pop-up.
 	 * @param context
 	 * @return
 	 */
-	public  final static boolean isNetworkAvail() {
-		/*ConnectivityManager connec =  (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		if(connec.getActiveNetworkInfo() != null) {
-			return true;
-		} else {
-			return false;
-		}*/
+	public  final static boolean isNetworkAvail(Context mContext) {
+		try{
+			NetworkInfo info = (NetworkInfo) ((ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+			if (info == null || !info.isConnected()) {
+				return false;
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		return true;
 	}
-	
-	 /**
+
+	/**
 	 * Check if Wi-Fi available or not. If not then doesn't show a pop-up.
 	 * @param context
 	 * @return
@@ -601,7 +605,7 @@ public class Utils {
 		}*/
 		return true;
 	}
-	
+
 	/**
 	 * Converts date format from yyyy-MM-ddTHH:mm:ss to dd/mm/yyyy
 	 * @param date
@@ -609,14 +613,14 @@ public class Utils {
 	 */
 	public final static String convertDateFormat(String date){
 		String finalDate = null;
-		
+
 		String[] temp = date.split("T");
 		String[] newTemp = temp[0].split("-");
 		finalDate = newTemp[2] + "/" + newTemp[1] + "/" + newTemp[0];
-		
+
 		return finalDate;
 	}
-	
+
 	/**
 	 * Returns true if SD card is present, OR else false 
 	 */
@@ -624,9 +628,9 @@ public class Utils {
 		return android.os.Environment.getExternalStorageState().equals(
 				android.os.Environment.MEDIA_MOUNTED);
 	}
-	
-	
- public static void displayMessage(Context context, String message){
-	 Toast.makeText(context, message, Toast.LENGTH_LONG).show();
- }
+
+
+	public static void displayMessage(Context context, String message){
+		Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+	}
 }

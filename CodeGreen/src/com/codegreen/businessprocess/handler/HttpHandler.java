@@ -43,7 +43,7 @@ public class HttpHandler implements Handler {
 		this.updatable = updatable;
 		requestStatus = Constants.HTTPREQUEST.STARTED;
 		mReqId = callID;
-		WebServiceFacade webServiceFacade = WebServiceFacade.getInstance();
+		WebServiceFacade webServiceFacade = WebServiceFacade.getInstance(applicationContext);
 		switch (callID) {
 		case Constants.REQ_GETARTICLESBYTYPE:
 			// Get articles by type

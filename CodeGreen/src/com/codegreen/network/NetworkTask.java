@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -37,7 +38,7 @@ public class NetworkTask extends Task {
 	 * 
 	 * @param request
 	 */
-	String CON_TIME_OUT = "20000";
+	String CON_TIME_OUT = "50000";
 
 	/**
 	 * Error Code Represents an error code, which describes the nature of the
@@ -48,10 +49,12 @@ public class NetworkTask extends Task {
 	byte ERROR_CODE = 0;
 
 	String TAG = "NetworkTask";
+	Context appContext = null;
 	
-	public NetworkTask(SOAPRequest request, Handler handler) {
+	public NetworkTask(SOAPRequest request, Handler handler, Context context) {
 		this.request = request;
 		this.handler = handler;
+		appContext = context;
 	}
 	@Override
 	public void deAllocate() {
@@ -76,7 +79,8 @@ public class NetworkTask extends Task {
 		try {
 			// Check for the connectivity mode, and set the BB Connection
 			// parameters.
-			if (!Utils.isNetworkAvail() && !Utils.isWifiAvail()) {
+			if (!Utils.isNetworkAvail(appContext)) {
+				ERROR_CODE = Constants.ERR_NETWORK_FAILURE;
 				handler.handleCallback(null, requestId, ERROR_CODE);
 				return;
 			}

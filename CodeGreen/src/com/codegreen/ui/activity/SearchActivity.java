@@ -6,12 +6,18 @@ import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.listener.Updatable;
 import com.codegreen.ui.adaptor.SearchScreenAdapter;
 import com.codegreen.util.Constants;
+import com.codegreen.util.Utils;
+import com.facebook.android.Util;
+
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -68,7 +74,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 				searchArticles(mSearchText.getText().toString().trim(), CURRENT_SELECTED_CATEGORY);
 			}
 		});
-	//	mSearchText.setFilters(new InputFilter[] {mSearchTextFilter , mSearchTextLengthFilter});
+		//	mSearchText.setFilters(new InputFilter[] {mSearchTextFilter , mSearchTextLengthFilter});
 		mNoItems = (TextView) findViewById(android.R.id.empty);
 		// First time display no match found 
 		mNoItems.setText(Constants.NO_MATCH_FOUND);  
@@ -78,21 +84,24 @@ public class SearchActivity extends ListActivity implements Updatable{
 
 	private void searchArticles(String searchString, int type){
 		try {
-			HttpHandler httpHandler =  HttpHandler.getInstance();
-			//Cancel previous request;
-			httpHandler.cancelRequest();
+			if(Utils.isNetworkAvail(getApplicationContext())){
+				HttpHandler httpHandler =  HttpHandler.getInstance();
+				//Cancel previous request;
+				httpHandler.cancelRequest();
+				//Start progress bar
+				//Prepare data for new request
+				ArticleDAO articleDAO = new ArticleDAO();
+				articleDAO.setTitle(searchString);
+				articleDAO.setType(CURRENT_SELECTED_MEDIA);
+				articleDAO.setCategoryID(String.valueOf(type));
 
-			//Start progress bar
-
-			//Prepare data for new request
-			ArticleDAO articleDAO = new ArticleDAO();
-			articleDAO.setTitle(searchString);
-			articleDAO.setType(CURRENT_SELECTED_MEDIA);
-			articleDAO.setCategoryID(String.valueOf(type));
-
-			//Send request
-			httpHandler.setApplicationContext(getApplicationContext());
-			httpHandler.handleEvent(articleDAO, Constants.REQ_SEARCHARTICLES, this);
+				//Send request
+				httpHandler.setApplicationContext(getApplicationContext());
+				httpHandler.handleEvent(articleDAO, Constants.REQ_SEARCHARTICLES, this);
+			}else{
+				progressLayout.setVisibility(View.GONE);
+				Toast.makeText(getApplicationContext(),"No Network Available", Toast.LENGTH_SHORT).show();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -164,18 +173,22 @@ public class SearchActivity extends ListActivity implements Updatable{
 	@Override
 	public void update(Constants.ENUM_PARSERRESPONSE updateData, byte ReqID,byte errorCode) {
 
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if(progressLayout != null)
+					progressLayout.setVisibility(View.GONE);
+			}
+		});
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
-
-
 			runOnUiThread(new Runnable() {
 
 				@Override
 				public void run() {
 					searchView.setEnabled(true);
 					searchView.setVisibility(View.VISIBLE);
-					progressLayout.setVisibility(View.GONE);
 				}
 			});
 			if(mAdapter == null){
@@ -197,21 +210,91 @@ public class SearchActivity extends ListActivity implements Updatable{
 				});
 			}
 		}else if(errorCode == Constants.ERR_NETWORK_FAILURE){
-			Toast.makeText(this, "No Network Available.", Toast.LENGTH_LONG).show();	
+			Toast.makeText(this, "No Network Available.", Toast.LENGTH_SHORT).show();	
 		}
-		
+	}
 
+	
+	private static final int MENU_OPTION_SAVED = 0x01;
+	private static final int MENU_OPTION_HOME = 0x02;
+	private static final int MENU_OPTION_INFO = 0x04;
+
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		try{
+			menu.removeGroup(0);
+			menu.add(0, MENU_OPTION_HOME,0 , "Home").setIcon(android.R.drawable.ic_menu_gallery);
+			menu.add(0, MENU_OPTION_SAVED,0 , "Saved Items").setIcon(android.R.drawable.ic_menu_gallery);
+			menu.add(0, MENU_OPTION_INFO,0 , "Info").setIcon(android.R.drawable.ic_menu_help);
+			return true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case MENU_OPTION_SAVED:
+			launchSavedActivity();
+			break;
+		case MENU_OPTION_HOME:
+			launchHomeActivity();
+			break; 
+		case MENU_OPTION_INFO:
+			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
+			break;
+		default:
+			break;
+		}
+		return false;
+	}
+	
+	private void launchHomeActivity(){
+		try{
+			Context cxt = getApplicationContext();
+			Intent intent = new Intent(cxt, HomeActivity.class);     		
+			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			startActivity(intent);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+	}
+	
+	
+	/**
+	 *  Launch SearchCallhistoryActivity 
+	 * @param filterStr
+	 */
+	private void launchSavedActivity(){
+		try{
+			Context cxt = getApplicationContext();
+			Intent intent = new Intent(cxt, SavedArticlesActivity.class);     		
+			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			startActivity(intent);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-		Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
-		intent.putExtra("ArticleID", articleEntry.getArticleID());
-		startActivity(intent);
+	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+
+		if(Utils.isNetworkAvail(getApplicationContext())){
+			ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
+			Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
+			intent.putExtra("ArticleID", articleEntry.getArticleID());
+			startActivity(intent);
+		}else{
+			Toast.makeText(getApplicationContext(),"No Network Available", Toast.LENGTH_SHORT).show();
+		}
 	}  
 
 }
