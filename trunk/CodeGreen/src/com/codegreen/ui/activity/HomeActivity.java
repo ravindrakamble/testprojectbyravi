@@ -36,6 +36,7 @@ import com.codegreen.ui.dialog.MediaDialog;
 import com.codegreen.ui.dialog.ReviewDialog;
 import com.codegreen.util.Constants;
 import com.codegreen.util.Utils;
+import com.facebook.android.Util;
 
 public class HomeActivity extends ListActivity implements Updatable, MediaDialogListner{
 
@@ -60,7 +61,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	TextView mBtnLatest = null;
 
 	private static int CURRENT_SELECTED_CATEGORY = 0;
-	private static String CURRENT_SELECTED_MEDIA = "";
+	private static String CURRENT_SELECTED_MEDIA = "ALL";
 	private TextView mNoItems = null;
 	private ProgressDialog progressDialog;
 
@@ -70,6 +71,8 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
 		initWidgets();
+		CURRENT_SELECTED_CATEGORY = 0;
+		CURRENT_SELECTED_MEDIA = "ALL";
 		getArticleData("");
 		getListView().setCacheColorHint(0);
 	}
@@ -106,11 +109,11 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		mNoItems =(TextView) findViewById(android.R.id.empty);
 		btn_left_arrow = (ImageView)findViewById(R.id.btn_left_arrow);
 		btn_right_arrow = (ImageView)findViewById(R.id.btn_right_arrow);
-		
+
 		// set default as off 
 		btn_left_arrow.setBackgroundResource(R.drawable.left_arrow_off);
-		
-		
+
+
 		mBtnGreenBasic.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -118,7 +121,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				btn_left_arrow.setBackgroundResource(R.drawable.left_arrow_on);
 				refreshViews();
 				mBtnGreenBasic.setBackgroundResource(R.drawable.scrollbutton_off);
-				//mBtnGreenBasic.setTextColor(Color.GREEN);
+				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 1;
 				getArticleData("");
 			}
@@ -127,10 +130,10 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
-				
+
 				refreshViews();
 				mBtnDesignArcht.setBackgroundResource(R.drawable.scrollbutton_off);
-				//mBtnDesignArcht.setTextColor(Color.GREEN);
+				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 2;
 				getArticleData("");
 			}
@@ -141,7 +144,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			public void onClick(View v) {
 				refreshViews();
 				mBtnScience.setBackgroundResource(R.drawable.scrollbutton_off);
-				//mBtnScience.setTextColor(Color.GREEN);
+				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 3;
 				getArticleData("");
 			}
@@ -152,7 +155,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			public void onClick(View v) {
 				refreshViews();
 				mBtnTransport.setBackgroundResource(R.drawable.scrollbutton_off);
-				//mBtnTransport.setTextColor(Color.GREEN);
+				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 4;
 				getArticleData("");
 			}
@@ -163,7 +166,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			public void onClick(View v) {
 				refreshViews();
 				mBtnBusiness.setBackgroundResource(R.drawable.scrollbutton_off);
-				//mBtnBusiness.setTextColor(Color.GREEN);
+				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 5;
 				getArticleData("");
 			}
@@ -175,7 +178,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				btn_right_arrow.setBackgroundResource(R.drawable.right_arrow_on);
 				refreshViews();
 				mBtnPolitics.setBackgroundResource(R.drawable.scrollbutton_off);
-				//mBtnPolitics.setTextColor(Color.GREEN);
+				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 6;
 				getArticleData("");
 			}
@@ -187,7 +190,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				btn_right_arrow.setBackgroundResource(R.drawable.right_arrow_off);
 				refreshViews();
 				mBtnFood.setBackgroundResource(R.drawable.scrollbutton_off);
-			//	mBtnFood.setTextColor(Color.GREEN);
+				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 7;
 				getArticleData("");
 			}
@@ -202,24 +205,24 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		});
 
 		mBtnLatest = (TextView)findViewById(R.id.btn_latest);
-		
+
 		mBtnLatest.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				btn_left_arrow.setBackgroundResource(R.drawable.left_arrow_off);
+				CURRENT_SELECTED_CATEGORY = 0;
+				CURRENT_SELECTED_MEDIA = "ALL";
 				refreshViews();
 				mBtnLatest.setBackgroundResource(R.drawable.scrollbutton_off);
-				//mBtnLatest.setTextColor(Color.GREEN);
 				getArticleData("");
 			}
 		});
 		refreshViews();
 		mBtnLatest.setBackgroundResource(R.drawable.scrollbutton_off);
-		//mBtnLatest.setTextColor(Color.GREEN);
 	}
 
-	
+
 	private void refreshViews(){
 		mBtnBusiness.setTextColor(Color.WHITE);
 		mBtnDesignArcht.setTextColor(Color.WHITE);
@@ -238,14 +241,14 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		mBtnScience.setBackgroundDrawable(null);
 		mBtnTransport.setBackgroundDrawable(null);
 	}
-	
+
 
 	private void showMediaOptions(){
 		showDialog(Constants.DIALOG_MEDIA);
-		}
+	}
 
 
-     
+
 	private void searchArticles(int type){
 		try {
 			HttpHandler httpHandler =  HttpHandler.getInstance();
@@ -274,7 +277,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	protected void onResume() {
 		super.onResume();
 		// Restore the default value of media type
-		CURRENT_SELECTED_MEDIA = "";
+		CURRENT_SELECTED_MEDIA = "ALL";
 	}
 
 
@@ -284,22 +287,26 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	 */
 	private void getArticleData(String articleType){
 		try {
-			HttpHandler httpHandler =  HttpHandler.getInstance();
-			//Cancel previous request;
-			httpHandler.cancelRequest();
+			if(Utils.isNetworkAvail(getApplicationContext())){
+				HttpHandler httpHandler =  HttpHandler.getInstance();
+				//Cancel previous request;
+				httpHandler.cancelRequest();
 
-			//Start progressbar
-			showDialog(Constants.DIALOG_PROGRESS);
-			mNoItems.setVisibility(View.GONE);
-			//Prepare data for new request
-			ArticleDAO articleDAO = new ArticleDAO();
-			articleDAO.setType(articleType);
-			//date format should be mm/dd/yyyy
-			articleDAO.setLastArticlePublishingDate(Utils.getCurrentDate()); // TBD 
-			articleDAO.setCategoryID(String.valueOf(CURRENT_SELECTED_CATEGORY));
-			//Send request
-			httpHandler.setApplicationContext(getApplicationContext());
-			httpHandler.handleEvent(articleDAO, Constants.REQ_GETARTICLESBYTYPE, this);
+				//Start progressbar
+				showDialog(Constants.DIALOG_PROGRESS);
+				mNoItems.setVisibility(View.GONE);
+				//Prepare data for new request
+				ArticleDAO articleDAO = new ArticleDAO();
+				articleDAO.setType(articleType);
+				//date format should be mm/dd/yyyy
+				articleDAO.setLastArticlePublishingDate(Utils.getCurrentDate()); // TBD 
+				articleDAO.setCategoryID(String.valueOf(CURRENT_SELECTED_CATEGORY));
+				//Send request
+				httpHandler.setApplicationContext(getApplicationContext());
+				httpHandler.handleEvent(articleDAO, Constants.REQ_GETARTICLESBYTYPE, this);
+			}else{
+				Toast.makeText(getApplicationContext(),"No Network Available", Toast.LENGTH_SHORT).show();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -370,7 +377,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 	@Override
 	public void update(Constants.ENUM_PARSERRESPONSE updateData, final byte reqID, byte errorCode) {
-
 		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
@@ -418,7 +424,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 				@Override
 				public void run() {
-					Toast.makeText(HomeActivity.this, "No Network Available.", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "No Network Available.", Toast.LENGTH_SHORT).show();
 				}
 			});
 
@@ -428,10 +434,9 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 				@Override
 				public void run() {
-					Toast.makeText(HomeActivity.this, "No news data found", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "No news data found", Toast.LENGTH_SHORT).show();
 				}
 			});
-
 		}
 
 		//Send message to remove progress bar
@@ -442,16 +447,19 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
-
-		Constants.CURRENT_INDEX = position;
-		// Launch details screen
-		Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
-		intent.putExtra("ArticleID", articleEntry.getArticleID());
-		intent.putExtra("desc", articleEntry.getShortDescription());
-		startActivity(intent);
+		if(Utils.isNetworkAvail(getApplicationContext())){
+			ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
+			Constants.CURRENT_INDEX = position;
+			// Launch details screen
+			Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
+			intent.putExtra("ArticleID", articleEntry.getArticleID());
+			intent.putExtra("desc", articleEntry.getShortDescription());
+			startActivity(intent);
+		}else{
+			Toast.makeText(getApplicationContext(),"No Network Available", Toast.LENGTH_SHORT).show();
+		}
 	} 
 
 
@@ -469,7 +477,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			}
 		};
 	};
- 
+
 
 	/**
 	 *  Launch SearchCallhistoryActivity 

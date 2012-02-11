@@ -7,6 +7,7 @@ import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.businessprocess.objects.ReviewDAO;
 import com.codegreen.listener.Updatable;
 import com.codegreen.util.Constants;
+import com.codegreen.util.Utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -39,7 +40,7 @@ public class ReviewDialog extends AlertDialog implements OnClickListener{
 	private ArticleDAO articleDAO; 
 	private HttpHandler httpHandler;
 	private TextView txtView;
-	
+
 	/**
 	 * Constructor for class <strong>CustomDialog</strong>,
 	 * to get dialogue with default theme.
@@ -49,7 +50,7 @@ public class ReviewDialog extends AlertDialog implements OnClickListener{
 		super(context, android.R.style.Theme_Dialog); 
 		mContext = context;
 		this.articleDAO = articleDAO;
-		
+
 	}
 
 
@@ -66,19 +67,19 @@ public class ReviewDialog extends AlertDialog implements OnClickListener{
 	private void initDialogLayout(){
 		LayoutInflater inflater = LayoutInflater.from(mContext);
 		final View view = inflater
-				.inflate(R.layout.review_dialog, null);
+		.inflate(R.layout.review_dialog, null);
 		setView(view);
 		this.setContentView(R.layout.review_dialog);
 		setTitle(R.string.add_review);
-		
+
 		//Assign the controls
 		txtView = (TextView)findViewById(R.id.txtTitle);
 		//Set text
 		txtView.setText(articleDAO.getTitle());
-		
+
 		edt_name = (EditText)findViewById(R.id.etName);
 		edt_Review = (EditText)findViewById(R.id.etComments);
-		
+
 		//Assign the buttons
 		submit = (Button)findViewById(R.id.btn_submit);
 		submit.setOnClickListener(this);
@@ -105,27 +106,32 @@ public class ReviewDialog extends AlertDialog implements OnClickListener{
 		String review = null;
 		String name = null;
 		if(view == submit){
-			review = edt_Review.getText().toString();
-			name = edt_name.getText().toString();
-			if(review == null){
-				Toast.makeText(mContext, "Please enter review.", Toast.LENGTH_LONG).show();
-			}else{
-				if(name == null){
-					name = "";
+			if(Utils.isNetworkAvail(mContext.getApplicationContext())){
+				review = edt_Review.getText().toString();
+				name = edt_name.getText().toString();
+				if(review == null){
+					Toast.makeText(mContext, "Please enter review.", Toast.LENGTH_SHORT).show();
+				}else{
+					if(name == null){
+						name = "";
+					}
+
+					submitReviews(name, review);
+
+					Toast.makeText(mContext, "Your review will be submitted.", Toast.LENGTH_LONG).show();
+					this.cancel();
+					this.dismiss();
+
 				}
-				
-				submitReviews(name, review);
-				
-				Toast.makeText(mContext, "Your review will be submitted.", Toast.LENGTH_LONG).show();
-				this.cancel();
-				this.dismiss();
+			}else{
+				Toast.makeText(mContext, "No Network Available", Toast.LENGTH_SHORT).show();	
 			}
 		}else if(view == cancel){
 			this.cancel();
 			this.dismiss();
 		}
 	}
-	
+
 	private void submitReviews(String name, String review){
 		httpHandler = HttpHandler.getInstance();
 		ReviewDAO reviewDAO = new ReviewDAO();

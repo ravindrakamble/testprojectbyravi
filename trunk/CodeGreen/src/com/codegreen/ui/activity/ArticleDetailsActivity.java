@@ -47,6 +47,7 @@ import android.view.animation.AnimationUtils;
 
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -86,6 +87,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private List<ArticleDAO> listOfArticles ;
 	private ProgressDialog progressDialog;
 	Typeface _tfBigBold, _tfMediumBold, _tfSmallNormal;
+	RelativeLayout lay_main = null;
 	private String shortDesc = null;
 	@SuppressWarnings("unchecked")
 	@Override
@@ -108,30 +110,49 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 		if(strSelectedArticleType != null){
 			setContentView(R.layout.atrticle_text);
-			txtDetails = (TextView) findViewById(R.id.article_details_view);
-			txtDetails.setTypeface(_tfMediumBold);
-			
-			txtTitle = (TextView) findViewById(R.id.article_title_view);
-			txtTitle.setTypeface(_tfBigBold);
-			
-			txtDate = (TextView) findViewById(R.id.article_date_view);
-			txtDate.setTypeface(_tfSmallNormal);
-			
-			progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
-			imageView = (ImageView)findViewById(R.id.webview);
-			if(strSelectedArticleType == Constants.ARTCLETYPE_TEXT){
-				imageView.setBackgroundResource(R.drawable.default_bg_text);
-			}else{
-				imageView.setBackgroundResource(R.drawable.bg_images_sample);
-			}
-			
+
 			txt_reviews = (TextView)findViewById(R.id.txt_reviews);
 			txt_reviews.setVisibility(View.GONE);
-			
+
+			lay_main = (RelativeLayout)findViewById(R.id.lay_details_main);
+			txtDetails = (TextView) findViewById(R.id.article_details_view);
+			txtDetails.setTypeface(_tfMediumBold);
+
+			txtTitle = (TextView) findViewById(R.id.article_title_view);
+			txtTitle.setTypeface(_tfBigBold);
+
+			txtDate = (TextView) findViewById(R.id.article_date_view);
+			txtDate.setTypeface(_tfSmallNormal);
+
+			progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
+			imageView = (ImageView)findViewById(R.id.webview);
+			imageView.setBackgroundResource(R.drawable.bg_images_sample);
+
+			TextView progress_text = (TextView) findViewById(R.id.progress_text_color);
+
+			if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
+				lay_main.setBackgroundColor(Color.WHITE);
+				txtTitle.setTextColor(Color.BLACK);
+				txtDate.setTextColor(Color.BLACK);
+				txtDetails.setTextColor(Color.BLACK);
+				txt_reviews.setTextColor(Color.BLACK);
+				progress_text.setTextColor(Color.BLACK);
+
+			}else{
+				lay_main.setBackgroundColor(Color.BLACK);
+				txtTitle.setTextColor(Color.WHITE);
+				txtDate.setTextColor(Color.WHITE);
+				txtDetails.setTextColor(Color.WHITE);
+				txt_reviews.setTextColor(Color.WHITE);
+				progress_text.setTextColor(Color.WHITE);
+			}
+
+
 			scrollLinearlayout = (LinearLayout)findViewById(R.id.scrollLinearlayout);
 
 			mFlipper = ((ViewFlipper)findViewById(R.id.tutorial_flipper));
-			Animation anim = (Animation) AnimationUtils.loadAnimation(ArticleDetailsActivity.this, R.anim.push_left_in);
+			Animation anim = (Animation) AnimationUtils.
+			loadAnimation(ArticleDetailsActivity.this, R.anim.push_left_in);
 			findViewById(R.id.content_container).startAnimation(anim);
 
 			gestureDetector = new GestureDetector(new MyGestureDetector());
@@ -143,7 +164,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					}
 					return false;
 				}
-				
+
 			};
 			txtDetails.setOnTouchListener(gestureListener);
 			mFlipper.setOnTouchListener(gestureListener);
@@ -157,14 +178,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				}
 			});
 
-			/*txt_reviews.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					//getReviews(articleDetails);
-				}
-			});
-*/		}
+		}
 
 		if(strSelectedArticleType != null && strSelectedArticleID != null){
 			if(!savedArticle){
@@ -175,7 +189,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 	}
 
-	
+
 
 
 
@@ -203,13 +217,17 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	 * WS call to get article details
 	 */
 	private void getArticleDetails(){
-		progress_Lay.setVisibility(View.VISIBLE);
-		HttpHandler httpHandler =  HttpHandler.getInstance();
-		ArticleDAO articleDAO = new ArticleDAO();
-		articleDAO.setArticleID(strSelectedArticleID);
-		articleDAO.setType(strSelectedArticleType);
-		articleDAO.setCategoryID(Constants.CURRENT_CATEGORY_TYPE);
-		httpHandler.handleEvent(articleDAO, Constants.REQ_GETARTICLEDETAILS, this);
+		if(Utils.isNetworkAvail(getApplicationContext())){
+			progress_Lay.setVisibility(View.VISIBLE);
+			HttpHandler httpHandler =  HttpHandler.getInstance();
+			ArticleDAO articleDAO = new ArticleDAO();
+			articleDAO.setArticleID(strSelectedArticleID);
+			articleDAO.setType(strSelectedArticleType);
+			articleDAO.setCategoryID(Constants.CURRENT_CATEGORY_TYPE);
+			httpHandler.handleEvent(articleDAO, Constants.REQ_GETARTICLEDETAILS, this);
+		}else{
+			Toast.makeText(getApplicationContext(), "No Network Available.", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	@Override
@@ -252,10 +270,10 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							txtDate.setText("Date :" + articleDetails.getPublishedDate());
 							txtTitle.setVisibility(View.VISIBLE);
 							txtDate.setVisibility(View.VISIBLE);
-							
+
 							strDetails =  articleDetails.getDetailedDescription();
 							if(strDetails != null && !strDetails.equals("")){
-								
+
 								txtDetails.setVisibility(View.VISIBLE);
 								txtDetails.setText(strDetails);
 							}
@@ -287,7 +305,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 							}
 
-							txt_reviews.setTextColor(Color.WHITE);
 							txt_reviews.setTextSize(15);
 							txt_reviews.setText(Html.fromHtml(reviews.toString()));
 						}else{
@@ -330,9 +347,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					handler.sendMessage(msg);
 				}
 			});
-
 		}
-
 	}
 
 
@@ -428,33 +443,42 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 	private void getReviews(ArticleDAO articleDAO){
 		try {
-			HttpHandler httpHandler =  HttpHandler.getInstance();
-			//Cancel previous request;
-			httpHandler.cancelRequest();
+			if(Utils.isNetworkAvail(getApplicationContext())){
+				HttpHandler httpHandler =  HttpHandler.getInstance();
+				//Cancel previous request;
+				httpHandler.cancelRequest();
 
-			//Start progress bar
-			progress_Lay.setVisibility(View.VISIBLE);
-			//Prepare data for new request
-			ReviewDAO reviewDAO = new ReviewDAO();
-			reviewDAO.setArticleID(articleDAO.getArticleID());
-			reviewDAO.setArticleType(articleDAO.getType());
-			//Send request
-			httpHandler.setApplicationContext(getApplicationContext());
-			httpHandler.handleEvent(reviewDAO, Constants.REQ_GETREVIEWS, this);
+				//Start progress bar
+				progress_Lay.setVisibility(View.VISIBLE);
+				//Prepare data for new request
+				ReviewDAO reviewDAO = new ReviewDAO();
+				reviewDAO.setArticleID(articleDAO.getArticleID());
+				reviewDAO.setArticleType(articleDAO.getType());
+				//Send request
+				httpHandler.setApplicationContext(getApplicationContext());
+				httpHandler.handleEvent(reviewDAO, Constants.REQ_GETREVIEWS, this);
+			}else{
+				Toast.makeText(getApplicationContext(), "No Network Available", Toast.LENGTH_SHORT).show();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void downloadImage(){
-		if(articleDetails != null){
-			HttpHandler httpHandler =  HttpHandler.getInstance();
-			//Cancel previous request;
-			httpHandler.cancelRequest();
-			String url = null;
-			url = articleDetails.getUrl();
-			if(url != null && !url.equals(""))
-				httpHandler.handleEvent(url, Constants.REQ_DOWNLOADIMAGE, ArticleDetailsActivity.this);
+		if(Utils.isNetworkAvail(getApplicationContext())){
+			if(articleDetails != null){
+				HttpHandler httpHandler =  HttpHandler.getInstance();
+				//Cancel previous request;
+				httpHandler.cancelRequest();
+				String url = null;
+				url = articleDetails.getUrl();
+				if(url != null && !url.equals(""))
+					httpHandler.handleEvent(url, Constants.REQ_DOWNLOADIMAGE, ArticleDetailsActivity.this);
+			}
+		}else
+		{
+			Toast.makeText(getApplicationContext(), "No Network Available", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -491,7 +515,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				if(notAFling){
 					if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) 
 							|| strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
-						
+
 						progress_Lay.setVisibility(View.VISIBLE);
 						String urlToPlay = articleDetails.getUrl();
 						Log.e("---------Play Url------- ", urlToPlay);
@@ -502,7 +526,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 								progress_Lay.setVisibility(View.GONE);
 								startActivity(videoClient);
 							}catch (Exception e) {
-								Toast.makeText(getApplicationContext(),"YouTube Player not found.", Toast.LENGTH_LONG).show();
+								Toast.makeText(getApplicationContext(),"YouTube Player not found.", Toast.LENGTH_SHORT).show();
 							}
 						}else{
 							Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
@@ -589,8 +613,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev){
-	    super.dispatchTouchEvent(ev);
-	    return gestureDetector.onTouchEvent(ev);
+		super.dispatchTouchEvent(ev);
+		return gestureDetector.onTouchEvent(ev);
 	} 
 	class MyGestureDetector extends SimpleOnGestureListener {
 		@Override
@@ -609,7 +633,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					showPreviousArticle();
 				}
 			} catch (Exception e) {
-				
+
 			}
 			return true;
 
