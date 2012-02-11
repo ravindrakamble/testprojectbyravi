@@ -21,6 +21,8 @@ public class DownloadHandler implements Handler{
 	boolean imageDownloaded;
 	boolean dataDownloaded;
 
+	boolean requestForImage;
+	boolean requestForData;
 	private ArticleDAO downloadedArticle;
 
 	private static DownloadHandler mSelf = null;
@@ -35,6 +37,7 @@ public class DownloadHandler implements Handler{
 		if(mSelf == null){
 			mSelf = new DownloadHandler();
 		} 
+		
 		return mSelf;
 	}
 	/** 
@@ -42,16 +45,22 @@ public class DownloadHandler implements Handler{
 	 */
 	@Override
 	public byte handleEvent(Object eventObject, byte callID, Updatable updatable) {
+		downloadedArticle = null;
+		articleDAO = null;
 		this.updatable = updatable;
 		this.articleDAO = (ArticleDAO)eventObject;
+		if(downloadedArticle == null){
+			downloadedArticle = new ArticleDAO();
+			downloadedArticle = articleDAO;
+		}
 		switch(callID){
 		case Constants.REQ_DOWNLOADARTICLE:
 			DownloadInfoDAO dao = new DownloadInfoDAO();
 
 			dao.setType(articleDAO.getType());
-			if(articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+			if(articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
 				dao.setUrlToDownload(articleDAO.getUrl());
-
+				requestForData = true;
 				downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_DATA);
 				taskExecutor.execute(downloadTask);
 			}else{
@@ -59,7 +68,8 @@ public class DownloadHandler implements Handler{
 				//Download article image first
 				downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_IMAGE);
 				taskExecutor.execute(downloadTask);
-
+				requestForImage = true;
+				
 				dao = new DownloadInfoDAO();
 				dao.setUrlToDownload(articleDAO.getUrl());
 				if(dao.getFileName() == null){
@@ -67,6 +77,7 @@ public class DownloadHandler implements Handler{
 				}
 				dao.setType(articleDAO.getType());
 				//Download article image first
+				requestForData = true;
 				downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_DATA);
 				taskExecutor.execute(downloadTask);
 			}
@@ -88,37 +99,29 @@ public class DownloadHandler implements Handler{
 		switch(callID){
 		case Constants.DOWNLOAD_ARTICLE_IMAGE:
 			imageDownloaded = true;
-			if(downloadedArticle == null){
-				downloadedArticle = new ArticleDAO();
-				downloadedArticle = articleDAO;
-				downloadedArticle.setThumbUrl(null);
-				downloadedArticle.setUrl(null);
-			}
-			if(!articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+			
+			if(articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
 				downloadedArticle.setUrl((String)callbackObject);
 				
-				CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
-				updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
 			}else{
 				downloadedArticle.setThumbUrl((String)callbackObject);
-				
-				
+			}
+			if(requestForData && dataDownloaded){
+				CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
+				updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
 			}
 			break;
 		case Constants.DOWNLOAD_ARTICLE_DATA:
 			dataDownloaded = true;
-			if(downloadedArticle == null){
-				downloadedArticle = new ArticleDAO();
-				downloadedArticle = articleDAO;
-				downloadedArticle.setThumbUrl(null);
-				downloadedArticle.setUrl(null);
-			}
+			
 			downloadedArticle.setUrl((String)callbackObject);
-			CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
-			updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
+			if(requestForImage && imageDownloaded){
+				CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
+				updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
+			}
 			break;
 		}
-
+		
 	}
 
 	}

@@ -456,6 +456,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
 			intent.putExtra("ArticleID", articleEntry.getArticleID());
 			intent.putExtra("desc", articleEntry.getShortDescription());
+			intent.putExtra("thumburl", articleEntry.getThumbUrl());
 			startActivity(intent);
 		}else{
 			Toast.makeText(getApplicationContext(),"No Network Available", Toast.LENGTH_SHORT).show();

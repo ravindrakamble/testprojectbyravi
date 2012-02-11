@@ -89,6 +89,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	Typeface _tfBigBold, _tfMediumBold, _tfSmallNormal;
 	RelativeLayout lay_main = null;
 	private String shortDesc = null;
+	private String thumbUrl;
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,9 +103,10 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			strSelectedArticleID = getIntent().getStringExtra("ArticleID");
 			savedArticle =  getIntent().getBooleanExtra("savedarticle", false);
 			shortDesc = getIntent().getStringExtra("desc");
+			thumbUrl = getIntent().getStringExtra("thumburl");
 		}
 
-		listOfArticles = (List<ArticleDAO>)CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);
+		listOfArticles = (List<ArticleDAO>)CacheManager.getInstance().get(Constants.C_ARTICLES);
 		if(listOfArticles != null){
 			Constants.TOTAL_ARTICLES = listOfArticles.size();
 		}
@@ -167,6 +169,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 			};
 			txtDetails.setOnTouchListener(gestureListener);
+			txtTitle.setOnTouchListener(gestureListener);
+			txtDate.setOnTouchListener(gestureListener);
 			mFlipper.setOnTouchListener(gestureListener);
 			scrollLinearlayout.setOnTouchListener(gestureListener);
 			//imageView.setOnTouchListener(gestureListener);
@@ -253,6 +257,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						imageView.setVisibility(View.GONE);
 						articleDetails = (ArticleDAO) CacheManager.getInstance().get(Constants.C_ARTICLE_DETAILS);
 						if(articleDetails != null){
+							articleDetails.setThumbUrl(thumbUrl);
+							articleDetails.setShortDescription(shortDesc);
 							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals("")){
 								imageView.setVisibility(View.VISIBLE);
 								if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
@@ -381,16 +387,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 
 			if(count == 0){
-				if(articleDetails.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_TEXT)){
-					saveArticle(articleDetails);
-				}else{
-					DownloadHandler downloadHandler = DownloadHandler.getInstance();
-					downloadHandler.handleEvent(articleDetails, Constants.REQ_DOWNLOADARTICLE, this);
+				DownloadHandler downloadHandler = DownloadHandler.getInstance();
+				downloadHandler.handleEvent(articleDetails, Constants.REQ_DOWNLOADARTICLE, this);
 
-					Message msg = new Message();
-					msg.what = SHOW_PROGRESS;
-					handler.sendMessage(msg);
-				}
+				Message msg = new Message();
+				msg.what = SHOW_PROGRESS;
+				handler.sendMessage(msg);
 			}
 			break;
 		default:
@@ -416,7 +418,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		dbAdapter.close();
 		Toast.makeText(getApplicationContext(),toastMessage, Toast.LENGTH_LONG).show();
 
-
+		CacheManager.getInstance().removeFromCache(Constants.C_DOWNLOADED_ARTICLE);
 	}
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -468,13 +470,15 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private void downloadImage(){
 		if(Utils.isNetworkAvail(getApplicationContext())){
 			if(articleDetails != null){
-				HttpHandler httpHandler =  HttpHandler.getInstance();
-				//Cancel previous request;
-				httpHandler.cancelRequest();
-				String url = null;
-				url = articleDetails.getUrl();
-				if(url != null && !url.equals(""))
-					httpHandler.handleEvent(url, Constants.REQ_DOWNLOADIMAGE, ArticleDetailsActivity.this);
+				if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+					HttpHandler httpHandler =  HttpHandler.getInstance();
+					//Cancel previous request;
+					httpHandler.cancelRequest();
+					String url = null;
+					url = articleDetails.getUrl();
+					if(url != null && !url.equals(""))
+						httpHandler.handleEvent(url, Constants.REQ_DOWNLOADIMAGE, ArticleDetailsActivity.this);
+				}
 			}
 		}else
 		{
@@ -583,6 +587,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				txtTitle.setVisibility(View.GONE);
 				txtDate.setVisibility(View.GONE);
 				txt_reviews.setVisibility(View.GONE);
+				//imageView.getDrawable().setCallback(null);
 				imageView.setImageResource(R.drawable.bg_images_sample);
 				getArticleDetails();
 			}

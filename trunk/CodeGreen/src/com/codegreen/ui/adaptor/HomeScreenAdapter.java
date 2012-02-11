@@ -59,7 +59,9 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 					mArticleList.add(tempdata.get(i));
 				}
 			}
-
+			if(mArticleList != null){
+			Constants.TOTAL_ARTICLES = mArticleList.size();
+			}
 			/*if(mReqId == Constants.REQ_GETARTICLESBYTYPE)
 				mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES);
 			else 
@@ -158,6 +160,10 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 				for(int i =0 ; i<tempdata.size();i++){
 					mArticleList.add(tempdata.get(i));
 				}
+			}
+			
+			if(mArticleList != null){
+				Constants.TOTAL_ARTICLES = mArticleList.size();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

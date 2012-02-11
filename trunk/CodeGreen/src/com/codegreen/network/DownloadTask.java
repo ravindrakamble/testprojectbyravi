@@ -36,6 +36,7 @@ public class DownloadTask extends Task{
 			InputStream inputStream = null;
 			try {
 				String downloadURL = downloadInfo.getUrlToDownload();
+				downloadURL = downloadURL.replaceAll(" ", "%20");
 				Log.e("Downloading :", downloadURL);
 				URL url = new URL(downloadURL);
 
@@ -53,6 +54,11 @@ public class DownloadTask extends Task{
 					}
 
 					File downloadFile = new File("/sdcard/codegreen/" + downloadInfo.getType()+ "/" + downloadInfo.getFileName() );
+					
+					if(downloadFile.exists()){
+						downloadFile.delete();
+					}
+					downloadFile = new File("/sdcard/codegreen/" + downloadInfo.getType()+ "/" + downloadInfo.getFileName() );
 					downloadFile.createNewFile();
 
 					FileOutputStream fileOutputStream = new FileOutputStream(downloadFile);
@@ -70,6 +76,8 @@ public class DownloadTask extends Task{
 				e.printStackTrace();
 				handler.handleCallback(null, callID, Constants.ERR_NETWORK_FAILURE);
 			}
+		}else{
+			handler.handleCallback(null, callID, (byte)0);
 		}
 	}
 

@@ -149,15 +149,15 @@ public class DBAdapter
 		return true;
 	}
 	public boolean deleteAllArticles(){
-		return db.delete("ARTICLES", null , null) > 0;
+		return db.delete("ARTICLES", "1" , null) > 0;
 	}
 
 	public boolean deleteArticle(ArticleDAO articleDAO){
-		return db.delete("ARTICLES", "dbArticleID=" +articleDAO.getDbArticleID() , null) > 0;
+		return db.delete("ARTICLES", "_articleID=" +articleDAO.getArticleID() + " and articletype='" + articleDAO.getType() + "'", null) > 0;
 	}
 
 	public int getArticles(ArticleDAO articleDAO){
-		Cursor articles = db.query("ARTICLES", null, "dbArticleID="+articleDAO.getDbArticleID()
+		Cursor articles = db.query("ARTICLES", null, "_articleID=" +articleDAO.getArticleID() + " and articletype='" + articleDAO.getType() + "'"
 				, null, null, null, null);
 		if(articles != null ){
 			return articles.getCount();

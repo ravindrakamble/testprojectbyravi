@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,6 @@ public class SavedArticlesAdapter extends BaseAdapter{
 
 	private Context mContext;
 	private LayoutInflater mLayoutInflator = null;
-	private FetchImage imageLoader;
 	private ArrayList<ArticleDAO> mArticleList;
 	private DBAdapter dbAdapter;
 
@@ -40,8 +40,9 @@ public class SavedArticlesAdapter extends BaseAdapter{
 			dbAdapter.open();
 			mArticleList = (ArrayList<ArticleDAO>)dbAdapter.getArticles();
 			dbAdapter.close();
-		//	imageLoader=new FetchImage(mContext);
-		
+			if(mArticleList != null){
+				Constants.TOTAL_ARTICLES = mArticleList.size();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -51,7 +52,7 @@ public class SavedArticlesAdapter extends BaseAdapter{
 		mArticleList.remove(position);
 		notifyDataSetChanged();
 	}
-	
+
 	public void removeAll(){
 		mArticleList.clear();
 		notifyDataSetChanged();
@@ -157,15 +158,31 @@ public class SavedArticlesAdapter extends BaseAdapter{
 
 		// set Values 
 		ArticleDAO data = mArticleList.get(position);
+		Log.e(" Position:" +position , "Title" +data.getTitle());
 		if(data!= null){  
+			
 			holder.img_thumbnail.setVisibility(View.VISIBLE);
 			holder.txt_articleName.setText(data.getTitle());
 			holder.txt_articleDesc.setText(data.getShortDescription());
 			holder.img_thumbnail.setVisibility(View.VISIBLE);
-	        Resources res = mContext.getResources(); 
-	        Bitmap bitmap = BitmapFactory.decodeFile(data.getThumbUrl()); 
-	        BitmapDrawable bd = new BitmapDrawable(res, bitmap); 
-			holder.img_thumbnail.setImageDrawable(bd);
+			if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
+				holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_audio);
+			}else if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_VEDIO)){
+				holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_video);
+			}else{
+				Resources res = mContext.getResources(); 
+				if(data.getThumbUrl() != null){
+					Bitmap bitmap = BitmapFactory.decodeFile(data.getThumbUrl()); 
+					if(bitmap != null){
+						BitmapDrawable bd = new BitmapDrawable(res, bitmap); 
+						holder.img_thumbnail.setImageDrawable(bd);
+					}else{
+						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
+					}
+				}else{
+					holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
+				}
+			}
 		}
 		return convertView;
 	}
@@ -178,8 +195,10 @@ public class SavedArticlesAdapter extends BaseAdapter{
 			dbAdapter.open();
 			mArticleList = (ArrayList<ArticleDAO>)dbAdapter.getArticles();
 			dbAdapter.close();
-			imageLoader=new FetchImage(mContext);
-		
+
+			if(mArticleList != null){
+				Constants.TOTAL_ARTICLES = mArticleList.size();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
