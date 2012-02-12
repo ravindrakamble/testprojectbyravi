@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -56,6 +57,14 @@ public class SearchActivity extends ListActivity implements Updatable{
 		mSearchView = findViewById(R.id.search_view1);
 		mSearchText = (EditText)mSearchView.findViewById(R.id.search_editview);
 
+		mSearchText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+		    @Override
+		    public void onFocusChange(View v, boolean hasFocus) {
+		        if (hasFocus) {
+		            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+		        }
+		    }
+		});
 		if(getIntent() !=null){
 			CURRENT_SELECTED_CATEGORY = getIntent().getIntExtra("Selected_Category",1);
 			CURRENT_SELECTED_MEDIA = getIntent().getStringExtra("Selected_Media");
@@ -245,7 +254,14 @@ public class SearchActivity extends ListActivity implements Updatable{
 			launchHomeActivity();
 			break; 
 		case MENU_OPTION_INFO:
-			Toast.makeText(getApplicationContext(),"Implimentation is in Progress...", Toast.LENGTH_LONG).show();
+			try{
+				Context cxt = getApplicationContext();
+				Intent intent = new Intent(cxt, About.class);     		
+				intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+				startActivity(intent);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
 			break;
 		default:
 			break;
