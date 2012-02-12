@@ -11,7 +11,9 @@ package com.codegreen.services;
 import android.content.Context;
 
 import com.codegreen.businessprocess.handler.Handler;
+import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.common.TaskExecutor;
+import com.codegreen.network.AdDownloadTask;
 import com.codegreen.network.DownloadImageTask;
 import com.codegreen.network.NetworkTask;
 import com.codegreen.util.Constants;
@@ -98,9 +100,19 @@ public class WebServiceFacade {
 		taskExecutor.execute(reviewTask);
 	}
 	
+	public void getAdvertisements(Object params, Handler handler){
+		SOAPRequest request = RequestBuilder.getInstance().createRequest(Constants.REQ_GETADVERTISMENTS, params);
+		NetworkTask reviewTask = new NetworkTask(request,handler,mContext);
+		taskExecutor.execute(reviewTask);	
+	}
 	
 	public void downloadImage(String params, Handler handler){
 		DownloadImageTask imageTask = new DownloadImageTask(params, handler);
 		taskExecutor.execute(imageTask);
+	}
+	
+	public void downloadAddImage(ArticleDAO dao,Handler handler){
+		AdDownloadTask task = new AdDownloadTask(dao.getThumbUrl(), dao.getUrl(), handler);
+		taskExecutor.execute(task);
 	}
 }

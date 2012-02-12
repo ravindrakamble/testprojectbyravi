@@ -87,6 +87,11 @@ public class RequestBuilder {
 			//request.setSoapMethodName(Constants.);
 			request.setSoapRequest(getSubmitReviews(params));
 			break;
+		case Constants.REQ_GETADVERTISMENTS:
+			request.setRequestID(reqID);
+			request.setSoapMethodName(Constants.GETADVERTISEMENTS);
+			request.setSoapRequest(getAdvertisements(params));
+			break;
 		}
 		return request;
 	}
@@ -170,6 +175,17 @@ public class RequestBuilder {
 		sb.append("<username>" + reviewDAO.getUserName() + "</username>");
 		sb.append("<reviewComments>"+ reviewDAO.getReviewComments() +"</reviewComments>");
 		sb.append("</SubmitReview>");
+		sb.append("</soap:Body>");
+		sb.append("</soap:Envelope>");
+		return sb.toString().trim();
+	}
+	
+	private String getAdvertisements(Object params){
+		StringBuffer sb = new StringBuffer();
+		ReviewDAO reviewDAO = (ReviewDAO)params;
+		sb.append(header);
+		sb.append("<soap:Body>");
+		sb.append("<GetAdvertisements xmlns=\"http://tempuri.org/\"/>");
 		sb.append("</soap:Body>");
 		sb.append("</soap:Envelope>");
 		return sb.toString().trim();
