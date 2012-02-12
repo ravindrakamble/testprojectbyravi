@@ -90,11 +90,13 @@ public class HttpHandler implements Handler {
 		return 0;
 	}
 	ArticleDAO dao = null;
+	@SuppressWarnings("unchecked")
 	@Override
 	public void handleCallback(Object callbackObject, byte callID,
 			byte errorCode) {
 		XmlParser ddXmlParser = null;
 		WebServiceFacade webServiceFacade = WebServiceFacade.getInstance(applicationContext);
+		Constants.PARSING parsedMessage = null ;
 		if(errorCode == Constants.OK){
 
 			if(callID == Constants.REQ_DOWNLOADIMAGE){
@@ -102,6 +104,8 @@ public class HttpHandler implements Handler {
 					CacheManager.getInstance().setLatestArticleBitmap((Bitmap)callbackObject);
 				}
 				updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
+			}else if(callID == Constants.REQ_DOWNLOADADDIMAGE){
+				parsedMessage = Constants.PARSING.COMPLETED;
 			}else{
 				ddXmlParser = new XmlParser(callID);
 				//Get the instance of SAXParserFactory.
@@ -130,64 +134,62 @@ public class HttpHandler implements Handler {
 				}
 
 				//Check parsing status
-				Constants.PARSING parsedMessage = ddXmlParser.getParseMessage();
+				parsedMessage = ddXmlParser.getParseMessage();
+			}
+			if(parsedMessage == Constants.PARSING.COMPLETED){
+				//Log.e("No of records found;" , "" + ddXmlParser.getArticles().size()); // for other req giving null
+				if(updatable != null){
+					switch (callID) {
+					case Constants.REQ_GETARTICLESBYTYPE:
+						CacheManager.getInstance().store(Constants.C_ARTICLES, ddXmlParser.getArticles());
 
-				if(parsedMessage == Constants.PARSING.COMPLETED){
-					//Log.e("No of records found;" , "" + ddXmlParser.getArticles().size()); // for other req giving null
-					if(updatable != null){
-						switch (callID) {
-						case Constants.REQ_GETARTICLESBYTYPE:
-							CacheManager.getInstance().store(Constants.C_ARTICLES, ddXmlParser.getArticles());
-
-							//Update the articles into database
-							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
-							break;
-						case Constants.REQ_GETARTICLEDETAILS:
-							CacheManager.getInstance().store(Constants.C_ARTICLE_DETAILS, ddXmlParser.getArticleDAO());
-							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
-							break;
-						case Constants.REQ_GETREVIEWS:
-							CacheManager.getInstance().store(Constants.C_REVIEWS, ddXmlParser.getReviews());
-							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
-							break;
-						case Constants.REQ_SEARCHARTICLES:
-							CacheManager.getInstance().store(Constants.C_SEARCH_ARTICLES, ddXmlParser.getArticles());
-							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
-							break;
-						case Constants.REQ_SUBMITREVIEW:
-							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
-							break;
-						case Constants.REQ_GETADVERTISMENTS:
-							index = 0;
-							CacheManager.getInstance().store(Constants.C_ADVERTISMENTS,ddXmlParser.getArticles());
-							adList = (ArrayList<ArticleDAO>)CacheManager.getInstance().get(Constants.C_ADVERTISMENTS);
-							//updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
-							Log.i("Advertisments ", "link downloaded");
-							if(index < adList.size()){
-								dao = adList.get(index);
-								if(dao!=null)
-									webServiceFacade.downloadAddImage(dao, this);
-							}
-							break;
-						case Constants.REQ_DOWNLOADADDIMAGE:
-							 dao = adList.get(index);
-							 dao.setAddsBitmap((Bitmap[])callbackObject);
-							 CacheManager.getInstance().store(Constants.C_ADVERTISMENTS,adList);
-							 index++;
-							if(index < adList.size()){
-								
-								dao = adList.get(index);
-								Log.i("Advertisments ", "link downloaded" + dao.getThumbUrl());
-								if(dao!=null)
-									webServiceFacade.downloadAddImage(dao, this);
-							}else{
-								Log.i("Advertisments ", "All ads downloaded");
-								// returning downloaded file to parser
-								Intent broadcast = new Intent(Constants.DOWNLOADED_ADDS);
-								applicationContext.sendBroadcast(broadcast);
-							}
-							break;
+						//Update the articles into database
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
+						break;
+					case Constants.REQ_GETARTICLEDETAILS:
+						CacheManager.getInstance().store(Constants.C_ARTICLE_DETAILS, ddXmlParser.getArticleDAO());
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
+						break;
+					case Constants.REQ_GETREVIEWS:
+						CacheManager.getInstance().store(Constants.C_REVIEWS, ddXmlParser.getReviews());
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
+						break;
+					case Constants.REQ_SEARCHARTICLES:
+						CacheManager.getInstance().store(Constants.C_SEARCH_ARTICLES, ddXmlParser.getArticles());
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
+						break;
+					case Constants.REQ_SUBMITREVIEW:
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
+						break;
+					case Constants.REQ_GETADVERTISMENTS:
+						index = 0;
+						CacheManager.getInstance().store(Constants.C_ADVERTISMENTS,ddXmlParser.getArticles());
+						adList = (ArrayList<ArticleDAO>)CacheManager.getInstance().get(Constants.C_ADVERTISMENTS);
+						Log.i("Advertisments ", "link downloaded");
+						if(index < adList.size()){
+							dao = adList.get(index);
+							if(dao!=null)
+								webServiceFacade.downloadAddImage(dao, this);
 						}
+						break;
+					case Constants.REQ_DOWNLOADADDIMAGE:
+						dao = adList.get(index);
+						dao.setAddsBitmap((Bitmap[])callbackObject);
+						CacheManager.getInstance().store(Constants.C_ADVERTISMENTS,adList);
+						index++;
+						if(index < adList.size()){
+
+							dao = adList.get(index);
+							Log.i("Advertisments ", "link downloaded" + dao.getThumbUrl());
+							if(dao!=null)
+								webServiceFacade.downloadAddImage(dao, this);
+						}else{
+							Log.i("Advertisments ", "All ads downloaded");
+							// returning downloaded file to parser
+							Intent broadcast = new Intent(Constants.DOWNLOADED_ADDS);
+							applicationContext.sendBroadcast(broadcast);
+						}
+						break;
 					}
 				}
 			}

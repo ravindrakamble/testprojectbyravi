@@ -17,7 +17,7 @@ public class DownloadHandler implements Handler{
 	private DownloadTask downloadTask;
 
 	TaskExecutor taskExecutor = TaskExecutor.getInstance();
-	
+
 	boolean imageDownloaded;
 	boolean dataDownloaded;
 
@@ -37,7 +37,7 @@ public class DownloadHandler implements Handler{
 		if(mSelf == null){
 			mSelf = new DownloadHandler();
 		} 
-		
+
 		return mSelf;
 	}
 	/** 
@@ -51,7 +51,17 @@ public class DownloadHandler implements Handler{
 		this.articleDAO = (ArticleDAO)eventObject;
 		if(downloadedArticle == null){
 			downloadedArticle = new ArticleDAO();
-			downloadedArticle = articleDAO;
+			downloadedArticle.setArticleID(articleDAO.getArticleID());
+			downloadedArticle.setCategoryID(articleDAO.getCategoryID());
+			downloadedArticle.setCreatedDate(articleDAO.getCreatedDate());
+			downloadedArticle.setDetailedDescription(articleDAO.getDetailedDescription());
+			downloadedArticle.setLastArticlePublishingDate(articleDAO.getLastArticlePublishingDate());
+			downloadedArticle.setPublishedDate(articleDAO.getPublishedDate());
+			downloadedArticle.setShortDescription(articleDAO.getShortDescription());
+			downloadedArticle.setThumbUrl(articleDAO.getThumbUrl());
+			downloadedArticle.setTitle(articleDAO.getTitle());
+			downloadedArticle.setType(articleDAO.getType());
+			downloadedArticle.setUrl(articleDAO.getUrl());
 		}
 		switch(callID){
 		case Constants.REQ_DOWNLOADARTICLE:
@@ -69,17 +79,20 @@ public class DownloadHandler implements Handler{
 				downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_IMAGE);
 				taskExecutor.execute(downloadTask);
 				requestForImage = true;
-				
-				dao = new DownloadInfoDAO();
-				dao.setUrlToDownload(articleDAO.getUrl());
-				if(dao.getFileName() == null){
-					dao.setFileName(articleDAO.getArticleID() + ".mp4");
+
+
+				if(articleDAO.getUrl() != null && !articleDAO.getUrl().trim().equalsIgnoreCase("")){
+					dao = new DownloadInfoDAO();
+					dao.setUrlToDownload(articleDAO.getUrl());
+					if(dao.getFileName() == null){
+						dao.setFileName(articleDAO.getArticleID() + ".mp4");
+					}
+					dao.setType(articleDAO.getType());
+					//Download article image first
+					requestForData = true;
+					downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_DATA);
+					taskExecutor.execute(downloadTask);
 				}
-				dao.setType(articleDAO.getType());
-				//Download article image first
-				requestForData = true;
-				downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_DATA);
-				taskExecutor.execute(downloadTask);
 			}
 
 			break;
@@ -96,34 +109,44 @@ public class DownloadHandler implements Handler{
 		if(errorCode == Constants.ERR_NETWORK_FAILURE){
 			updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_FAILURE, Constants.REQ_DOWNLOADARTICLE, errorCode);
 		}else{
-		switch(callID){
-		case Constants.DOWNLOAD_ARTICLE_IMAGE:
-			imageDownloaded = true;
-			
-			if(articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+			switch(callID){
+			case Constants.DOWNLOAD_ARTICLE_IMAGE:
+				imageDownloaded = true;
+
+				if(articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+					downloadedArticle.setUrl((String)callbackObject);
+
+				}else{
+					downloadedArticle.setThumbUrl((String)callbackObject);
+				}
+				if(requestForData ){
+					if(dataDownloaded){
+						CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
+					}
+				}else{
+					CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
+					updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
+				}
+				break;
+			case Constants.DOWNLOAD_ARTICLE_DATA:
+				dataDownloaded = true;
+
 				downloadedArticle.setUrl((String)callbackObject);
-				
-			}else{
-				downloadedArticle.setThumbUrl((String)callbackObject);
+				if(requestForImage && imageDownloaded){
+					CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
+					updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
+				}
+				break;
 			}
-			if(requestForData && dataDownloaded){
-				CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
-				updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
-			}
-			break;
-		case Constants.DOWNLOAD_ARTICLE_DATA:
-			dataDownloaded = true;
-			
-			downloadedArticle.setUrl((String)callbackObject);
-			if(requestForImage && imageDownloaded){
-				CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
-				updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
-			}
-			break;
+
 		}
-		
-	}
 
 	}
 
+	public void cleardata(){
+		articleDAO = null;
+		downloadTask = null;
+		downloadedArticle = null;
+	}
 }
