@@ -2,14 +2,22 @@ package com.codegreen.businessprocess.handler;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.util.Log;
+
+import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.common.CacheManager;
 import com.codegreen.common.TaskExecutor;
 import com.codegreen.database.DBAdapter;
 import com.codegreen.listener.Updatable;
+import com.codegreen.network.DownloadImageTask;
 import com.codegreen.parser.XmlParser;
 import com.codegreen.services.WebServiceFacade;
 import com.codegreen.util.Constants;
@@ -21,8 +29,10 @@ public class HttpHandler implements Handler {
 
 	//Updatable screen
 	private Updatable updatable;
-
 	private static HttpHandler mSelf = null;
+
+	private ArrayList<ArticleDAO> adList;
+	private int index;
 
 	private Context applicationContext;
 	byte mReqId;
@@ -73,15 +83,18 @@ public class HttpHandler implements Handler {
 			//Submit article review
 			webServiceFacade.downloadImage((String)eventObject, this);
 			break;
+		case Constants.REQ_GETADVERTISMENTS:
+			webServiceFacade.getAdvertisements(eventObject,this);
 		}
 		requestStatus = Constants.HTTPREQUEST.INPROGRESS;
 		return 0;
 	}
-
+	ArticleDAO dao = null;
 	@Override
 	public void handleCallback(Object callbackObject, byte callID,
 			byte errorCode) {
 		XmlParser ddXmlParser = null;
+		WebServiceFacade webServiceFacade = WebServiceFacade.getInstance(applicationContext);
 		if(errorCode == Constants.OK){
 
 			if(callID == Constants.REQ_DOWNLOADIMAGE){
@@ -143,6 +156,36 @@ public class HttpHandler implements Handler {
 							break;
 						case Constants.REQ_SUBMITREVIEW:
 							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
+							break;
+						case Constants.REQ_GETADVERTISMENTS:
+							index = 0;
+							CacheManager.getInstance().store(Constants.C_ADVERTISMENTS,ddXmlParser.getArticles());
+							adList = (ArrayList<ArticleDAO>)CacheManager.getInstance().get(Constants.C_ADVERTISMENTS);
+							//updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
+							Log.i("Advertisments ", "link downloaded");
+							if(index < adList.size()){
+								dao = adList.get(index);
+								if(dao!=null)
+									webServiceFacade.downloadAddImage(dao, this);
+							}
+							break;
+						case Constants.REQ_DOWNLOADADDIMAGE:
+							 dao = adList.get(index);
+							 dao.setAddsBitmap((Bitmap[])callbackObject);
+							 CacheManager.getInstance().store(Constants.C_ADVERTISMENTS,adList);
+							 index++;
+							if(index < adList.size()){
+								
+								dao = adList.get(index);
+								Log.i("Advertisments ", "link downloaded" + dao.getThumbUrl());
+								if(dao!=null)
+									webServiceFacade.downloadAddImage(dao, this);
+							}else{
+								Log.i("Advertisments ", "All ads downloaded");
+								// returning downloaded file to parser
+								Intent broadcast = new Intent(Constants.DOWNLOADED_ADDS);
+								applicationContext.sendBroadcast(broadcast);
+							}
 							break;
 						}
 					}

@@ -21,6 +21,8 @@ public class Constants {
 	public static final byte REQ_GETCATEGOIRES = 6;
 	public static final byte REQ_DOWNLOADIMAGE = 7;
 	public static final byte REQ_DOWNLOADARTICLE = 8;
+	public static final byte REQ_GETADVERTISMENTS = 9;
+	public static final byte REQ_DOWNLOADADDIMAGE = 10;
 	
 	public static final byte DOWNLOAD_ARTICLE_DATA = 1;
 	public static final byte DOWNLOAD_ARTICLE_IMAGE = 2;
@@ -31,6 +33,7 @@ public class Constants {
 	public static final String ARTCLETYPE_VIDEO = "VIDEO";
 	public static final String ARTCLETYPE_TEXT = "TEXT";
 
+	public static final String DOWNLOADED_ADDS ="DOWNLOADED_ADDS";
 	//Web service url
 	public static final String URL = "http://3embed.com.iis2003.shared-servers.com/CodeGreen/CodeGreenService.asmx";
 	public static final String NAMESPACE = "http://tempuri.org/";
@@ -42,6 +45,7 @@ public class Constants {
 	public static final String GETREVEWS = "GetReviews";
 	public static final String SEARCHARTICLES = "SearchArticles";
 	public static final String SUBMITREVIEW = "SubmitReview";
+	public static final String GETADVERTISEMENTS = "GetAdvertisements";
 	public static final String GETCATEGOIRES ="";
 	
 	
@@ -65,6 +69,7 @@ public class Constants {
 	public static final String C_SUBMITREVIEW = "SRV";
 	public static final String C_DOWNLOADED_ARTICLE = "DA";
 	public static final String C_SAVED_ARTICLE = "SVDA";
+	public static final String C_ADVERTISMENTS = "ADVERTISMENTS";
 
 	public static enum ENUM_PARSERRESPONSE{PARSERRESPONSE_SUCCESS,PARSERRESPONSE_FAILURE  						//Used as return value for any function, when failed. 
 	};
@@ -124,5 +129,7 @@ public class Constants {
 	 public  static String  SANS_BOLD = "fonts/Stag Sans-Bold.otf";
 	 public  static String  SANS_BOOK = "fonts/Stag Sans-Book.otf";
 	 public  static String  SANS_SEMIBOLD =  "fonts/Stag Sans-Semibold.otf";
+	 
+	 public static int CURRENT_AD_INDEX = 0;
 	
 }

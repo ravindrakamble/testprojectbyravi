@@ -55,6 +55,9 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 		
 		case Constants.REQ_SUBMITREVIEW:
 			break;
+		case Constants.REQ_GETADVERTISMENTS:
+			articles = new ArrayList<ArticleDAO>();
+			break;
 		}
 		parseMessage = Constants.PARSING.STARTED;
 	}
@@ -98,6 +101,11 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 			break;
 		
 		case Constants.REQ_SUBMITREVIEW:
+			break;
+		case Constants.REQ_GETADVERTISMENTS:
+			if(startTagName.equalsIgnoreCase("Advertisement")){
+				articleDAO = new ArticleDAO();
+			}
 			break;
 		}
 	}
@@ -167,6 +175,15 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 		case Constants.REQ_SUBMITREVIEW:
 			if(endTagName.equalsIgnoreCase(SUBMITREVIEWMESSAGE)){
 				reviewMessage = parsedData;
+			}
+			break;
+		case Constants.REQ_GETADVERTISMENTS:
+			if(endTagName.equalsIgnoreCase("ThumbnailURL")){
+				articleDAO.setThumbUrl(parsedData);
+			}else if(endTagName.equalsIgnoreCase("URL")){
+				articleDAO.setUrl(parsedData);
+			}else if(endTagName.equalsIgnoreCase("Advertisement")){
+				articles.add(articleDAO);
 			}
 			break;
 		}

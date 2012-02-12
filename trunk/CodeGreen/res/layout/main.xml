@@ -93,8 +93,8 @@
 	<RelativeLayout android:layout_width="fill_parent"
 		android:id="@+id/relativeLayout1" android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true">
-		<LinearLayout android:id="@+id/admarvel" android:background="@drawable/bg_ads_sample"
-			android:layout_width="fill_parent" android:layout_height="50dip"></LinearLayout>
+		<ImageView android:id="@+id/admarvel" android:background="@drawable/bg_ads_sample"
+			android:layout_width="fill_parent" android:layout_height="50dip"></ImageView>
 	</RelativeLayout>
 
 

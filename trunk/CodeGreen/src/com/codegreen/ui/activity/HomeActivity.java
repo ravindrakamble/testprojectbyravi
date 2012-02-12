@@ -1,18 +1,29 @@
 package com.codegreen.ui.activity;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -36,7 +47,6 @@ import com.codegreen.ui.dialog.MediaDialog;
 import com.codegreen.ui.dialog.ReviewDialog;
 import com.codegreen.util.Constants;
 import com.codegreen.util.Utils;
-import com.facebook.android.Util;
 
 public class HomeActivity extends ListActivity implements Updatable, MediaDialogListner{
 
@@ -64,6 +74,8 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	private static String CURRENT_SELECTED_MEDIA = "ALL";
 	private TextView mNoItems = null;
 	private ProgressDialog progressDialog;
+	ArrayList<ArticleDAO> advertiseData = null;
+	ImageView addsImage = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +85,17 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		initWidgets();
 		CURRENT_SELECTED_CATEGORY = 0;
 		CURRENT_SELECTED_MEDIA = "ALL";
+		// Call adds 
+		getAdvertisements();
 		getArticleData("");
 		getListView().setCacheColorHint(0);
+
+		if(addDownloadListener != null){
+			IntentFilter filter = new IntentFilter();
+			filter.addAction(Constants.DOWNLOADED_ADDS);
+			registerReceiver(addDownloadListener, filter);
+		}   
+
 	}
 
 	private void showProgressBar(){
@@ -109,6 +130,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		mNoItems =(TextView) findViewById(android.R.id.empty);
 		btn_left_arrow = (ImageView)findViewById(R.id.btn_left_arrow);
 		btn_right_arrow = (ImageView)findViewById(R.id.btn_right_arrow);
+		addsImage = (ImageView) findViewById(R.id.admarvel);
 
 		// set default as off 
 		btn_left_arrow.setBackgroundResource(R.drawable.left_arrow_off);
@@ -377,47 +399,50 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 	@Override
 	public void update(Constants.ENUM_PARSERRESPONSE updateData, final byte reqID, byte errorCode) {
-		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 
+		if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
 
-			if(mAdapter == null){
-				runOnUiThread(new Runnable() { 
-					@SuppressWarnings("unchecked")
-					@Override
-					public void run() {
-						int sizeOfData = 0;
-						if(reqID == Constants.REQ_GETARTICLESBYTYPE)
-							sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES)).size();
-						else 
-							sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES)).size();
+			if(reqID == Constants.REQ_GETARTICLESBYTYPE){
 
-						if(sizeOfData == 0)
-							mNoItems.setVisibility(View.VISIBLE);
+				if(mAdapter == null){
+					runOnUiThread(new Runnable() { 
+						@SuppressWarnings("unchecked")
+						@Override
+						public void run() {
+							int sizeOfData = 0;
+							if(reqID == Constants.REQ_GETARTICLESBYTYPE)
+								sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES)).size();
+							else 
+								sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES)).size();
 
-						mAdapter = new HomeScreenAdapter(HomeActivity.this);
-						mAdapter.setRequestID(reqID);
-						setListAdapter(mAdapter); 
-					}
-				});
+							if(sizeOfData == 0)
+								mNoItems.setVisibility(View.VISIBLE);
 
-			}else{
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						int sizeOfData = 0;
-						if(reqID == Constants.REQ_GETARTICLESBYTYPE)
-							sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES)).size();
-						else 
-							sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES)).size();
+							mAdapter = new HomeScreenAdapter(HomeActivity.this);
+							mAdapter.setRequestID(reqID);
+							setListAdapter(mAdapter); 
+						}
+					});
 
-						if(sizeOfData == 0)
-							mNoItems.setVisibility(View.VISIBLE);
-						mAdapter.setRequestID(reqID);
-						mAdapter.notifyDataSetChanged();
-						mAdapter.notifyDataSetInvalidated();
-					}
-				});
+				}else{
+					runOnUiThread(new Runnable(){
+						@Override
+						public void run() {
+							int sizeOfData = 0;
+							if(reqID == Constants.REQ_GETARTICLESBYTYPE)
+								sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES)).size();
+							else 
+								sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES)).size();
+
+							if(sizeOfData == 0)
+								mNoItems.setVisibility(View.VISIBLE);
+							mAdapter.setRequestID(reqID);
+							mAdapter.notifyDataSetChanged();
+							mAdapter.notifyDataSetInvalidated();
+						}
+					});
+				}
 			}
 		}else if(errorCode == Constants.ERR_NETWORK_FAILURE){
 			runOnUiThread(new Runnable() {
@@ -427,7 +452,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 					Toast.makeText(getApplicationContext(), "No Network Available.", Toast.LENGTH_SHORT).show();
 				}
 			});
-
 		}
 		else{
 			runOnUiThread(new Runnable() {
@@ -438,12 +462,22 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				}
 			});
 		}
-
 		//Send message to remove progress bar
 		Message msg = new Message();
 		msg.what = Constants.PROGRESS_INVISIBLE;
 		uiUpdator.sendMessage(msg);
 	} 
+
+	private void getAdvertisements() {
+		// TODO Auto-generated method stub
+		if(Utils.isNetworkAvail(getApplicationContext())){
+			HttpHandler httpHandler =  HttpHandler.getInstance();
+			//Cancel previous request;
+			httpHandler.cancelRequest();
+			httpHandler.setApplicationContext(getApplicationContext());
+			httpHandler.handleEvent(null, Constants.REQ_GETADVERTISMENTS, this);
+		}
+	}
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
@@ -462,6 +496,8 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			Toast.makeText(getApplicationContext(),"No Network Available", Toast.LENGTH_SHORT).show();
 		}
 	} 
+
+
 
 
 	private Handler uiUpdator = new Handler(){
@@ -525,4 +561,89 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		}
 		getArticleData(CURRENT_SELECTED_MEDIA);
 	}
+
+	static int count = 0;
+
+	/**
+	 * update adds
+	 */
+	private void updateAdvertisements(){
+		Timer t = new Timer(); 
+		count = 0;
+
+		final Handler handler = new Handler();
+
+		t.schedule(new TimerTask() {       
+			public void run() {         
+				handler.post(new Runnable() {   
+					public void run() { 
+						Log.i("Advertisments ", "Display started");
+						Bitmap[] data = advertiseData.get(count).getAddsBitmap();
+						if(Constants.CURRENT_AD_INDEX < advertiseData.size()){
+							addsImage.setImageBitmap(data[0]);
+							Constants.CURRENT_AD_INDEX++;
+						}else
+						{
+							count = 0;
+						}
+					}       
+				});    
+			}    
+		}, 2000);
+	}
+
+
+	/**
+	 * Listen to Broadcast w.r.t avatar Settings
+	 */
+	private BroadcastReceiver addDownloadListener = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			try {
+				String action = intent.getAction();
+				if(action == null)
+					return;
+				if(action.equals(Constants.DOWNLOADED_ADDS)){
+					advertiseData = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ADVERTISMENTS);
+					updateAdvertisements();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+		}
+	};
+
+
+
+
+	private void timerMethod()
+	{
+		this.runOnUiThread(generate);
+	}
+
+
+	private Runnable generate= new Runnable() {
+
+		@Override
+		public void run() {
+
+			/*ImageView toAdd = new ImageView(ImagePlayActivity.this);        
+		Drawable imgContent = ImagePlayActivity.this.getResources().getDrawable(R.drawable.icon);
+		toAdd.setImageDrawable(imgContent);
+		toAdd.setTag("img"+counter++);
+
+		Random rndGen = new Random();
+		LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT,rndGen.nextInt(300),rndGen.nextInt(300));
+		toAdd.setLayoutParams(lp);
+		toAdd.setBackgroundColor(Color.TRANSPARENT);
+
+		AlphaAnimation anim = new AlphaAnimation(0, 1);
+		anim.setDuration(1000);
+		container.addView(toAdd);
+		//container.invalidate(); 
+		toAdd.startAnimation(anim);
+			 */	}
+	};
+
 }
