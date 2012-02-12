@@ -618,7 +618,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	}
 
 	private void showNextArticle(){
-		if(Constants.CURRENT_INDEX < Constants.TOTAL_ARTICLES){
+		Log.i("Current index:" + Constants.CURRENT_INDEX, "Total articles:"  + Constants.TOTAL_ARTICLES);
+		if(Constants.CURRENT_INDEX < (Constants.TOTAL_ARTICLES - 1)){
 			mFlipper.clearAnimation();
 			mFlipper.setInAnimation(getApplicationContext(),R.anim.push_left_in);
 			mFlipper.setOutAnimation(getApplicationContext(),R.anim.push_left_out); 
@@ -650,6 +651,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 	}
 	private void showPreviousArticle(){
+		Log.i("Current index:" + Constants.CURRENT_INDEX, "Total articles:"  + Constants.TOTAL_ARTICLES);
 		if(Constants.CURRENT_INDEX > 0){
 			mFlipper.clearAnimation();
 			mFlipper.setOutAnimation(getApplicationContext(),R.anim.push_right_out);
