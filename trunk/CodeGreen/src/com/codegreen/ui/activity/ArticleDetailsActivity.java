@@ -163,7 +163,15 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 			scrollLinearlayout = (LinearLayout)findViewById(R.id.scrollLinearlayout);
 			addsImage = (ImageView)findViewById(R.id.admarveldetailsscreen);
+			addsImage.setOnClickListener(new OnClickListener() {
 
+				@Override
+				public void onClick(View arg0) {
+					showadDetails();
+
+				}
+			});
+			
 			mFlipper = ((ViewFlipper)findViewById(R.id.tutorial_flipper));
 			Animation anim = (Animation) AnimationUtils.
 			loadAnimation(ArticleDetailsActivity.this, R.anim.push_left_in);
@@ -208,7 +216,19 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 
 
+	private void showadDetails(){
+		ArrayList<ArticleDAO> advertiseData = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ADVERTISMENTS);
 
+		if(advertiseData != null){
+			Bitmap[] data = advertiseData.get(Constants.CURRENT_AD_INDEX).getAddsBitmap();
+			if(data != null && data.length == 2 && data[1] != null){
+				Intent intent = new Intent(getApplicationContext(), AdDetailsActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				intent.putExtra("adindex", Constants.CURRENT_AD_INDEX);
+				startActivity(intent);
+			}
+		}
+	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
