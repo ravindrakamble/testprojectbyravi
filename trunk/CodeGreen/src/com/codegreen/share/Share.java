@@ -20,14 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import oauth.signpost.basic.DefaultOAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import org.apache.http.HttpResponse;
@@ -91,7 +85,7 @@ public class Share {
 	Dialog outerDialog;
 	DoShareTwitter _doShareTwitter;
 	ArticleDAO articleDAO = null;
-	
+
 	/**
 	 * This is the contructor
 	 * @param context
@@ -118,7 +112,7 @@ public class Share {
 
 	/**
 	 * This is a setter method, will explicitly set the current context
-	 * @param context
+	 * @param contexts
 	 */
 	public void setContext(Context context) {
 		this.context = context;
@@ -162,21 +156,28 @@ public class Share {
 				try
 				{
 					Bundle parameters = new Bundle();
-	                parameters.putString("message", message);
-	                parameters.putString("description", "topic share");
-					if (articleDAO.getTitle() != null)
-						parameters.putString("message", articleDAO.getTitle());// the
-					if (articleDAO.getUrl() != null)
-						parameters.putString("link",articleDAO.getUrl());
-					if (articleDAO.getThumbUrl() != null)
-						parameters.putString("picture", articleDAO.getThumbUrl());
-					if (articleDAO.getTitle() != null)
-						parameters.putString("name", articleDAO.getTitle());
-					if (articleDAO.getShortDescription() != null)
+					parameters.putString("message", message);
+					parameters.putString("description", "topic share");
+					if(articleDAO != null){
+						if (articleDAO.getTitle() != null)
+							parameters.putString("message", articleDAO.getTitle());// the
+						if (articleDAO.getUrl() != null)
+							parameters.putString("link",articleDAO.getUrl());
+						if (articleDAO.getThumbUrl() != null)
+							parameters.putString("picture", articleDAO.getThumbUrl());
+						if (articleDAO.getTitle() != null)
+							parameters.putString("name", articleDAO.getTitle());
+							parameters.putString("caption", "www.codegreenonline.com");
+						if (articleDAO.getDetailedDescription() != null)
+							parameters.putString("description", articleDAO.getDetailedDescription());
+					}else
+					{
+						// share from about
+						parameters.putString("description", "Code Green App info....");
 						parameters.putString("caption", "www.codegreenonline.com");
-					if (articleDAO.getDetailedDescription() != null)
-						parameters.putString("description", articleDAO.getDetailedDescription());
+					}
 					facebook.dialog(context, "stream.publish", parameters, this);
+					
 				}
 				catch (Exception e)
 				{
@@ -202,7 +203,7 @@ public class Share {
 		public void onFacebookError(FacebookError arg0) {
 			Toast.makeText(context, "Facebook Error--" + arg0.getMessage(), Toast.LENGTH_LONG).show();
 			releaseFacebook();
-			
+
 		} 
 
 	}
@@ -224,15 +225,8 @@ public class Share {
 
 	private void onSelectTwitter(){
 		ShareData shareData = ShareData.getShareData();
-		//    	if(shareData.get("Twitter_Token") == null){
 		outerDialog  = new Dialog(Share.context);
 		showDialog(TWITTER_DIALOG);
-		//    	}
-		//    	else{
-		//    		System.out.println((AccessToken)shareData.get("Twitter_Token"));
-		//    		postTweet((AccessToken)shareData.get("Twitter_Token"));
-		//    		
-		//    	}
 	}
 
 	private void validateTwitter(String user,String pass){
@@ -460,32 +454,6 @@ public class Share {
 			publishProgress();
 			validateTwitter(Share.userString, Share.passString);
 			return null;
-		}
-	}
-	private static void trustAllHosts() {
-		// Create a trust manager that does not validate certificate chains
-		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-				return new java.security.cert.X509Certificate[] {};
-			}
-
-			public void checkClientTrusted(X509Certificate[] chain,
-					String authType) throws CertificateException {
-			}
-
-			public void checkServerTrusted(X509Certificate[] chain,
-					String authType) throws CertificateException {
-			}
-		} };
-
-		// Install the all-trusting trust manager
-		try {
-			SSLContext sc = SSLContext.getInstance("TLS");
-			sc.init(null, trustAllCerts, new java.security.SecureRandom());
-			HttpsURLConnection
-			.setDefaultSSLSocketFactory(sc.getSocketFactory());
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 }

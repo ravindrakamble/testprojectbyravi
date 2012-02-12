@@ -556,8 +556,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 						progress_Lay.setVisibility(View.VISIBLE);
 						String urlToPlay = articleDetails.getUrl();
-						Log.e("---------Play Url------- ", urlToPlay);
-						if(urlToPlay.contains("youtube")){
+						Log.e("---------Play Url------- ", ""+ urlToPlay);
+						if(urlToPlay != null && urlToPlay.contains("youtube")){
 							try{
 								Intent videoClient = new Intent(Intent.ACTION_VIEW); 
 								videoClient.setData(Uri.parse(urlToPlay));

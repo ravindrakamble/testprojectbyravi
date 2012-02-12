@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="@drawable/outer_back" android:gravity="center"
+	android:id="@+id/info_main_back" android:orientation="vertical">
+
+	<RelativeLayout android:id="@+id/codegreenTitle"
+		android:background="@drawable/bg_topbar" android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+	</RelativeLayout>
+
+	<LinearLayout android:layout_width="wrap_content"
+		android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
+		android:layout_marginTop="10dip" android:layout_height="100dip"
+		android:background="@drawable/inner_back" android:id="@+id/info_inner_back"
+		android:layout_weight="1">
+
+		<ScrollView android:layout_width="fill_parent"
+			android:scrollbars="vertical" android:layout_height="fill_parent"
+			android:layout_marginBottom="10dip" android:layout_marginTop="10dip">
+
+			<TextView android:id="@+id/about_text" android:layout_width="fill_parent"
+				android:layout_height="fill_parent" android:text="@string/str_about"
+				android:paddingRight="15dip" android:paddingLeft="15dip"
+				android:textColor="#000000">
+			</TextView>
+
+
+		</ScrollView>
+
+	</LinearLayout>
+</LinearLayout>
