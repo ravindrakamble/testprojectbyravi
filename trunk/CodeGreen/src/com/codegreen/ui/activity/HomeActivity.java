@@ -76,7 +76,8 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	private ProgressDialog progressDialog;
 	ArrayList<ArticleDAO> advertiseData = null;
 	ImageView addsImage = null;
-
+	Timer adTimer;
+	TimerTask adTask;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -85,8 +86,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		initWidgets();
 		CURRENT_SELECTED_CATEGORY = 0;
 		CURRENT_SELECTED_MEDIA = "ALL";
-		// Call adds 
-		getAdvertisements();
+
 		getArticleData("");
 		getListView().setCacheColorHint(0);
 
@@ -242,9 +242,41 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		});
 		refreshViews();
 		mBtnLatest.setBackgroundResource(R.drawable.scrollbutton_off);
+
+		addsImage.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				showadDetails();
+
+			}
+		});
 	}
 
+	private void showadDetails(){
+		ArrayList<ArticleDAO> advertiseData = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ADVERTISMENTS);
 
+		if(advertiseData != null){
+			Bitmap[] data = advertiseData.get(Constants.CURRENT_AD_INDEX).getAddsBitmap();
+			if(data != null && data.length == 2 && data[1] != null){
+				Intent intent = new Intent(getApplicationContext(), AdDetailsActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				intent.putExtra("adindex", Constants.CURRENT_AD_INDEX);
+				startActivity(intent);
+			}
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		if(adTask != null){
+			adTask.cancel();
+		}
+		if(adTimer != null){
+			adTimer.cancel();
+		}
+		super.onDestroy();
+	}
 	private void refreshViews(){
 		mBtnBusiness.setTextColor(Color.WHITE);
 		mBtnDesignArcht.setTextColor(Color.WHITE);
@@ -422,6 +454,8 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 							mAdapter = new HomeScreenAdapter(HomeActivity.this);
 							mAdapter.setRequestID(reqID);
 							setListAdapter(mAdapter); 
+							// Call adds 
+							getAdvertisements();
 						}
 					});
 
@@ -469,7 +503,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	} 
 
 	private void getAdvertisements() {
-		// TODO Auto-generated method stub
 		if(Utils.isNetworkAvail(getApplicationContext())){
 			HttpHandler httpHandler =  HttpHandler.getInstance();
 			//Cancel previous request;
@@ -568,28 +601,33 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	 * update adds
 	 */
 	private void updateAdvertisements(){
-		Timer t = new Timer(); 
+		adTimer = new Timer(); 
 		count = 0;
 
 		final Handler handler = new Handler();
 
-		t.schedule(new TimerTask() {       
+		adTask = new TimerTask() {       
 			public void run() {         
 				handler.post(new Runnable() {   
 					public void run() { 
 						Log.i("Advertisments ", "Display started");
-						Bitmap[] data = advertiseData.get(count).getAddsBitmap();
-						if(Constants.CURRENT_AD_INDEX < advertiseData.size()){
-							addsImage.setImageBitmap(data[0]);
-							Constants.CURRENT_AD_INDEX++;
-						}else
-						{
-							count = 0;
+						if(advertiseData != null){
+							if(Constants.CURRENT_AD_INDEX < (advertiseData.size() - 1)){
+								Constants.CURRENT_AD_INDEX++;
+							}else
+							{
+								Constants.CURRENT_AD_INDEX = 0;
+							}
+							Bitmap[] data = advertiseData.get(Constants.CURRENT_AD_INDEX).getAddsBitmap();
+							if(data[0] != null){
+								addsImage.setImageBitmap(data[0]);
+							}
 						}
 					}       
-				});    
-			}    
-		}, 2000);
+				}); 
+			}
+		};
+		adTimer.schedule(adTask, 2000, 30000);
 	}
 
 

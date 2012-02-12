@@ -1,6 +1,9 @@
 package com.codegreen.ui.activity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.DownloadHandler;
@@ -23,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnKeyListener;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -44,6 +48,7 @@ import android.view.View.OnClickListener;
 
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -90,6 +95,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	RelativeLayout lay_main = null;
 	private String shortDesc = null;
 	private String thumbUrl;
+	ArrayList<ArticleDAO> advertiseData = null;
+	ImageView addsImage = null;
+	Timer adTimer;
+	TimerTask adTask;
+
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +162,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 
 			scrollLinearlayout = (LinearLayout)findViewById(R.id.scrollLinearlayout);
+			addsImage = (ImageView)findViewById(R.id.admarveldetailsscreen);
 
 			mFlipper = ((ViewFlipper)findViewById(R.id.tutorial_flipper));
 			Animation anim = (Animation) AnimationUtils.
@@ -191,6 +203,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,Constants.REQ_GETARTICLEDETAILS,(byte)0);
 			}
 		}
+		updateAdvertisements();
 	}
 
 
@@ -328,6 +341,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							}
 							imageView.setBackgroundDrawable(null);
 							imageView.setImageBitmap(CacheManager.getInstance().getLatestArticleBitmap());
+							/*TranslateAnimation left = new TranslateAnimation(240, 0, 0, 10);
+							left.setDuration(2000);
+
+							left.setRepeatCount( 0 );
+							imageView.startAnimation(left);*/
+							CacheManager.getInstance().setLatestArticleBitmap(null);
 						}
 					}else if(callId == Constants.REQ_DOWNLOADARTICLE){
 
@@ -356,6 +375,19 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 	}
 
+	@Override
+	protected void onDestroy() {
+		if(adTask != null){
+			adTask.cancel();
+		}
+		if(adTimer != null){
+			adTimer.cancel();
+		}
+		HttpHandler httpHandler =  HttpHandler.getInstance();
+		//Cancel previous request;
+		httpHandler.cancelRequest();
+		super.onDestroy();
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -388,6 +420,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 			if(count == 0){
 				DownloadHandler downloadHandler = DownloadHandler.getInstance();
+				downloadHandler.cleardata();
 				downloadHandler.handleEvent(articleDetails, Constants.REQ_DOWNLOADARTICLE, this);
 
 				Message msg = new Message();
@@ -503,6 +536,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					ArticleDAO dao = (ArticleDAO)CacheManager.getInstance().get(Constants.C_DOWNLOADED_ARTICLE);
 					if(dao != null){
 						saveArticle(dao);
+						CacheManager.getInstance().removeFromCache(Constants.C_DOWNLOADED_ARTICLE);
 					}
 				}
 
@@ -616,6 +650,40 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			return super.onTouchEvent(event);
 	}
 
+	/**
+	 * update adds
+	 */
+	private void updateAdvertisements(){
+		adTimer = new Timer(); 
+
+		final Handler handler = new Handler();
+
+		adTask = new TimerTask() {       
+			public void run() {         
+				handler.post(new Runnable() {   
+					public void run() {
+						if(advertiseData == null){
+							advertiseData = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ADVERTISMENTS);
+						}
+						Log.i("Advertisments ", "Display started");
+						if(advertiseData != null){
+							if(Constants.CURRENT_AD_INDEX < (advertiseData.size() - 1)){
+								Constants.CURRENT_AD_INDEX++;
+							}else
+							{
+								Constants.CURRENT_AD_INDEX = 0;
+							}
+							Bitmap[] data = advertiseData.get(Constants.CURRENT_AD_INDEX).getAddsBitmap();
+							if(data[0] != null){
+								addsImage.setImageBitmap(data[0]);
+							}
+						}
+					}       
+				}); 
+			}
+		};
+		adTimer.schedule(adTask, 2000, 30000);
+	}
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev){
 		super.dispatchTouchEvent(ev);
