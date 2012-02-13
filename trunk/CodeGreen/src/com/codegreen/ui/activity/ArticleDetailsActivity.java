@@ -139,7 +139,7 @@ private boolean playerScreenOpened;
 
 			progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
 			imageView = (ImageView)findViewById(R.id.webview);
-			imageView.setBackgroundResource(R.drawable.bg_images_sample);
+			//imageView.setBackgroundResource(R.drawable.bg_images_sample);
 
 			TextView progress_text = (TextView) findViewById(R.id.progress_text_color);
 
@@ -702,7 +702,7 @@ private boolean playerScreenOpened;
 								Constants.CURRENT_AD_INDEX = 0;
 							}
 							Bitmap[] data = advertiseData.get(Constants.CURRENT_AD_INDEX).getAddsBitmap();
-							if(data[0] != null){
+							if(data != null && data[0] != null){
 								addsImage.setImageBitmap(data[0]);
 							}
 						}
