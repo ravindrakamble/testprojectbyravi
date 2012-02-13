@@ -23,10 +23,10 @@
 					android:id="@+id/scrollLinearlayout" android:orientation="vertical"
 					android:layout_height="fill_parent">
 
-					<ImageView android:layout_width="fill_parent"
-						android:layout_gravity="center" android:layout_marginLeft="15dip"
+					<ImageView android:layout_width="fill_parent" android:adjustViewBounds="true" android:scaleType="centerCrop"
+						android:layout_gravity="center" android:layout_marginLeft="15dip" android:visibility="gone" 
 						android:layout_marginRight="15dip" android:layout_height="wrap_content"
-						android:id="@+id/webview" android:visibility="gone"
+						android:id="@+id/webview" android:src="@drawable/default_bg_text"
 						android:gravity="center_horizontal" android:textSize="20dip"
 						android:layout_marginTop="5dip" />
 
@@ -62,7 +62,7 @@
 		android:layout_height="wrap_content" android:id="@+id/progress_lay"
 		android:layout_centerInParent="true">
 		<ProgressBar android:layout_width="wrap_content"
-			android:layout_height="wrap_content" style="@android:style/Widget.ProgressBar.Small"
+			android:layout_height="wrap_content" style="@android:style/Widget.ProgressBar"
 			android:layout_marginRight="5dp" />
 		<TextView android:layout_width="wrap_content" android:id="@+id/progress_text_color"
 			android:textColor="#ffffff" android:layout_height="wrap_content"
