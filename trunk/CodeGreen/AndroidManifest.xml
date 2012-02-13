@@ -13,9 +13,9 @@
             </intent-filter>
         </activity>
 
-    <activity android:name=".ui.activity.HomeActivity" android:alwaysRetainTaskState="true" android:allowTaskReparenting="true" android:configChanges="orientation|keyboardHidden"></activity>
-    <activity android:name=".ui.activity.ArticleDetailsActivity" android:alwaysRetainTaskState="true" android:allowTaskReparenting="true" android:configChanges="orientation|keyboardHidden"></activity>
-    <activity android:name=".ui.activity.PlayerActivity" android:alwaysRetainTaskState="true" android:allowTaskReparenting="true" android:configChanges="orientation|keyboardHidden"></activity>
+<activity android:name=".ui.activity.HomeActivity" android:alwaysRetainTaskState="true" android:allowTaskReparenting="true" android:configChanges="orientation|keyboardHidden"></activity>
+<activity android:name=".ui.activity.ArticleDetailsActivity" android:alwaysRetainTaskState="true" android:allowTaskReparenting="true" android:configChanges="orientation|keyboardHidden"></activity>
+<activity android:name=".ui.activity.PlayerActivity" android:alwaysRetainTaskState="true" android:allowTaskReparenting="true" android:configChanges="orientation|keyboardHidden"></activity>
 <activity android:name=".ui.activity.SearchActivity" android:alwaysRetainTaskState="true" android:allowTaskReparenting="true" android:configChanges="orientation"></activity>
 <activity android:name=".ui.activity.SavedArticlesActivity" android:alwaysRetainTaskState="true" android:allowTaskReparenting="true" android:configChanges="orientation|keyboardHidden"></activity>
 <activity android:name=".ui.activity.About"></activity>
