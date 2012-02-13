@@ -19,6 +19,8 @@ import java.util.TimeZone;
 import java.util.Vector;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
@@ -632,5 +634,18 @@ public class Utils {
 
 	public static void displayMessage(Context context, String message){
 		Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+	}
+	
+	public static Bitmap scaleBitmap(Bitmap bitmap, int width, int height){
+		BitmapFactory.Options bfo = new BitmapFactory.Options();
+		bfo.inSampleSize = 4;
+		Bitmap newBitmap = null;
+		if (bitmap  != null) {
+			//Log.e("Bitmap Scales "," True");
+			newBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+			bitmap.recycle();
+
+		}
+		return newBitmap;
 	}
 }
