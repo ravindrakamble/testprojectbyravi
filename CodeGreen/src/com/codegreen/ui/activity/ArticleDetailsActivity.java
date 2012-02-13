@@ -100,7 +100,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	Timer adTimer;
 	TimerTask adTask;
 
-
+private boolean playerScreenOpened;
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -570,13 +570,14 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 			@Override
 			public void run() {
-				if(notAFling){
+				if(notAFling && !playerScreenOpened){
 					if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) 
 							|| strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
 
 						progress_Lay.setVisibility(View.VISIBLE);
 						String urlToPlay = articleDetails.getUrl();
 						Log.e("---------Play Url------- ", ""+ urlToPlay);
+						playerScreenOpened = true;
 						if(urlToPlay != null && urlToPlay.contains("youtube")){
 							try{
 								Intent videoClient = new Intent(Intent.ACTION_VIEW); 
@@ -601,6 +602,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				}
 			}
 		},  1000);
+	}
+	
+	@Override
+	protected void onResume() {
+		playerScreenOpened = false;
+		super.onResume();
 	}
 	private void showProgressBar(){
 		if(progressDialog == null){
@@ -642,7 +649,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				txtTitle.setVisibility(View.GONE);
 				txtDate.setVisibility(View.GONE);
 				txt_reviews.setVisibility(View.GONE);
-				//imageView.getDrawable().setCallback(null);
 				imageView.setImageResource(R.drawable.bg_images_sample);
 				getArticleDetails();
 			}
