@@ -104,6 +104,8 @@ public class Constants {
 	
 	public static final String NO_MATCH_FOUND = "No match found.";
 	
+	public static int SCREEN_WIDTH = 0;
+	
 	
 	public static final int DIALOG_REVIEW = 1;
 	public static final int DIALOG_SHARE = 2;

@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import com.codegreen.businessprocess.handler.Handler;
 import com.codegreen.common.Task;
 import com.codegreen.util.Constants;
+import com.codegreen.util.Utils;
 
 public class AdDownloadTask extends Task {
 
@@ -29,7 +30,6 @@ public class AdDownloadTask extends Task {
 	@Override
 	public void run() {
 		InputStream is ;
-		FileInputStream fileInputStream = null;
 		try {
 			if(thumbnailURL != null){
 				if(thumbnailURL.startsWith("http")){
@@ -37,9 +37,13 @@ public class AdDownloadTask extends Task {
 					is = new URL(thumbnailURL).openStream();
 					BufferedInputStream bis = new BufferedInputStream(is);  
 					bitmap[0] = BitmapFactory.decodeStream(bis);
+					if(bitmap[0] != null){
+						bitmap[0] = Utils.scaleBitmap(bitmap[0], Constants.SCREEN_WIDTH, 50);
+					}
+
 				}	
 			}
-			
+
 			if(mainURL != null){
 				if(mainURL.startsWith("http")){
 					thumbnailURL = thumbnailURL.replaceAll(" ", "%20");
@@ -51,9 +55,9 @@ public class AdDownloadTask extends Task {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
-		
+
 		handler.handleCallback((Object)bitmap, Constants.REQ_DOWNLOADADDIMAGE, (byte)0);
-		
+
 	}
 
 	@Override

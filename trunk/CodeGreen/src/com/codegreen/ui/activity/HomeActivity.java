@@ -19,10 +19,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageView;
@@ -77,6 +79,10 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
+		
+		WindowManager wm = getWindowManager(); 
+		Display display = wm.getDefaultDisplay();
+		Constants.SCREEN_WIDTH = display.getWidth();
 		initWidgets();
 		CURRENT_SELECTED_CATEGORY = 0;
 		CURRENT_SELECTED_MEDIA = "ALL";
