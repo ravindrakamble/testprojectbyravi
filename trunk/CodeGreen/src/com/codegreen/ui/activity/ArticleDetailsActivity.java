@@ -79,8 +79,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private GestureDetector gestureDetector;
 	View.OnTouchListener gestureListener;
 	private boolean notAFling = false;
-
-	private LinearLayout scrollLinearlayout;
+	TextView progress_text = null;
+	private RelativeLayout scrollLinearlayout;
 	private static final int SWIPE_MIN_DISTANCE = 120;
 	private static final int SWIPE_MAX_OFF_PATH = 300;
 	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
@@ -102,7 +102,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	Timer adTimer;
 	TimerTask adTask;
 
-private boolean playerScreenOpened;
+	private boolean playerScreenOpened;
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +125,8 @@ private boolean playerScreenOpened;
 		}
 		if(strSelectedArticleType != null){
 			setContentView(R.layout.atrticle_text);
+			
+			LinearLayout lay_main_scroll = (LinearLayout)findViewById(R.id.lay_main_scroll);
 
 			imageViewProgressBar = (ProgressBar) findViewById(R.id.progress_imageView);
 			txt_reviews = (TextView)findViewById(R.id.txt_reviews);
@@ -142,9 +144,8 @@ private boolean playerScreenOpened;
 
 			progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
 			imageView = (ImageView)findViewById(R.id.webview);
-			//imageView.setBackgroundResource(R.drawable.bg_images_sample);
 
-			TextView progress_text = (TextView) findViewById(R.id.progress_text_color);
+			progress_text = (TextView) findViewById(R.id.progress_text_color);
 
 			if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
 				lay_main.setBackgroundColor(Color.WHITE);
@@ -164,7 +165,7 @@ private boolean playerScreenOpened;
 			}
 
 
-			scrollLinearlayout = (LinearLayout)findViewById(R.id.scrollLinearlayout);
+			scrollLinearlayout = (RelativeLayout)findViewById(R.id.scrollLinearlayout);
 			addsImage = (ImageView)findViewById(R.id.admarveldetailsscreen);
 			addsImage.setOnClickListener(new OnClickListener() {
 
@@ -174,7 +175,7 @@ private boolean playerScreenOpened;
 
 				}
 			});
-			
+
 			mFlipper = ((ViewFlipper)findViewById(R.id.tutorial_flipper));
 			Animation anim = (Animation) AnimationUtils.
 			loadAnimation(ArticleDetailsActivity.this, R.anim.push_left_in);
@@ -196,6 +197,7 @@ private boolean playerScreenOpened;
 			txtDate.setOnTouchListener(gestureListener);
 			mFlipper.setOnTouchListener(gestureListener);
 			scrollLinearlayout.setOnTouchListener(gestureListener);
+			lay_main_scroll.setOnTouchListener(gestureListener);
 			//imageView.setOnTouchListener(gestureListener);
 			imageView.setOnClickListener(new OnClickListener() {
 				@Override
@@ -290,22 +292,41 @@ private boolean playerScreenOpened;
 					progress_Lay.setVisibility(View.GONE);
 					if(callId == Constants.REQ_GETARTICLEDETAILS){
 						String strDetails = "";
-						imageView.setVisibility(View.GONE);
 						articleDetails = (ArticleDAO) CacheManager.getInstance().get(Constants.C_ARTICLE_DETAILS);
 						if(articleDetails != null){
 							articleDetails.setThumbUrl(thumbUrl);
 							articleDetails.setShortDescription(shortDesc);
-							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals("")){
-								imageView.setVisibility(View.VISIBLE);
-								if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
-									PlayerActivity.streamUrl = articleDetails.getUrl();
-									PlayerActivity.isAudio = true;
+							// Set the flags in case of audio 
+							if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
+								PlayerActivity.streamUrl = articleDetails.getUrl();
+								PlayerActivity.isAudio = true;
+							}else if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+								PlayerActivity.streamUrl = articleDetails.getUrl();
+								PlayerActivity.isAudio = false;
+							}
+							/////////////////////// For Image ///////////////////////////////////////////
+							// If text/image then check for url it should not be null
+
+							// Display by default
+							imageView.setVisibility(View.VISIBLE);
+
+							if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT) || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)){
+
+								if(articleDetails.getUrl()== null || articleDetails.getUrl().equals("")){
+									imageView.setVisibility(View.GONE);
 								}else{
-									PlayerActivity.streamUrl = articleDetails.getUrl();
-									PlayerActivity.isAudio = false;
+									// then download image with thumbnail url
+									downloadImage(articleDetails.getUrl());
 								}
-							}else{
-								imageView.setVisibility(View.GONE);
+
+								// If audio/ video then use thumbnail to display if thumbnail is null then display default image
+							}else if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+								if(articleDetails.getThumbUrl() == null || articleDetails.getThumbUrl().equals("")){
+									imageView.setImageResource(R.drawable.bg_images_sample);
+								}else{
+									// then download image with thumbnail url
+									downloadImage(articleDetails.getThumbUrl());
+								}
 							}
 							txtTitle.setText("Title : "+ articleDetails.getTitle());
 							txtDate.setText("Date :" + articleDetails.getPublishedDate());
@@ -319,12 +340,10 @@ private boolean playerScreenOpened;
 								txtDetails.setText(strDetails);
 							}
 							else{
-								txtDetails.setVisibility(View.GONE);
+								txtDetails.setVisibility(View.INVISIBLE);
 							}
-							txt_reviews.setVisibility(View.GONE);
-							
-							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals(""))
-								downloadImage();
+							txt_reviews.setVisibility(View.INVISIBLE);
+
 						}
 					}else if(callId == Constants.REQ_GETREVIEWS){
 						txt_reviews.setVisibility(View.VISIBLE);
@@ -358,9 +377,8 @@ private boolean playerScreenOpened;
 						//update the reviews
 						getReviews(articleDetails);
 					}else if(callId == Constants.REQ_DOWNLOADIMAGE){
-						
+
 						imageViewProgressBar.setVisibility(View.GONE);
-						
 						if(CacheManager.getInstance().getLatestArticleBitmap() != null){
 							if(imageView.getDrawable() != null){
 								imageView.getDrawable().setCallback(null);
@@ -369,8 +387,11 @@ private boolean playerScreenOpened;
 							imageView.setImageBitmap(CacheManager.getInstance().getLatestArticleBitmap());
 							CacheManager.getInstance().setLatestArticleBitmap(null);
 						}else{
-							imageView.setVisibility(View.GONE);
-							//imageView.setImageResource(R.drawable.default_bg_text);
+							if(articleDetails.getType().equals(Constants.ARTCLETYPE_AUDIO) || articleDetails.getType().equals(Constants.ARTCLETYPE_VIDEO)){
+								imageView.setImageResource(R.drawable.bg_images_sample);
+							}else
+								imageView.setVisibility(View.GONE);
+							Toast.makeText(getApplicationContext(),"Image download failed.", Toast.LENGTH_SHORT).show();
 						}
 					}else if(callId == Constants.REQ_DOWNLOADARTICLE){
 
@@ -524,24 +545,16 @@ private boolean playerScreenOpened;
 		}
 	}
 
-	private void downloadImage(){
+	private void downloadImage(String url){
 		if(Utils.isNetworkAvail(getApplicationContext())){
-			if(articleDetails != null){
-				if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
-					imageViewProgressBar.setVisibility(View.VISIBLE);
-					HttpHandler httpHandler =  HttpHandler.getInstance();
-					//Cancel previous request;
-					httpHandler.cancelRequest();
-					String url = null;
-					url = articleDetails.getUrl();
-					if(url != null && !url.equals(""))
-						httpHandler.handleEvent(url, Constants.REQ_DOWNLOADIMAGE, ArticleDetailsActivity.this);
-				}
-			}
+			imageViewProgressBar.setVisibility(View.VISIBLE);
+			HttpHandler httpHandler =  HttpHandler.getInstance();
+			//Cancel previous request;
+			httpHandler.cancelRequest();
+			if(url != null && !url.equals(""))
+				httpHandler.handleEvent(url, Constants.REQ_DOWNLOADIMAGE, ArticleDetailsActivity.this);
 		}else
-		{
 			Toast.makeText(getApplicationContext(), "No Network Available", Toast.LENGTH_SHORT).show();
-		}
 	}
 
 	private Handler handler = new Handler(){
@@ -608,7 +621,7 @@ private boolean playerScreenOpened;
 			}
 		},  1000);
 	}
-	
+
 	@Override
 	protected void onResume() {
 		playerScreenOpened = false;
@@ -648,6 +661,22 @@ private boolean playerScreenOpened;
 		try {
 			if(listOfArticles != null && Constants.CURRENT_INDEX < listOfArticles.size()){
 				this.articleDetails = listOfArticles.get(Constants.CURRENT_INDEX);
+				if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
+					lay_main.setBackgroundColor(Color.WHITE);
+					txtTitle.setTextColor(Color.BLACK);
+					txtDate.setTextColor(Color.BLACK);
+					txtDetails.setTextColor(Color.BLACK);
+					txt_reviews.setTextColor(Color.BLACK);
+					progress_text.setTextColor(Color.BLACK);
+
+				}else{
+					lay_main.setBackgroundColor(Color.BLACK);
+					txtTitle.setTextColor(Color.WHITE);
+					txtDate.setTextColor(Color.WHITE);
+					txtDetails.setTextColor(Color.WHITE);
+					txt_reviews.setTextColor(Color.WHITE);
+					progress_text.setTextColor(Color.WHITE);
+				}
 				strSelectedArticleID = articleDetails.getArticleID();
 				strSelectedArticleType = articleDetails.getType();
 				txtDetails.setVisibility(View.INVISIBLE);

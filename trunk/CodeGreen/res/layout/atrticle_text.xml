@@ -15,46 +15,55 @@
 		android:layout_height="fill_parent" android:layout_weight="1"
 		android:gravity="center" android:orientation="vertical" android:id="@+id/content_container">
 		<ViewFlipper android:id="@+id/tutorial_flipper"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
 			android:outAnimation="@com.codegreen:anim/push_left_out"
 			android:inAnimation="@com.codegreen:anim/push_left_in">
 			<ScrollView android:layout_width="fill_parent"
 				android:layout_weight="1" android:layout_height="wrap_content">
-				<LinearLayout android:layout_width="fill_parent"
-					android:id="@+id/scrollLinearlayout" android:orientation="vertical"
-					android:layout_height="fill_parent">
 
-					<ImageView android:layout_width="fill_parent" android:visibility="gone"
-						android:adjustViewBounds="true" android:scaleType="centerCrop"
-						android:layout_gravity="center" android:layout_marginLeft="15dip"
-						android:layout_marginRight="15dip" android:layout_height="150dip"
-						android:id="@+id/webview" android:src="@drawable/default_bg_text"
-						android:gravity="center_horizontal" android:textSize="20dip"
-						android:minHeight="0dip" android:layout_marginTop="10dip" />
+				<LinearLayout android:layout_width="fill_parent" android:id="@+id/lay_main_scroll"
+					android:orientation="vertical" android:layout_height="fill_parent">
 
-					<TextView android:layout_width="fill_parent"
-						android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
-						android:layout_marginTop="15dip" android:layout_height="wrap_content"
-						android:id="@+id/article_title_view" android:textColor="#FFFFFF"
-						android:textSize="19dip" />
+					<ImageView android:layout_width="fill_parent"
+						android:visibility="gone" android:adjustViewBounds="true"
+						android:scaleType="centerCrop" android:layout_gravity="center"
+						android:layout_marginLeft="15dip" android:layout_marginRight="15dip"
+						android:layout_height="150dip" android:id="@+id/webview"
+						android:src="@drawable/default_bg_text" android:gravity="center_horizontal"
+						android:textSize="20dip" android:minHeight="0dip"
+						android:layout_marginTop="10dip" />
 
-					<TextView android:layout_width="fill_parent"
-						android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
-						android:layout_marginTop="15dip" android:layout_height="wrap_content"
-						android:id="@+id/article_date_view" android:textColor="#FFFFFF"
-						android:textSize="14dip" />
-					<TextView android:layout_width="fill_parent"
-						android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
-						android:layout_marginTop="15dip" android:layout_height="wrap_content"
-						android:id="@+id/article_details_view" android:textColor="#FFFFFF"
-						android:textSize="17dip" />
-					<TextView android:id="@+id/txt_reviews"
-						android:visibility="gone" android:layout_marginTop="15dip"
-						android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
-						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:textColor="#FFFFFF" android:text="Click here to see reviews..."
-						android:textStyle="italic" android:textSize="20dip" />
-				</LinearLayout>
+					<RelativeLayout android:layout_width="fill_parent"
+						android:id="@+id/scrollLinearlayout" android:orientation="vertical"
+						android:layout_height="fill_parent">
+
+						<TextView android:layout_width="fill_parent"
+							android:layout_below="@+id/webview" android:layout_marginLeft="10dip"
+							android:layout_marginRight="10dip" android:layout_marginTop="15dip"
+							android:layout_height="wrap_content" android:id="@+id/article_title_view"
+							android:textColor="#FFFFFF" android:textSize="19dip" />
+
+						<TextView android:layout_width="fill_parent"
+							android:layout_below="@+id/article_title_view"
+							android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
+							android:layout_marginTop="15dip" android:layout_height="wrap_content"
+							android:id="@+id/article_date_view" android:textColor="#FFFFFF"
+							android:textSize="14dip" />
+						<TextView android:layout_width="fill_parent"
+							android:layout_below="@+id/article_date_view"
+							android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
+							android:layout_marginTop="15dip" android:layout_height="wrap_content"
+							android:id="@+id/article_details_view" android:textColor="#FFFFFF"
+							android:textSize="17dip" />
+						<TextView android:id="@+id/txt_reviews"
+							android:layout_below="@+id/article_details_view"
+							android:visibility="gone" android:layout_marginTop="15dip"
+							android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
+							android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:textColor="#FFFFFF" android:text="Click here to see reviews..."
+							android:textStyle="italic" android:textSize="20dip" />
+					</RelativeLayout>
+					</LinearLayout>
 			</ScrollView>
 		</ViewFlipper>
 	</LinearLayout>
@@ -64,16 +73,18 @@
 		android:layout_height="wrap_content" android:id="@+id/progress_lay"
 		android:layout_centerInParent="true">
 		<ProgressBar android:layout_width="wrap_content"
-			android:layout_height="wrap_content" style="?android:attr/progressBarStyleInverse" 
+			android:layout_height="wrap_content" style="?android:attr/progressBarStyleInverse"
 			android:layout_marginRight="5dp" />
 		<TextView android:layout_width="wrap_content" android:id="@+id/progress_text_color"
-			android:textColor="#ffffff" android:layout_height="wrap_content"
-			android:text="Loading..." />
+			android:textColor="#ffffff" android:layout_height="wrap_content" android:textSize="15dip"
+			android:text="Loading..." android:textStyle="bold" />
 	</LinearLayout>
 
-	<ProgressBar android:layout_width="wrap_content" android:id="@+id/progress_imageView"
-		android:layout_centerHorizontal="true" android:layout_height="wrap_content" android:visibility="gone"
-		style="?android:attr/progressBarStyleInverse"  android:layout_marginTop="115dip" />
+	<ProgressBar android:layout_width="wrap_content"
+		android:id="@+id/progress_imageView" android:layout_centerHorizontal="true"
+		android:layout_height="wrap_content" android:visibility="gone"
+		style="?android:attr/progressBarStyleInverse"
+		android:layout_marginTop="100dip" />
 
 	<RelativeLayout android:layout_width="fill_parent"
 		android:id="@+id/relativeLayout1" android:layout_height="wrap_content"
