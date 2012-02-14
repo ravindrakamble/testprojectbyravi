@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent" android:id="@+id/lay_details_main"
-	android:layout_height="fill_parent" android:background="#000000">
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:id="@+id/lay_details_main" android:layout_height="fill_parent"
+	android:background="#000000">
 
 
 	<RelativeLayout android:id="@+id/codegreenTitle"
@@ -9,10 +10,10 @@
 		android:layout_height="wrap_content">
 	</RelativeLayout>
 
-	<LinearLayout android:layout_width="fill_parent" android:layout_above="@+id/relativeLayout1"
-		android:layout_below="@+id/codegreenTitle" android:layout_height="fill_parent"
-		android:layout_weight="1" android:gravity="center"
-		android:orientation="vertical" android:id="@+id/content_container">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_above="@+id/relativeLayout1" android:layout_below="@+id/codegreenTitle"
+		android:layout_height="fill_parent" android:layout_weight="1"
+		android:gravity="center" android:orientation="vertical" android:id="@+id/content_container">
 		<ViewFlipper android:id="@+id/tutorial_flipper"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:outAnimation="@com.codegreen:anim/push_left_out"
@@ -23,12 +24,13 @@
 					android:id="@+id/scrollLinearlayout" android:orientation="vertical"
 					android:layout_height="fill_parent">
 
-					<ImageView android:layout_width="fill_parent" android:adjustViewBounds="true" android:scaleType="centerCrop"
-						android:layout_gravity="center" android:layout_marginLeft="15dip" android:visibility="gone" 
-						android:layout_marginRight="15dip" android:layout_height="wrap_content"
+					<ImageView android:layout_width="fill_parent" android:visibility="gone"
+						android:adjustViewBounds="true" android:scaleType="centerCrop"
+						android:layout_gravity="center" android:layout_marginLeft="15dip"
+						android:layout_marginRight="15dip" android:layout_height="150dip"
 						android:id="@+id/webview" android:src="@drawable/default_bg_text"
 						android:gravity="center_horizontal" android:textSize="20dip"
-						android:layout_marginTop="5dip" />
+						android:minHeight="0dip" android:layout_marginTop="10dip" />
 
 					<TextView android:layout_width="fill_parent"
 						android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
@@ -62,18 +64,23 @@
 		android:layout_height="wrap_content" android:id="@+id/progress_lay"
 		android:layout_centerInParent="true">
 		<ProgressBar android:layout_width="wrap_content"
-			android:layout_height="wrap_content" style="@android:style/Widget.ProgressBar"
+			android:layout_height="wrap_content" style="?android:attr/progressBarStyleInverse" 
 			android:layout_marginRight="5dp" />
 		<TextView android:layout_width="wrap_content" android:id="@+id/progress_text_color"
 			android:textColor="#ffffff" android:layout_height="wrap_content"
 			android:text="Loading..." />
 	</LinearLayout>
 
+	<ProgressBar android:layout_width="wrap_content" android:id="@+id/progress_imageView"
+		android:layout_centerHorizontal="true" android:layout_height="wrap_content" android:visibility="gone"
+		style="?android:attr/progressBarStyleInverse"  android:layout_marginTop="115dip" />
+
 	<RelativeLayout android:layout_width="fill_parent"
 		android:id="@+id/relativeLayout1" android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true">
-		<ImageView android:id="@+id/admarveldetailsscreen" android:src="@drawable/bg_ads_sample"
-			android:layout_width="fill_parent" android:layout_height="50dip"></ImageView>
+		<ImageView android:id="@+id/admarveldetailsscreen"
+			android:src="@drawable/bg_ads_sample" android:layout_width="fill_parent"
+			android:layout_height="50dip"></ImageView>
 	</RelativeLayout>
 
 </RelativeLayout>
