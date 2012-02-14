@@ -52,6 +52,7 @@ import android.view.animation.TranslateAnimation;
 
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,6 +65,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	String strSelectedArticleID = "";
 	String TAG = "ArticleDetailsActivity";
 	LinearLayout progress_Lay = null;
+	ProgressBar imageViewProgressBar = null;
 	ImageView imageView = null;
 	private static final int MENU_OPTION_SAVED = 0x01;
 	private static final int MENU_OPTION_SEARCH = 0x02;
@@ -124,6 +126,7 @@ private boolean playerScreenOpened;
 		if(strSelectedArticleType != null){
 			setContentView(R.layout.atrticle_text);
 
+			imageViewProgressBar = (ProgressBar) findViewById(R.id.progress_imageView);
 			txt_reviews = (TextView)findViewById(R.id.txt_reviews);
 			txt_reviews.setVisibility(View.GONE);
 
@@ -294,8 +297,7 @@ private boolean playerScreenOpened;
 							articleDetails.setShortDescription(shortDesc);
 							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals("")){
 								imageView.setVisibility(View.VISIBLE);
-								if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
-								}else if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
+								if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
 									PlayerActivity.streamUrl = articleDetails.getUrl();
 									PlayerActivity.isAudio = true;
 								}else{
@@ -320,8 +322,9 @@ private boolean playerScreenOpened;
 								txtDetails.setVisibility(View.GONE);
 							}
 							txt_reviews.setVisibility(View.GONE);
-
-							downloadImage();
+							
+							if(articleDetails.getUrl() != null && !articleDetails.getUrl().equals(""))
+								downloadImage();
 						}
 					}else if(callId == Constants.REQ_GETREVIEWS){
 						txt_reviews.setVisibility(View.VISIBLE);
@@ -355,18 +358,19 @@ private boolean playerScreenOpened;
 						//update the reviews
 						getReviews(articleDetails);
 					}else if(callId == Constants.REQ_DOWNLOADIMAGE){
+						
+						imageViewProgressBar.setVisibility(View.GONE);
+						
 						if(CacheManager.getInstance().getLatestArticleBitmap() != null){
 							if(imageView.getDrawable() != null){
 								imageView.getDrawable().setCallback(null);
 							}
 							imageView.setBackgroundDrawable(null);
 							imageView.setImageBitmap(CacheManager.getInstance().getLatestArticleBitmap());
-							/*TranslateAnimation left = new TranslateAnimation(240, 0, 0, 10);
-							left.setDuration(2000);
-
-							left.setRepeatCount( 0 );
-							imageView.startAnimation(left);*/
 							CacheManager.getInstance().setLatestArticleBitmap(null);
+						}else{
+							imageView.setVisibility(View.GONE);
+							//imageView.setImageResource(R.drawable.default_bg_text);
 						}
 					}else if(callId == Constants.REQ_DOWNLOADARTICLE){
 
@@ -524,6 +528,7 @@ private boolean playerScreenOpened;
 		if(Utils.isNetworkAvail(getApplicationContext())){
 			if(articleDetails != null){
 				if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) && !articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+					imageViewProgressBar.setVisibility(View.VISIBLE);
 					HttpHandler httpHandler =  HttpHandler.getInstance();
 					//Cancel previous request;
 					httpHandler.cancelRequest();
@@ -645,11 +650,11 @@ private boolean playerScreenOpened;
 				this.articleDetails = listOfArticles.get(Constants.CURRENT_INDEX);
 				strSelectedArticleID = articleDetails.getArticleID();
 				strSelectedArticleType = articleDetails.getType();
-				txtDetails.setVisibility(View.GONE);
-				txtTitle.setVisibility(View.GONE);
-				txtDate.setVisibility(View.GONE);
-				txt_reviews.setVisibility(View.GONE);
-				imageView.setImageResource(R.drawable.bg_images_sample);
+				txtDetails.setVisibility(View.INVISIBLE);
+				txtTitle.setVisibility(View.INVISIBLE);
+				txtDate.setVisibility(View.INVISIBLE);
+				txt_reviews.setVisibility(View.INVISIBLE);
+				imageView.setImageResource(R.drawable.default_bg_text);
 				getArticleDetails();
 			}
 		} catch (Exception e) {
