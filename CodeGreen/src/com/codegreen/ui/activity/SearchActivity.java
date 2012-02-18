@@ -7,7 +7,6 @@ import com.codegreen.listener.Updatable;
 import com.codegreen.ui.adaptor.SearchScreenAdapter;
 import com.codegreen.util.Constants;
 import com.codegreen.util.Utils;
-import com.facebook.android.Util;
 
 import android.app.ListActivity;
 import android.content.Context;
