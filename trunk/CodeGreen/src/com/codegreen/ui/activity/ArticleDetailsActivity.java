@@ -59,7 +59,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	String strSelectedArticleType = Constants.ARTCLETYPE_TEXT;
 	String strSelectedArticleID = "";
 	String TAG = "ArticleDetailsActivity";
-	//LinearLayout progress_Lay = null;
 	ProgressBar imageViewProgressBar = null;
 	ImageView imageView = null;
 	private static final int MENU_OPTION_SEARCH = 0x02;
@@ -81,6 +80,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private ViewFlipper mFlipper;
 	private final int SHOW_PROGRESS = 1;
 	private final int REMOVE_PROGRESS = 2;
+	private final int SHOW_REVIEW_PROGRESS = 3;
+	private final int REMOVE_REVIEW_PROGRESS = 4;
 	TextView txtDetails = null;
 	TextView txtTitle = null;
 	TextView txtDate = null;
@@ -94,8 +95,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	ImageView addsImage = null;
 	Timer adTimer;
 	TimerTask adTask;
+	private ProgressDialog reviewProgressDialog = null;
 	String progres_text = "Downloading article data,Please wait...";
-	
+
 	private boolean playerScreenOpened;
 	@SuppressWarnings("unchecked")
 	@Override
@@ -119,7 +121,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 		if(strSelectedArticleType != null){
 			setContentView(R.layout.atrticle_text);
-			
+
 			LinearLayout lay_main_scroll = (LinearLayout)findViewById(R.id.lay_main_scroll);
 
 			imageViewProgressBar = (ProgressBar) findViewById(R.id.progress_imageView);
@@ -305,6 +307,27 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							// Display by default
 							imageView.setVisibility(View.VISIBLE);
 
+							txtTitle.setText("Title : "+ articleDetails.getTitle());
+							txtDate.setText("Date :" + articleDetails.getPublishedDate());
+							txtTitle.setVisibility(View.VISIBLE);
+							txtDate.setVisibility(View.VISIBLE);
+
+							strDetails =  articleDetails.getDetailedDescription();
+							if(strDetails != null && !strDetails.equals("")){
+
+								txtDetails.setVisibility(View.VISIBLE);
+								txtDetails.setText(strDetails);
+							}
+							else{
+								txtDetails.setVisibility(View.INVISIBLE);
+							}
+							txt_reviews.setVisibility(View.INVISIBLE);
+
+							Message msg = new Message();
+							msg.what = REMOVE_PROGRESS;
+							msg.arg1 = REMOVE_PROGRESS;
+							handler.sendMessage(msg);
+
 							if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT) || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)){
 
 								if(articleDetails.getUrl()== null || articleDetails.getUrl().equals("")){
@@ -323,27 +346,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 									downloadImage(articleDetails.getThumbUrl());
 								}
 							}
-							txtTitle.setText("Title : "+ articleDetails.getTitle());
-							txtDate.setText("Date :" + articleDetails.getPublishedDate());
-							txtTitle.setVisibility(View.VISIBLE);
-							txtDate.setVisibility(View.VISIBLE);
-
-							strDetails =  articleDetails.getDetailedDescription();
-							if(strDetails != null && !strDetails.equals("")){
-
-								txtDetails.setVisibility(View.VISIBLE);
-								txtDetails.setText(strDetails);
-							}
-							else{
-								txtDetails.setVisibility(View.INVISIBLE);
-							}
-							txt_reviews.setVisibility(View.INVISIBLE);
-							
-							Message msg = new Message();
-							msg.what = REMOVE_PROGRESS;
-							msg.arg1 = REMOVE_PROGRESS;
-							handler.sendMessage(msg);
-
 						}
 					}else if(callId == Constants.REQ_GETREVIEWS){
 						txt_reviews.setVisibility(View.VISIBLE);
@@ -371,10 +373,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						}else{
 							txt_reviews.setText(getString(R.string.no_reviews));
 						}
-						
+
 						Message msg = new Message();
-						msg.what = REMOVE_PROGRESS;
-						msg.arg1 = REMOVE_PROGRESS;
+						msg.what = REMOVE_REVIEW_PROGRESS;
 						handler.sendMessage(msg);
 
 					}else if(callId == Constants.REQ_SUBMITREVIEW){
@@ -517,6 +518,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		case Constants.DIALOG_PROGRESS:
 			showProgressBar();
 			return progressDialog;
+		case Constants.DIALOG_REVIEW_PROGRESS:
+			showReviewProgressBar();
+			return reviewProgressDialog;
 		default:
 			break;
 		}
@@ -530,15 +534,15 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				HttpHandler httpHandler =  HttpHandler.getInstance();
 				//Cancel previous request;
 				httpHandler.cancelRequest();
-				
+
 				progres_text = "";
 				progres_text = "Downloading reviews,please wait...";
 
 				//Start progress bar
 				Message msg = new Message();
-				msg.what = SHOW_PROGRESS;
+				msg.what = SHOW_REVIEW_PROGRESS;
 				handler.sendMessage(msg);
-				
+
 				//Prepare data for new request
 				ReviewDAO reviewDAO = new ReviewDAO();
 				reviewDAO.setArticleID(articleDAO.getArticleID());
@@ -573,12 +577,19 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			case SHOW_PROGRESS:
 				showDialog(Constants.DIALOG_PROGRESS);
 				break;
-
+			case SHOW_REVIEW_PROGRESS:
+				showDialog(Constants.DIALOG_REVIEW_PROGRESS);
+				break;
+			case REMOVE_REVIEW_PROGRESS:
+				if(reviewProgressDialog != null){
+					reviewProgressDialog.dismiss();
+					reviewProgressDialog.cancel();
+				}
+				break;
 			case REMOVE_PROGRESS:
 				if(progressDialog != null){
 					progressDialog.dismiss();
 					progressDialog.cancel();
-					progressDialog = null;
 				}
 				if(msg.arg1 != REMOVE_PROGRESS){
 					ArticleDAO dao = (ArticleDAO)CacheManager.getInstance().get(Constants.C_DOWNLOADED_ARTICLE);
@@ -603,11 +614,11 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							|| strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
 
 						progres_text = "Downloading media data, please wait...";
-						
+
 						Message msg = new Message();
 						msg.what = SHOW_PROGRESS;
 						handler.sendMessage(msg);
-						
+
 						String urlToPlay = articleDetails.getUrl();
 						Log.e("---------Play Url------- ", ""+ urlToPlay);
 						playerScreenOpened = true;
@@ -662,6 +673,25 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			});
 		}else{
 			progressDialog.setMessage(progres_text);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void showReviewProgressBar(){
+		
+		if(reviewProgressDialog == null){
+			reviewProgressDialog = new ProgressDialog(this);
+			reviewProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			reviewProgressDialog.setMessage("Downloading reviews,please wait...");
+			reviewProgressDialog.setIcon(android.R.id.icon);
+			reviewProgressDialog.setCancelable(false);
+			reviewProgressDialog.setOnKeyListener(new OnKeyListener() {
+				public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+					return true;
+				}
+			});
 		}
 	}
 

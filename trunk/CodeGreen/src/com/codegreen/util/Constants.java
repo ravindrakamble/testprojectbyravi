@@ -111,7 +111,7 @@ public class Constants {
 	public static final int DIALOG_SHARE = 2;
 	public static final int DIALOG_PROGRESS = 3;
 	public static final int DIALOG_MEDIA = 4;
-	
+	public static final int DIALOG_REVIEW_PROGRESS = 5;
 	
 	public static final String CONSUMER_KEY = "1BjA123Qd4IFUuBZJUB47Q";//"ae4gN6w58zItdBH4gy3uA";//"Febkwo326bkuPDdsnJj1QA";
 	public static final String CONSUMER_SECRET= "kIDzQl9YZJM1U45x6daDuYfN9EwWLaiYfrdgBR1gL4";//"j4oq5F5vr12VSVhYGXx0SiEXK5KNLZP6u6rIWkUK8";// "nAHuJpdVPXiv2xCm0S4iZsY806pmeH68iRSrW1apug";
