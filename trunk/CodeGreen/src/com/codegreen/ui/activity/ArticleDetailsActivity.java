@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.DownloadHandler;
 import com.codegreen.businessprocess.handler.HttpHandler;
@@ -18,7 +17,6 @@ import com.codegreen.ui.dialog.ShareDialog;
 import com.codegreen.util.Constants;
 import com.codegreen.util.Constants.ENUM_PARSERRESPONSE;
 import com.codegreen.util.Utils;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -45,11 +43,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
-
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
-
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -64,13 +59,11 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	String strSelectedArticleType = Constants.ARTCLETYPE_TEXT;
 	String strSelectedArticleID = "";
 	String TAG = "ArticleDetailsActivity";
-	LinearLayout progress_Lay = null;
+	//LinearLayout progress_Lay = null;
 	ProgressBar imageViewProgressBar = null;
 	ImageView imageView = null;
-	private static final int MENU_OPTION_SAVED = 0x01;
 	private static final int MENU_OPTION_SEARCH = 0x02;
 	private static final int MENU_OPTION_SHARE = 0x03;
-	private static final int MENU_OPTION_PLAY = 0x06;
 	private TextView txt_reviews = null;
 	private static final int MENU_OPTION_ADD_REVIEW = 0x04;
 	private static final int MENU_OPTION_SAVE = 0x05;
@@ -101,7 +94,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	ImageView addsImage = null;
 	Timer adTimer;
 	TimerTask adTask;
-
+	String progres_text = "Downloading article data,Please wait...";
+	
 	private boolean playerScreenOpened;
 	@SuppressWarnings("unchecked")
 	@Override
@@ -142,7 +136,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			txtDate = (TextView) findViewById(R.id.article_date_view);
 			txtDate.setTypeface(_tfSmallNormal);
 
-			progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
+			//progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
 			imageView = (ImageView)findViewById(R.id.webview);
 
 			progress_text = (TextView) findViewById(R.id.progress_text_color);
@@ -260,7 +254,10 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	 */
 	private void getArticleDetails(){
 		if(Utils.isNetworkAvail(getApplicationContext())){
-			progress_Lay.setVisibility(View.VISIBLE);
+			//progress_Lay.setVisibility(View.VISIBLE);
+			Message msg = new Message();
+			msg.what = SHOW_PROGRESS;
+			handler.sendMessage(msg);
 			HttpHandler httpHandler =  HttpHandler.getInstance();
 			ArticleDAO articleDAO = new ArticleDAO();
 			articleDAO.setArticleID(strSelectedArticleID);
@@ -289,7 +286,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					progress_Lay.setVisibility(View.GONE);
 					if(callId == Constants.REQ_GETARTICLEDETAILS){
 						String strDetails = "";
 						articleDetails = (ArticleDAO) CacheManager.getInstance().get(Constants.C_ARTICLE_DETAILS);
@@ -306,7 +302,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							}
 							/////////////////////// For Image ///////////////////////////////////////////
 							// If text/image then check for url it should not be null
-
 							// Display by default
 							imageView.setVisibility(View.VISIBLE);
 
@@ -343,6 +338,11 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 								txtDetails.setVisibility(View.INVISIBLE);
 							}
 							txt_reviews.setVisibility(View.INVISIBLE);
+							
+							Message msg = new Message();
+							msg.what = REMOVE_PROGRESS;
+							msg.arg1 = REMOVE_PROGRESS;
+							handler.sendMessage(msg);
 
 						}
 					}else if(callId == Constants.REQ_GETREVIEWS){
@@ -371,7 +371,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						}else{
 							txt_reviews.setText(getString(R.string.no_reviews));
 						}
-						//txt_reviews.setText();
+						
+						Message msg = new Message();
+						msg.what = REMOVE_PROGRESS;
+						msg.arg1 = REMOVE_PROGRESS;
+						handler.sendMessage(msg);
+
 					}else if(callId == Constants.REQ_SUBMITREVIEW){
 						Utils.displayMessage(getApplicationContext(), getString(R.string.review_submitted));
 						//update the reviews
@@ -397,6 +402,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 						Message msg = new Message();
 						msg.what = REMOVE_PROGRESS;
+						msg.arg1 = REMOVE_PROGRESS;
 						handler.sendMessage(msg);
 					}
 				}
@@ -405,7 +411,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					progress_Lay.setVisibility(View.GONE);
 					if(callId == Constants.REQ_DOWNLOADARTICLE){
 						Toast.makeText(ArticleDetailsActivity.this, "Article cannot be downloaded. Please try later.", Toast.LENGTH_LONG).show();
 					}else{
@@ -510,9 +515,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			return shareDialog; 
 
 		case Constants.DIALOG_PROGRESS:
-			if(progressDialog == null){
-				showProgressBar();
-			}
+			showProgressBar();
 			return progressDialog;
 		default:
 			break;
@@ -527,9 +530,15 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				HttpHandler httpHandler =  HttpHandler.getInstance();
 				//Cancel previous request;
 				httpHandler.cancelRequest();
+				
+				progres_text = "";
+				progres_text = "Downloading reviews,please wait...";
 
 				//Start progress bar
-				progress_Lay.setVisibility(View.VISIBLE);
+				Message msg = new Message();
+				msg.what = SHOW_PROGRESS;
+				handler.sendMessage(msg);
+				
 				//Prepare data for new request
 				ReviewDAO reviewDAO = new ReviewDAO();
 				reviewDAO.setArticleID(articleDAO.getArticleID());
@@ -569,6 +578,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				if(progressDialog != null){
 					progressDialog.dismiss();
 					progressDialog.cancel();
+					progressDialog = null;
 				}
 				if(msg.arg1 != REMOVE_PROGRESS){
 					ArticleDAO dao = (ArticleDAO)CacheManager.getInstance().get(Constants.C_DOWNLOADED_ARTICLE);
@@ -592,7 +602,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) 
 							|| strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
 
-						progress_Lay.setVisibility(View.VISIBLE);
+						progres_text = "Downloading media data, please wait...";
+						
+						Message msg = new Message();
+						msg.what = SHOW_PROGRESS;
+						handler.sendMessage(msg);
+						
 						String urlToPlay = articleDetails.getUrl();
 						Log.e("---------Play Url------- ", ""+ urlToPlay);
 						playerScreenOpened = true;
@@ -600,7 +615,10 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							try{
 								Intent videoClient = new Intent(Intent.ACTION_VIEW); 
 								videoClient.setData(Uri.parse(urlToPlay));
-								progress_Lay.setVisibility(View.GONE);
+								//progress_Lay.setVisibility(View.GONE);
+								msg = new Message();
+								msg.what = REMOVE_PROGRESS;
+								handler.sendMessage(msg);
 								startActivity(videoClient);
 							}catch (Exception e) {
 								Toast.makeText(getApplicationContext(),"YouTube Player not found.", Toast.LENGTH_SHORT).show();
@@ -613,7 +631,10 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							if(savedArticle){
 								intent.putExtra("savedarticle", articleDetails.getUrl());
 							}
-							progress_Lay.setVisibility(View.GONE);
+							//progress_Lay.setVisibility(View.GONE);
+							msg = new Message();
+							msg.what = REMOVE_PROGRESS;
+							handler.sendMessage(msg);
 							startActivity(intent);
 						}
 					}
@@ -631,7 +652,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		if(progressDialog == null){
 			progressDialog = new ProgressDialog(this);
 			progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			progressDialog.setMessage("Downloading article data, please wait...");
+			progressDialog.setMessage(progres_text);
 			progressDialog.setIcon(android.R.id.icon);
 			progressDialog.setCancelable(false);
 			progressDialog.setOnKeyListener(new OnKeyListener() {
@@ -639,6 +660,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					return true;
 				}
 			});
+		}else{
+			progressDialog.setMessage(progres_text);
 		}
 	}
 
