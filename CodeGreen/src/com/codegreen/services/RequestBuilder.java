@@ -182,10 +182,13 @@ public class RequestBuilder {
 	
 	private String getAdvertisements(Object params){
 		StringBuffer sb = new StringBuffer();
-		ReviewDAO reviewDAO = (ReviewDAO)params;
+		ArticleDAO reviewDAO = (ArticleDAO)params;
 		sb.append(header);
 		sb.append("<soap:Body>");
-		sb.append("<GetAdvertisements xmlns=\"http://tempuri.org/\"/>");
+		sb.append("<GetAdvertisements xmlns=\"http://tempuri.org/\">");
+		sb.append("<OS>"+ "Android" + "</OS>");
+		sb.append("<resolution>" + reviewDAO.getArticleID() + "</resolution>");
+		sb.append("</GetAdvertisements>");
 		sb.append("</soap:Body>");
 		sb.append("</soap:Envelope>");
 		return sb.toString().trim();

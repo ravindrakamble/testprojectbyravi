@@ -8,6 +8,8 @@
  */
 package com.codegreen.util;
 
+import android.os.Build;
+
 
 public class Constants {
 	/**
@@ -35,7 +37,8 @@ public class Constants {
 
 	public static final String DOWNLOADED_ADDS ="DOWNLOADED_ADDS";
 	//Web service url
-	public static final String URL = "http://3embed.com.iis2003.shared-servers.com/CodeGreen/CodeGreenService.asmx";
+   // public static final String URL = "http://3embed.com.iis2003.shared-servers.com/CodeGreen/CodeGreenService.asmx";
+	public static final String URL = "http://3embed.com.iis2003.shared-servers.com/CodeGreenService/CodeGreenService.asmx";
 	public static final String NAMESPACE = "http://tempuri.org/";
 	public static final String SOAP_ACTION_URL = "http://tempuri.org/";
 
@@ -70,6 +73,7 @@ public class Constants {
 	public static final String C_DOWNLOADED_ARTICLE = "DA";
 	public static final String C_SAVED_ARTICLE = "SVDA";
 	public static final String C_ADVERTISMENTS = "ADVERTISMENTS";
+	public static final String C_ALL_ARTICLES = "ALL_ARTICLES"; // storing data
 
 	public static enum ENUM_PARSERRESPONSE{PARSERRESPONSE_SUCCESS,PARSERRESPONSE_FAILURE  						//Used as return value for any function, when failed. 
 	};
@@ -133,5 +137,7 @@ public class Constants {
 	 public  static String  SANS_SEMIBOLD =  "fonts/Stag Sans-Semibold.otf";
 	 
 	 public static int CURRENT_AD_INDEX = 0;
+	 public static final String DEVICE_MODEL = Build.MODEL;
+	 public static final int MENU_PRESS_COUNT_NO_SEARCH_KEY = 6;
 	
 }

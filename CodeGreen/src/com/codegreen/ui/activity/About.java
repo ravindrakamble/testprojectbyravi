@@ -1,6 +1,7 @@
 package com.codegreen.ui.activity;
 
 import com.codegreen.R;
+import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.share.Share;
 import android.app.Activity;
 import android.content.Context;
@@ -63,7 +64,6 @@ public class About extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				onSelectFacebook();
 			}
 		});
@@ -88,7 +88,11 @@ public class About extends Activity {
 	
 	private void onSelectFacebook(){
 		Share testShare = new Share(About.this);
-		testShare.share("Codegreen App info", Share.TYPE_FACEBOOK,null);
+		ArticleDAO articleDAO = new ArticleDAO();
+		articleDAO.setTitle("Codegreen App info");
+		articleDAO.setThumbUrl("http://3embed.com.iis2003.shared-servers.com/CodeGreen/Articles/Text/a%20green%20outlook%20for%20business.img.jpg");
+		articleDAO.setDetailedDescription(getString(R.string.str_about));
+		testShare.share("Codegreen App info", Share.TYPE_FACEBOOK,articleDAO);
 	}
 	
 	/**
@@ -96,7 +100,7 @@ public class About extends Activity {
 	 */
 	private void onSelectTwitter(){
 		Share testShare = new Share(About.this);
-		testShare.share("CodeGreen App Info...", Share.TYPE_TWITTER,null);
+		testShare.share("www.codegreenonline.com", Share.TYPE_TWITTER,null);
 	}
 
 	/**
@@ -106,7 +110,8 @@ public class About extends Activity {
 		String subject = sub;
 		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 		emailIntent.setType("message/rfc822");
-		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "CodeGreen App Info");
+		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.str_about));
 		startActivity(Intent.createChooser(emailIntent, "Send Email.."));
 	}
 	

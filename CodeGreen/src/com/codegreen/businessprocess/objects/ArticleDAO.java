@@ -21,7 +21,14 @@ public class ArticleDAO {
 	private String dbArticleID;
 	private boolean dataAddedToQueue;
 	private Bitmap[]addsBitmap = null;
+	private String author = "";
 	
+	public String getAuthor() {
+		return author;
+	}
+	public void setAuthor(String author) {
+		this.author = author;
+	}
 	public Bitmap[] getAddsBitmap() {
 		return addsBitmap;
 	}

@@ -3,6 +3,7 @@ package com.codegreen.ui.dialog;
 import com.codegreen.R;
 import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.share.Share;
+import com.codegreen.util.Constants;
 import com.facebook.android.Facebook;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -130,13 +131,12 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 	 * On email selection
 	 */
 	private void onSelectEmail() {
-		Spanned message = Html.fromHtml("Article Title : " + articleDAO.getTitle() + "<br/><br/>"+ "Article Description :" + articleDAO.getDetailedDescription());
+		Spanned message = Html.fromHtml(articleDAO.getTitle() + "<br/><br/>"+ articleDAO.getDetailedDescription());
 		String subject = "Sending Article details for " + articleDAO.getTitle();
 		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 		emailIntent.setType("message/rfc822");
 		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
 		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
-		
 		if(articleDAO.getUrl() != null)
 			emailIntent.putExtra(Intent.EXTRA_STREAM, articleDAO.getUrl()); 
 		
@@ -151,6 +151,10 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 
 	private void onSelectTwitter(){
 		Share testShare = new Share(mContext);
+		if(articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT))
+			message = articleDAO.getTitle()+ "\n www.codegreenonline.com"; // HeadLine + Website Link
+		else
+			message = articleDAO.getTitle() + "\n" + articleDAO.getUrl(); // for vedio/ audio/image = HeadeLine + URL
 		testShare.share(message, Share.TYPE_TWITTER,articleDAO);
 	}
 

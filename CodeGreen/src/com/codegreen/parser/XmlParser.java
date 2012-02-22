@@ -155,7 +155,10 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 				articleDAO.setPublishedDate(parsedData);
 			}else if(endTagName.equalsIgnoreCase(CATEGORYID)){
 				articleDAO.setCategoryID(parsedData);
-			}else if(endTagName.equalsIgnoreCase(ARTICLE)){
+			}else if(endTagName.equalsIgnoreCase("Author")){
+				articleDAO.setAuthor(parsedData);
+			}
+			else if(endTagName.equalsIgnoreCase(ARTICLE)){
 				if(requestID != Constants.REQ_GETARTICLEDETAILS)
 					articles.add(articleDAO); 
 			}

@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
+import android.content.res.Configuration;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -21,6 +22,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,6 +58,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	private static final int MENU_OPTION_SAVED = 0x01;
 	private static final int MENU_OPTION_SEARCH = 0x02;
 	private static final int MENU_OPTION_INFO = 0x04;
+	private static final int MENU_OPTION_REFRESH = 0x05;
 
 	TextView mBtnGreenBasic = null;
 	TextView mBtnDesignArcht = null;
@@ -74,15 +77,33 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	ImageView addsImage = null;
 	Timer adTimer;
 	TimerTask adTask;
+	boolean isLoadMoreArticles = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
-		
+
 		WindowManager wm = getWindowManager(); 
 		Display display = wm.getDefaultDisplay();
 		Constants.SCREEN_WIDTH = display.getWidth();
+
+		View footerView = ((LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.more_items, null, false);
+		getListView().addFooterView(footerView);
+
+		footerView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				ArrayList<ArticleDAO> tempdata = (ArrayList<ArticleDAO>) CacheManager.getInstance().getAllArticles();
+				if(tempdata != null){
+					String lastDate = tempdata.get(tempdata.size() - 1).getPublishedDate();
+					if(lastDate != null && !lastDate.equals(""))
+						getArticleData(lastDate); // add last article date
+				}
+			}
+		});
 		initWidgets();
 		CURRENT_SELECTED_CATEGORY = 0;
 		CURRENT_SELECTED_MEDIA = "ALL";
@@ -145,6 +166,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnGreenBasic.setBackgroundResource(R.drawable.scrollbutton_off);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 1;
+				CacheManager.getInstance().resetAllArticles();
 				getArticleData("");
 			}
 		});
@@ -157,6 +179,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnDesignArcht.setBackgroundResource(R.drawable.scrollbutton_off);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 2;
+				CacheManager.getInstance().resetAllArticles();
 				getArticleData("");
 			}
 		});
@@ -168,6 +191,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnScience.setBackgroundResource(R.drawable.scrollbutton_off);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 3;
+				CacheManager.getInstance().resetAllArticles();
 				getArticleData("");
 			}
 		});
@@ -179,6 +203,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnTransport.setBackgroundResource(R.drawable.scrollbutton_off);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 4;
+				CacheManager.getInstance().resetAllArticles();
 				getArticleData("");
 			}
 		});
@@ -190,6 +215,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnBusiness.setBackgroundResource(R.drawable.scrollbutton_off);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 5;
+				CacheManager.getInstance().resetAllArticles();
 				getArticleData("");
 			}
 		});
@@ -202,6 +228,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnPolitics.setBackgroundResource(R.drawable.scrollbutton_off);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 6;
+				CacheManager.getInstance().resetAllArticles();
 				getArticleData("");
 			}
 		});
@@ -214,6 +241,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnFood.setBackgroundResource(R.drawable.scrollbutton_off);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 7;
+				CacheManager.getInstance().resetAllArticles();
 				getArticleData("");
 			}
 		});
@@ -237,6 +265,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				CURRENT_SELECTED_MEDIA = "ALL";
 				refreshViews();
 				mBtnLatest.setBackgroundResource(R.drawable.scrollbutton_off);
+				CacheManager.getInstance().resetAllArticles();
 				getArticleData("");
 			}
 		});
@@ -376,9 +405,10 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		try{
 			menu.removeGroup(0);
-			menu.add(0, MENU_OPTION_SAVED,0 , "Saved Items").setIcon(android.R.drawable.ic_menu_gallery);
-			menu.add(0, MENU_OPTION_SEARCH,0 , "Search").setIcon(android.R.drawable.ic_menu_search);
-			menu.add(0, MENU_OPTION_INFO,0 , "Info").setIcon(android.R.drawable.ic_menu_help);
+			menu.add(0, MENU_OPTION_SAVED,0 , "Saved Items").setIcon(R.drawable.btn_save_unselected);
+			menu.add(0, MENU_OPTION_SEARCH,0 , "Search").setIcon(R.drawable.btn_search_unselected);
+			menu.add(0, MENU_OPTION_INFO,0 , "Info").setIcon(R.drawable.btn_info_unselected);
+			menu.add(0, MENU_OPTION_REFRESH,0 , "Refresh").setIcon(android.R.drawable.ic_menu_help);
 			return true;
 		}
 		catch (Exception e) {
@@ -397,7 +427,10 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			break;
 		case MENU_OPTION_SEARCH:
 			launchSearchActivity();
-			break; 
+			break;
+		case MENU_OPTION_REFRESH:
+			getArticleData("");
+			break;
 		case MENU_OPTION_INFO:
 			try{
 				Context cxt = getApplicationContext();
@@ -414,6 +447,19 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		}
 		return false;
 	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(Constants.DEVICE_MODEL.contains("I9000")&& (keyCode == KeyEvent.KEYCODE_MENU && event.getRepeatCount()==Constants.MENU_PRESS_COUNT_NO_SEARCH_KEY)){
+			launchSearchActivity();
+			return true;
+		}else if(keyCode == KeyEvent.KEYCODE_SEARCH){
+			launchSearchActivity();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -451,10 +497,10 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 						public void run() {
 							int sizeOfData = 0;
 							if(reqID == Constants.REQ_GETARTICLESBYTYPE)
-								sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES)).size();
-							else 
+								sizeOfData =  CacheManager.getInstance().getAllArticledetailsSize();
+							/*	else 
 								sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES)).size();
-
+							 */
 							if(sizeOfData == 0)
 								mNoItems.setVisibility(View.VISIBLE);
 
@@ -472,10 +518,10 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 						public void run() {
 							int sizeOfData = 0;
 							if(reqID == Constants.REQ_GETARTICLESBYTYPE)
-								sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES)).size();
-							else 
+								sizeOfData =  CacheManager.getInstance().getAllArticledetailsSize();
+							/*else 
 								sizeOfData = ((ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES)).size();
-
+							 */
 							if(sizeOfData == 0)
 								mNoItems.setVisibility(View.VISIBLE);
 							mAdapter.setRequestID(reqID);
@@ -515,10 +561,22 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			//Cancel previous request;
 			httpHandler.cancelRequest();
 			httpHandler.setApplicationContext(getApplicationContext());
-			httpHandler.handleEvent(null, Constants.REQ_GETADVERTISMENTS, this);
+			ArticleDAO articleDAO = new ArticleDAO();
+			articleDAO.setArticleID("mdpi");
+			httpHandler.handleEvent(articleDAO, Constants.REQ_GETADVERTISMENTS, this);
 		}
 	}
 
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		// TODO Auto-generated method stub
+		super.onConfigurationChanged(newConfig);
+		if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+			addsImage.setVisibility(View.GONE);
+		}else{
+			addsImage.setVisibility(View.VISIBLE);
+		}
+	}
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		if(Utils.isNetworkAvail(getApplicationContext())){
