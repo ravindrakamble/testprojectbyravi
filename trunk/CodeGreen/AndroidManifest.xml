@@ -21,6 +21,8 @@
 <activity android:name=".ui.activity.About"></activity>
 <activity android:name=".ui.activity.AboutDetailsActivty"></activity>
 <activity android:name=".ui.activity.AdDetailsActivity" android:alwaysRetainTaskState="true" android:allowTaskReparenting="true" android:configChanges="orientation|keyboardHidden"></activity>
+<activity android:name=".ui.activity.ReviewsActivity"></activity>
+<activity android:name=".ui.activity.AddReviewsActivity" android:windowSoftInputMode="adjustResize"></activity>
 </application>
 <uses-permission android:name="android.permission.INTERNET" />
 
