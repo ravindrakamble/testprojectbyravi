@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:id="@+id/lay_details_main" android:layout_height="fill_parent"
+	android:background="#ffffff">
+
+
+	<RelativeLayout android:id="@+id/codegreenTitle"
+		android:background="@drawable/bg_topbar" android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		<ImageView android:id="@+id/btn_submit" 
+			android:layout_centerVertical="true" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:src="@drawable/norgi_selector"
+			android:layout_alignParentRight="true" android:layout_marginRight="5dip" />
+	</RelativeLayout>
+
+	<ScrollView android:layout_width="fill_parent" android:layout_below="@+id/codegreenTitle" 
+		android:layout_weight="1" android:layout_height="wrap_content">
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:gravity="center" android:orientation="vertical" android:id="@+id/review_container">
+		</LinearLayout>
+	</ScrollView>
+	
+	<TextView android:id="@+id/android:empty" android:gravity="center"
+		android:visibility="gone" android:layout_gravity="center_horizontal|center_vertical"
+		android:text="No Reviews Found,Please select click button to add reviews." android:textStyle="bold" 
+		android:layout_width="fill_parent" android:layout_height="fill_parent" />
+</RelativeLayout>
