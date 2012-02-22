@@ -1,35 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="200dip"
-	android:orientation="vertical">
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical" android:background="#ffffff">
+
+	<RelativeLayout android:id="@+id/codegreenTitle"
+		android:background="@drawable/bg_topbar" android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+	</RelativeLayout>
 
 	<RelativeLayout android:layout_width="fill_parent"
 		android:layout_height="fill_parent">
 
 		<TextView android:id="@+id/txtTitle"
 			android:layout_marginTop="15dip" android:layout_height="wrap_content"
-			android:textColor="#ffffff" android:textStyle="bold" android:text="Title"
+			android:textColor="#000000" android:textStyle="bold" android:text="Title"
 			android:layout_width="250dip" android:layout_centerHorizontal="true"
 			android:textSize="25dip" android:layout_marginBottom="15dip"></TextView>
 
 		<EditText android:id="@+id/etName" android:layout_height="wrap_content"
-			android:background="@android:drawable/editbox_background_normal"
+			android:background="@android:drawable/editbox_background_normal" 
 			android:layout_width="fill_parent" android:layout_centerHorizontal="true"
 			android:hint="Enter Name[Optional]" android:layout_below="@+id/txtTitle"></EditText>
 
-		<EditText android:id="@+id/etComments" android:layout_height="wrap_content"
+		<EditText android:id="@+id/etComments" android:layout_height="150dip"
 			android:background="@android:drawable/editbox_background_normal"
-			android:layout_width="fill_parent" android:layout_centerHorizontal="true"
-			android:hint="Enter Review" android:layout_below="@+id/etName" android:maxLines="3"></EditText>
+			android:gravity="top" android:layout_width="fill_parent" 
+			android:layout_centerHorizontal="true" android:hint="Enter Review..."
+			android:layout_below="@+id/etName" android:maxLines="700"></EditText>
+			
+		<TextView android:id="@+id/charRemaining" android:textColor="#000000"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:gravity="right" android:paddingRight="10dip" android:height="25dip"
+			android:layout_below="@+id/etComments" android:layout_marginBottom="6dip" />
+
 
 		<RelativeLayout android:layout_width="wrap_content"
 			android:layout_centerHorizontal="true" android:orientation="horizontal"
-			android:layout_height="wrap_content" android:layout_below="@+id/etComments">
+			android:layout_height="wrap_content" android:layout_below="@+id/charRemaining">
 
 			<Button android:id="@+id/btn_cancel" android:layout_width="wrap_content"
 				android:background="@android:drawable/btn_default"
 				android:layout_alignParentLeft="true" android:layout_marginLeft="30dip"
-				android:layout_height="wrap_content" android:text="Cancel" android:layout_below="@+id/etComments"></Button>
+				android:layout_height="wrap_content" android:text="Cancel"
+				android:layout_below="@+id/etComments"></Button>
 
 			<Button android:id="@+id/btn_submit" android:layout_width="wrap_content"
 				android:layout_alignParentRight="true" android:layout_height="wrap_content"

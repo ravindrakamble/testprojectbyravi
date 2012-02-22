@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"  
+		android:orientation="vertical" android:background="@drawable/border">
+		<TextView android:layout_alignParentLeft="true"
+			android:layout_margin="5dip" 
+			android:textColor="#000000"  android:text="Submitted By : dfsgsgfg gdgfgdf hhhfhfh"
+			android:layout_marginRight="10dip" android:id="@+id/txt_name"
+			android:textSize="18sp" android:layout_marginLeft="10dip"
+		    android:layout_height="wrap_content"
+			android:layout_width="wrap_content"></TextView>
+
+		<TextView android:layout_alignParentLeft="true"
+			android:layout_margin="5dip"
+			android:textColor="#000000" android:text="Review : fddsg dgfdgg hhgfhgh hgfhgfh hfhfghfh gfgdfg"
+			android:layout_marginRight="10dip"  android:id="@+id/txt_review"
+			android:textSize="18sp" android:layout_marginLeft="10dip"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"></TextView>
+</LinearLayout>

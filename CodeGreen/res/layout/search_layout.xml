@@ -6,7 +6,7 @@
 	android:paddingLeft="8dip" android:paddingBottom="0dip">
 
 	<EditText android:id="@+id/search_editview" android:hint="Enter title to search..." android:singleLine="true"
-		android:layout_width="fill_parent" android:layout_height="wrap_content" 
+		android:layout_width="fill_parent" android:layout_height="wrap_content"  android:imeOptions="actionSearch" 
 		android:layout_weight="0.1" />
 
 	<ImageView android:id="@+id/search_imageview" android:layout_gravity="center_vertical"

@@ -30,40 +30,40 @@
 				android:layout_width="wrap_content" android:layout_gravity="center_vertical"
 				android:layout_height="fill_parent">
 				<TextView android:id="@+id/btn_latest" android:text="LATEST"
-					android:textColor="#FFFFFF" android:layout_marginLeft="10dip"
+					android:textColor="#FFFFFF" android:layout_marginLeft="15dip"
 					android:gravity="center" android:textSize="12sp" 
 					android:layout_gravity="center" android:layout_height="wrap_content"
 					android:layout_width="wrap_content"></TextView>
 				<TextView android:id="@+id/btn_green_basics" android:text="GREEN BASICS"
-					android:textColor="#FFFFFF" android:layout_marginLeft="10dip"
+					android:textColor="#FFFFFF" android:layout_marginLeft="20dip"
 					android:gravity="center" android:textSize="12sp" 
 					android:layout_gravity="center" android:layout_height="wrap_content"
 					android:layout_width="wrap_content"></TextView>
 				<TextView android:layout_alignParentLeft="true"
 					android:textColor="#FFFFFF" android:text="@string/str_design_arech"
 					android:id="@+id/btn_design" android:gravity="center" 
-					android:textSize="12sp"  android:layout_marginLeft="10dip"
+					android:textSize="12sp"  android:layout_marginLeft="20dip"
 					android:layout_gravity="center" android:layout_height="wrap_content"
 					android:layout_width="wrap_content"></TextView>
-				<TextView android:layout_alignParentLeft="true" android:layout_marginLeft="10dip"
+				<TextView android:layout_alignParentLeft="true" android:layout_marginLeft="20dip"
 					android:textColor="#FFFFFF" android:text="@string/str_sci_tech"
 					android:id="@+id/btn_secience" android:gravity="center"
-					android:textSize="12sp" android:background="@drawable/tabbtn_selector"
+					android:textSize="12sp" 
 					android:layout_gravity="center" android:layout_height="wrap_content"
 					android:layout_width="wrap_content"></TextView>
-				<TextView android:layout_alignParentLeft="true" android:layout_marginLeft="10dip"
+				<TextView android:layout_alignParentLeft="true" android:layout_marginLeft="20dip"
 					android:textColor="#FFFFFF" android:text="@string/str_trans"
 					android:id="@+id/btn_transport" android:gravity="center"
 					android:textSize="12sp" android:layout_gravity="center" 
 					android:layout_height="wrap_content" 
 					android:layout_width="wrap_content"></TextView>
-				<TextView android:layout_alignParentLeft="true" android:layout_marginLeft="10dip"
+				<TextView android:layout_alignParentLeft="true" android:layout_marginLeft="20dip"
 					android:textColor="#FFFFFF" android:id="@+id/btn_business"
-					android:text="BUSINESS/INVESTMENT" android:background="@drawable/tabbtn_selector"
+					android:text="BUSINESS/INVESTMENT" 
 					android:gravity="center" android:textSize="12sp"
 					android:layout_gravity="center" android:layout_height="wrap_content"
 					android:layout_width="wrap_content"></TextView>
-				<TextView android:layout_alignParentLeft="true" android:layout_marginLeft="10dip"
+				<TextView android:layout_alignParentLeft="true" android:layout_marginLeft="20dip"
 					android:textColor="#FFFFFF" android:id="@+id/btn_politics"
 					android:text="POLITICS/POLICIES" 
 					android:gravity="center" android:textSize="12sp"
@@ -71,8 +71,8 @@
 					android:layout_width="wrap_content"></TextView>
 				<TextView android:layout_alignParentLeft="true" 
 					android:textColor="#FFFFFF" android:id="@+id/btn_food" 
-					android:text="@string/str_food_health" android:layout_marginRight="10dip"
-					android:gravity="center" android:textSize="12sp" android:layout_marginLeft="10dip"
+					android:text="@string/str_food_health" android:layout_marginRight="15dip"
+					android:gravity="center" android:textSize="12sp" android:layout_marginLeft="20dip"
 					android:layout_gravity="center" android:layout_height="wrap_content"
 					android:layout_width="wrap_content"></TextView>
 			</LinearLayout>
@@ -87,13 +87,13 @@
 	</RelativeLayout>
 	<ListView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_alignParentLeft="true"
-		android:layout_below="@+id/LinearLayout01" android:clickable="true"
+		android:layout_below="@+id/LinearLayout01" android:clickable="true" 
 		android:scrollbarDefaultDelayBeforeFade="100" android:fadeScrollbars="true"
 		android:layout_above="@+id/relativeLayout1" android:id="@android:id/list"></ListView>
 	<RelativeLayout android:layout_width="fill_parent"
 		android:id="@+id/relativeLayout1" android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true">
-		<ImageView android:id="@+id/admarvel" android:src="@drawable/bg_ads_sample"
+		<ImageView android:id="@+id/admarvel" android:src="@drawable/bg_ads_sample" android:layout_marginLeft="15dip" android:layout_marginRight="15dip"
 			android:layout_width="fill_parent" android:layout_height="50dip"></ImageView>
 	</RelativeLayout>
 
