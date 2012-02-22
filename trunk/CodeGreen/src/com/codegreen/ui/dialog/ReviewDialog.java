@@ -109,7 +109,7 @@ public class ReviewDialog extends AlertDialog implements OnClickListener{
 			if(Utils.isNetworkAvail(mContext.getApplicationContext())){
 				review = edt_Review.getText().toString();
 				name = edt_name.getText().toString();
-				if(review == null){
+				if(review == null || review.equals("")){
 					Toast.makeText(mContext, "Please enter review.", Toast.LENGTH_SHORT).show();
 				}else{
 					if(name == null){

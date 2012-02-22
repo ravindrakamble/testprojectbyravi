@@ -142,7 +142,7 @@ public class HttpHandler implements Handler {
 					switch (callID) {
 					case Constants.REQ_GETARTICLESBYTYPE:
 						CacheManager.getInstance().store(Constants.C_ARTICLES, ddXmlParser.getArticles());
-
+						CacheManager.getInstance().storeAllArticles(ddXmlParser.getArticles());
 						//Update the articles into database
 						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
 						break;

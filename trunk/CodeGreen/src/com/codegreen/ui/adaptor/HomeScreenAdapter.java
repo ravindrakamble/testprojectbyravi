@@ -52,22 +52,18 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 			}else{
 				mArticleList.clear();
 			}
-			ArrayList<ArticleDAO> tempdata = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES);
+			ArrayList<ArticleDAO> tempdata = (ArrayList<ArticleDAO>) CacheManager.getInstance().getAllArticles();
 
 			if(tempdata != null && tempdata.size() > 0){
 				for(int i =0 ; i<tempdata.size();i++){
 					mArticleList.add(tempdata.get(i));
 				}
 			}
+			
 			if(mArticleList != null){
 			Constants.TOTAL_ARTICLES = mArticleList.size();
 			}
-			/*if(mReqId == Constants.REQ_GETARTICLESBYTYPE)
-				mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES);
-			else 
-				mArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);*/
 			imageLoader = new FetchImage(mContext);
-			//viewholders = new Hashtable<Integer,ImageView>();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -155,7 +151,7 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 			}else{
 				mArticleList = new ArrayList<ArticleDAO>();
 			}
-			ArrayList<ArticleDAO> tempdata = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ARTICLES);
+			ArrayList<ArticleDAO> tempdata =  CacheManager.getInstance().getAllArticles();
 			if(tempdata != null && tempdata.size() > 0){
 				for(int i =0 ; i<tempdata.size();i++){
 					mArticleList.add(tempdata.get(i));

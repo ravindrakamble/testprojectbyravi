@@ -170,11 +170,6 @@ public class Share {
 							parameters.putString("caption", "www.codegreenonline.com");
 						if (articleDAO.getDetailedDescription() != null)
 							parameters.putString("description", articleDAO.getDetailedDescription());
-					}else
-					{
-						// share from about
-						parameters.putString("description", "Code Green App info....");
-						parameters.putString("caption", "www.codegreenonline.com");
 					}
 					facebook.dialog(context, "stream.publish", parameters, this);
 					

@@ -20,10 +20,12 @@ import com.codegreen.util.Utils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnKeyListener;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -85,6 +87,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	TextView txtDetails = null;
 	TextView txtTitle = null;
 	TextView txtDate = null;
+	TextView txtAuther = null;
 	private List<ArticleDAO> listOfArticles ;
 	private ProgressDialog progressDialog;
 	Typeface _tfBigBold, _tfMediumBold, _tfSmallNormal;
@@ -137,6 +140,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 			txtDate = (TextView) findViewById(R.id.article_date_view);
 			txtDate.setTypeface(_tfSmallNormal);
+			
+			txtAuther = (TextView)findViewById(R.id.article_auther_view);
+			txtAuther.setTypeface(_tfSmallNormal);
 
 			//progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
 			imageView = (ImageView)findViewById(R.id.webview);
@@ -192,6 +198,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			txtTitle.setOnTouchListener(gestureListener);
 			txtDate.setOnTouchListener(gestureListener);
 			mFlipper.setOnTouchListener(gestureListener);
+			txtAuther.setOnTouchListener(gestureListener);
 			scrollLinearlayout.setOnTouchListener(gestureListener);
 			lay_main_scroll.setOnTouchListener(gestureListener);
 			//imageView.setOnTouchListener(gestureListener);
@@ -237,8 +244,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			menu.removeGroup(0);
 			menu.add(0, MENU_OPTION_SEARCH,0 , "Comments").setIcon(android.R.drawable.ic_menu_gallery);
 			menu.add(0, MENU_OPTION_SHARE,0 , "Share").setIcon(android.R.drawable.ic_menu_share);
-			menu.add(0, MENU_OPTION_ADD_REVIEW,0 , "Add Review").setIcon(android.R.drawable.ic_menu_add);
-			menu.add(0, MENU_OPTION_SAVE,0 , "Save Article").setIcon(android.R.drawable.ic_menu_add);
+			menu.add(0, MENU_OPTION_SAVE,0 , "Save").setIcon(android.R.drawable.ic_menu_add);
 
 			return true;
 		}
@@ -247,9 +253,19 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 		return false;
 	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		// TODO Auto-generated method stub
+		super.onConfigurationChanged(newConfig);
+		if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+			addsImage.setVisibility(View.GONE);
+		}else{
+			addsImage.setVisibility(View.VISIBLE);
+		}
+	}
 
-
-
+	
 
 	/**
 	 * WS call to get article details
@@ -307,10 +323,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							// Display by default
 							imageView.setVisibility(View.VISIBLE);
 
-							txtTitle.setText("Title : "+ articleDetails.getTitle());
-							txtDate.setText("Date :" + articleDetails.getPublishedDate());
+							txtTitle.setText(articleDetails.getTitle());
+							txtDate.setText(articleDetails.getPublishedDate());
 							txtTitle.setVisibility(View.VISIBLE);
 							txtDate.setVisibility(View.VISIBLE);
+							txtAuther.setText(articleDetails.getAuthor());
+							txtAuther.setVisibility(View.VISIBLE);
 
 							strDetails =  articleDetails.getDetailedDescription();
 							if(strDetails != null && !strDetails.equals("")){
@@ -403,7 +421,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 						Message msg = new Message();
 						msg.what = REMOVE_PROGRESS;
-						msg.arg1 = REMOVE_PROGRESS;
+						msg.arg1 = 5;
 						handler.sendMessage(msg);
 					}
 				}
@@ -444,7 +462,18 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_OPTION_SEARCH:
-			getReviews(articleDetails);
+			try{
+				Context cxt = getApplicationContext();
+				Intent intent = new Intent(cxt, ReviewsActivity.class);     		
+				intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+				intent.putExtra("SelectedType", strSelectedArticleType);
+				intent.putExtra("selectedID", strSelectedArticleID);
+				intent.putExtra("ArticleName", articleDetails.getTitle());
+				startActivity(intent);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			//getReviews(articleDetails);
 			break;
 		case MENU_OPTION_SHARE:
 			showDialog(Constants.DIALOG_SHARE);
@@ -535,9 +564,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				//Cancel previous request;
 				httpHandler.cancelRequest();
 
-				progres_text = "";
-				progres_text = "Downloading reviews,please wait...";
-
 				//Start progress bar
 				Message msg = new Message();
 				msg.what = SHOW_REVIEW_PROGRESS;
@@ -591,7 +617,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					progressDialog.dismiss();
 					progressDialog.cancel();
 				}
-				if(msg.arg1 != REMOVE_PROGRESS){
+				if(msg.arg1 == 5){
 					ArticleDAO dao = (ArticleDAO)CacheManager.getInstance().get(Constants.C_DOWNLOADED_ARTICLE);
 					if(dao != null){
 						saveArticle(dao);
@@ -641,6 +667,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							intent.putExtra("ArticleID", strSelectedArticleID);
 							if(savedArticle){
 								intent.putExtra("savedarticle", articleDetails.getUrl());
+								intent.putExtra("savedarticleTitle", articleDetails.getTitle());
 							}
 							//progress_Lay.setVisibility(View.GONE);
 							msg = new Message();
@@ -675,12 +702,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			progressDialog.setMessage(progres_text);
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
 	private void showReviewProgressBar(){
-		
+
 		if(reviewProgressDialog == null){
 			reviewProgressDialog = new ProgressDialog(this);
 			reviewProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -718,6 +745,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					lay_main.setBackgroundColor(Color.WHITE);
 					txtTitle.setTextColor(Color.BLACK);
 					txtDate.setTextColor(Color.BLACK);
+					txtAuther.setTextColor(Color.BLACK);
 					txtDetails.setTextColor(Color.BLACK);
 					txt_reviews.setTextColor(Color.BLACK);
 					progress_text.setTextColor(Color.BLACK);
@@ -726,6 +754,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					lay_main.setBackgroundColor(Color.BLACK);
 					txtTitle.setTextColor(Color.WHITE);
 					txtDate.setTextColor(Color.WHITE);
+					txtAuther.setTextColor(Color.WHITE);
 					txtDetails.setTextColor(Color.WHITE);
 					txt_reviews.setTextColor(Color.WHITE);
 					progress_text.setTextColor(Color.WHITE);
@@ -736,6 +765,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				txtTitle.setVisibility(View.INVISIBLE);
 				txtDate.setVisibility(View.INVISIBLE);
 				txt_reviews.setVisibility(View.INVISIBLE);
+				txtAuther.setVisibility(View.INVISIBLE);
 				imageView.setImageResource(R.drawable.default_bg_text);
 				getArticleDetails();
 			}

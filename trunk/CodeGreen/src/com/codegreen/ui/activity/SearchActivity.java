@@ -15,12 +15,15 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -56,13 +59,26 @@ public class SearchActivity extends ListActivity implements Updatable{
 		mSearchView = findViewById(R.id.search_view1);
 		mSearchText = (EditText)mSearchView.findViewById(R.id.search_editview);
 
+		mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override 
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) { 
+				if (actionId == EditorInfo.IME_ACTION_SEARCH) {  
+					searchView.setEnabled(false);
+					mNoItems.setVisibility(View.GONE);
+					progressLayout.setVisibility(View.VISIBLE);
+					searchArticles(mSearchText.getText().toString().trim(), CURRENT_SELECTED_CATEGORY);
+					return true;  
+				} 
+				return false;   
+			} 
+		});
 		mSearchText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-		    @Override
-		    public void onFocusChange(View v, boolean hasFocus) {
-		        if (hasFocus) {
-		            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-		        }
-		    }
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (hasFocus) {
+					getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+				}
+			}
 		});
 		if(getIntent() !=null){
 			CURRENT_SELECTED_CATEGORY = getIntent().getIntExtra("Selected_Category",1);
@@ -88,6 +104,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 		mNoItems.setText(Constants.NO_MATCH_FOUND);  
 		mAdapter = new SearchScreenAdapter(this,"");
 		setListAdapter(mAdapter);
+		getListView().setFooterDividersEnabled(true);
 	}
 
 	private void searchArticles(String searchString, int type){
@@ -222,12 +239,12 @@ public class SearchActivity extends ListActivity implements Updatable{
 		}
 	}
 
-	
+
 	private static final int MENU_OPTION_SAVED = 0x01;
 	private static final int MENU_OPTION_HOME = 0x02;
 	private static final int MENU_OPTION_INFO = 0x04;
 
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		try{
@@ -267,7 +284,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 		}
 		return false;
 	}
-	
+
 	private void launchHomeActivity(){
 		try{
 			Context cxt = getApplicationContext();
@@ -277,10 +294,10 @@ public class SearchActivity extends ListActivity implements Updatable{
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-	
+
 	}
-	
-	
+
+
 	/**
 	 *  Launch SearchCallhistoryActivity 
 	 * @param filterStr
@@ -296,7 +313,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 		}
 	}
 
-	
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 

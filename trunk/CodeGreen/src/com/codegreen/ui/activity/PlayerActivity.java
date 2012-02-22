@@ -48,6 +48,7 @@ public class PlayerActivity extends Activity implements Updatable {
 	ImageView audioImg = null;
 	ProgressDialog progressDialog;
 	private TextView txtTitle;
+	private String title = "";
 
 	private String locationOfData;
 	@Override
@@ -60,6 +61,7 @@ public class PlayerActivity extends Activity implements Updatable {
 			strSelectedArticleType = getIntent().getStringExtra(Constants.CURRENT_ARTICLE_TYPE);
 			strSelectedArticleID = getIntent().getStringExtra("ArticleID");
 			locationOfData =  getIntent().getStringExtra("savedarticle");
+			title = getIntent().getStringExtra("savedarticleTitle");
 		}
 		audioImg=(ImageView)findViewById(R.id.audioImg);
 		txtTitle = (TextView)findViewById(R.id.player_title_view);
@@ -68,6 +70,7 @@ public class PlayerActivity extends Activity implements Updatable {
 				showDialog(Constants.DIALOG_PROGRESS);
 				getArticleDetails();
 			}else{
+				txtTitle.setText(title);
 				videoPlayer(locationOfData, "", true);
 			}
 		}

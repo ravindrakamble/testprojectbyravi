@@ -64,36 +64,41 @@ public class DownloadHandler implements Handler{
 			downloadedArticle.setUrl(articleDAO.getUrl());
 		}
 		switch(callID){
+		
 		case Constants.REQ_DOWNLOADARTICLE:
 			DownloadInfoDAO dao = new DownloadInfoDAO();
 
-			dao.setType(articleDAO.getType());
-			if(articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+			//dao.setType(articleDAO.getType());
+			// if audio/video then download URL data 
+			/*	if(articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || articleDAO.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
 				dao.setUrlToDownload(articleDAO.getUrl());
 				requestForData = true;
 				downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_DATA);
 				taskExecutor.execute(downloadTask);
 			}else{
+			 */		
+			if(articleDAO.getThumbUrl() != null && !articleDAO.getThumbUrl().trim().equalsIgnoreCase("")){
+				
 				dao.setUrlToDownload(articleDAO.getThumbUrl());
 				//Download article image first
 				downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_IMAGE);
 				taskExecutor.execute(downloadTask);
 				requestForImage = true;
-
-
-				if(articleDAO.getUrl() != null && !articleDAO.getUrl().trim().equalsIgnoreCase("")){
-					dao = new DownloadInfoDAO();
-					dao.setUrlToDownload(articleDAO.getUrl());
-					if(dao.getFileName() == null){
-						dao.setFileName(articleDAO.getArticleID() + ".mp4");
-					}
-					dao.setType(articleDAO.getType());
-					//Download article image first
-					requestForData = true;
-					downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_DATA);
-					taskExecutor.execute(downloadTask);
-				}
 			}
+
+			if(articleDAO.getUrl() != null && !articleDAO.getUrl().trim().equalsIgnoreCase("")){
+				dao = new DownloadInfoDAO();
+				dao.setUrlToDownload(articleDAO.getUrl());
+				if(dao.getFileName() == null){
+					dao.setFileName(articleDAO.getArticleID() + ".mp4");
+				}
+				dao.setType(articleDAO.getType());
+				//Download article image first
+				requestForData = true;
+				downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_DATA);
+				taskExecutor.execute(downloadTask);
+			}
+			//	}
 
 			break;
 		}
@@ -107,6 +112,11 @@ public class DownloadHandler implements Handler{
 	public void handleCallback(Object callbackObject, byte callID,
 			byte errorCode) {
 		if(errorCode == Constants.ERR_NETWORK_FAILURE){
+			if(callID == Constants.REQ_DOWNLOADADDIMAGE){
+				requestForImage = false;	
+			}else{
+				requestForData = false;
+			}
 			updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_FAILURE, Constants.REQ_DOWNLOADARTICLE, errorCode);
 		}else{
 			switch(callID){
@@ -119,7 +129,7 @@ public class DownloadHandler implements Handler{
 				}else{
 					downloadedArticle.setThumbUrl((String)callbackObject);
 				}
-				if(requestForData ){
+				if(requestForData){
 					if(dataDownloaded){
 						CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
 						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
@@ -131,7 +141,6 @@ public class DownloadHandler implements Handler{
 				break;
 			case Constants.DOWNLOAD_ARTICLE_DATA:
 				dataDownloaded = true;
-
 				downloadedArticle.setUrl((String)callbackObject);
 				if(requestForImage && imageDownloaded){
 					CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
@@ -139,7 +148,6 @@ public class DownloadHandler implements Handler{
 				}
 				break;
 			}
-
 		}
 
 	}
