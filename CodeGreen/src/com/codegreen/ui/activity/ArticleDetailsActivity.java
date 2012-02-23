@@ -256,7 +256,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-		// TODO Auto-generated method stub
 		super.onConfigurationChanged(newConfig);
 		if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
 			addsImage.setVisibility(View.GONE);

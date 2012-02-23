@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import com.codegreen.R;
 import com.codegreen.businessprocess.objects.ArticleDAO;
+import com.codegreen.util.Constants;
 
 
 public class FetchImage 
@@ -33,9 +34,7 @@ public class FetchImage
 
 		try 
 		{ 
-			//Log.e("GetBitmap :: ", url);
 			url = url.replaceAll(" ", "%20");
-			//url = URLEncoder.encode(url);
 			InputStream is=new URL(url).openStream(); 
 			BufferedInputStream bis = new BufferedInputStream(is);  
 			Log.e("Image downloaded:", "" + url);
@@ -43,8 +42,6 @@ public class FetchImage
 		}
 		catch (Exception ex)
 		{
-			//Log.e("OOOps Error : ", ex.toString());
-			//ex.printStackTrace();
 			return null;
 		}
 	}
@@ -64,11 +61,17 @@ public class FetchImage
 
 	}   
 
-	final int stub_id = R.drawable.default_thumb;
+	static int stub_id = R.drawable.default_thumb;
 	
 	public void DisplayImage(ArticleDAO vo, Context activity, ImageView sponserImg)
 	{ 
 		queuePhoto(vo,activity,sponserImg); 
+		if(vo.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
+			stub_id = R.drawable.bg_thumb_audio;
+		}else if(vo.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_VEDIO)){
+			stub_id = R.drawable.bg_thumb_video;
+		}else
+			stub_id = R.drawable.default_thumb;
 		sponserImg.setImageResource(stub_id); 
 	} 
 
@@ -102,7 +105,6 @@ public class FetchImage
 						}
 					if(photosQueue.imageDowload.size()!=0 && currentIndex < photosQueue.imageDowload.size())
 						{
-						//Log.e("******** Downloading sponsor images here : ", photosQueue.imageDowload.get(currentIndex).getThumbUrl());
 						Bitmap bmp = getBitmap(photosQueue.imageDowload.get(currentIndex).getThumbUrl()); 
 						if(bmp != null)
 						{

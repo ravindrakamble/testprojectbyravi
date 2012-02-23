@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
@@ -55,14 +56,16 @@ public class PlayerActivity extends Activity implements Updatable {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.mainvideo);
-
 		if(getIntent() != null){
 			strSelectedArticleType = getIntent().getStringExtra(Constants.CURRENT_ARTICLE_TYPE);
 			strSelectedArticleID = getIntent().getStringExtra("ArticleID");
 			locationOfData =  getIntent().getStringExtra("savedarticle");
 			title = getIntent().getStringExtra("savedarticleTitle");
 		}
+		if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO))
+			this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
+		setContentView(R.layout.mainvideo);
 		audioImg=(ImageView)findViewById(R.id.audioImg);
 		txtTitle = (TextView)findViewById(R.id.player_title_view);
 		if(strSelectedArticleType != null && strSelectedArticleID != null){
