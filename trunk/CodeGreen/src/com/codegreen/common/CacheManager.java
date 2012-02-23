@@ -32,7 +32,6 @@ public class CacheManager {
 
 	public static boolean loggedIn = false;
 	private Bitmap latestArticleBitmap;
-
 	/**
 	 * Private Access constructor.
 	 */

@@ -144,7 +144,10 @@ public class HttpHandler implements Handler {
 						CacheManager.getInstance().store(Constants.C_ARTICLES, ddXmlParser.getArticles());
 						CacheManager.getInstance().storeAllArticles(ddXmlParser.getArticles());
 						//Update the articles into database
-						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
+						if(ddXmlParser.getArticles().size() == 0){
+							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,Constants.NO_MORE_ARTICLES);
+						}else
+							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,mReqId,errorCode);
 						break;
 					case Constants.REQ_GETARTICLEDETAILS:
 						CacheManager.getInstance().store(Constants.C_ARTICLE_DETAILS, ddXmlParser.getArticleDAO());

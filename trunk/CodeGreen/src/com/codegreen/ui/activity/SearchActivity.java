@@ -1,8 +1,11 @@
 package com.codegreen.ui.activity;
 
+import java.util.ArrayList;
+
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
 import com.codegreen.businessprocess.objects.ArticleDAO;
+import com.codegreen.common.CacheManager;
 import com.codegreen.listener.Updatable;
 import com.codegreen.ui.adaptor.SearchScreenAdapter;
 import com.codegreen.util.Constants;
@@ -101,7 +104,6 @@ public class SearchActivity extends ListActivity implements Updatable{
 		//	mSearchText.setFilters(new InputFilter[] {mSearchTextFilter , mSearchTextLengthFilter});
 		mNoItems = (TextView) findViewById(android.R.id.empty);
 		// First time display no match found 
-		mNoItems.setText(Constants.NO_MATCH_FOUND);  
 		mAdapter = new SearchScreenAdapter(this,"");
 		setListAdapter(mAdapter);
 		getListView().setFooterDividersEnabled(true);
@@ -220,6 +222,13 @@ public class SearchActivity extends ListActivity implements Updatable{
 				runOnUiThread(new Runnable() { 
 					@Override
 					public void run() {
+						ArrayList<ArticleDAO> dao = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);
+						if(dao.size() == 0){
+							mNoItems.setVisibility(View.VISIBLE);
+							mNoItems.setText(Constants.NO_MATCH_FOUND);
+						}else{
+							mNoItems.setVisibility(View.GONE);
+						}
 						mAdapter = new SearchScreenAdapter(SearchActivity.this, "");
 						setListAdapter(mAdapter); 
 					}
@@ -229,6 +238,13 @@ public class SearchActivity extends ListActivity implements Updatable{
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
+						ArrayList<ArticleDAO> dao = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);
+						if(dao.size() == 0){
+							mNoItems.setVisibility(View.VISIBLE);
+							mNoItems.setText(Constants.NO_MATCH_FOUND);
+						}else{
+							mNoItems.setVisibility(View.GONE);
+						}
 						mAdapter.notifyDataSetChanged();
 						mAdapter.notifyDataSetInvalidated();
 					}

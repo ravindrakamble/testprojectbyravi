@@ -1,25 +1,12 @@
 package com.codegreen.ui.adaptor;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
-
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -115,7 +102,7 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 			holder.img_thumbnail.setVisibility(View.VISIBLE);
 			holder.txt_articleName.setText(data.getTitle());
 			holder.txt_articleDesc.setText(data.getShortDescription());
-			if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_TEXT) || data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_IMAGE)){
+			//if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_TEXT) || data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_IMAGE)){
 				if(data.getThumbUrl() != null && !data.getThumbUrl().equals("")){
 					if(data.getDownloadedImage() == null){
 						imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
@@ -124,13 +111,18 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 						holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
 					}
 				}else{
-					holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
+					if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
+						holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_audio);
+					}else if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_VEDIO)){
+						holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_video);
+					}else
+						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
 				}
-			}else if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
-				holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_audio);
+			//}/*else if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
+				/*holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_audio);
 			}else if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_VEDIO)){
 				holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_video);
-			}
+			}*/
 		}
 		return convertView;
 	}
