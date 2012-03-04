@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="wrap_content"
-	android:background="@drawable/bg_commentbox" android:orientation="vertical">
+	android:background="@drawable/bg_commentbox" android:orientation="vertical" android:layout_marginTop="5dip" android:layout_marginBottom="5dip" >
 	<RelativeLayout android:layout_margin="10dip" android:layout_marginTop="5dip"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:id="@+id/relativeLayout1">
-		<TextView android:textSize="18sp" android:layout_marginRight="10dip"
+		<TextView android:textSize="18sp" android:layout_marginRight="10dip" android:singleLine="true"
 			android:textColor="#000000" android:layout_alignParentLeft="true"
 			android:layout_width="wrap_content" android:text="anonymous"
 			android:id="@+id/txt_name" android:layout_height="wrap_content" android:layout_toLeftOf="@+id/txt_date"
 			></TextView>
-		<TextView android:textSize="18sp" android:layout_marginRight="10dip"
+		<TextView android:textSize="18sp" android:layout_marginRight="10dip" android:singleLine="true"
 			android:textColor="#000000" android:layout_alignParentRight="true"
 			android:layout_width="wrap_content" android:text="anonymous"
 			android:id="@+id/txt_date" android:layout_height="wrap_content"

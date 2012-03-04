@@ -23,27 +23,27 @@
 		<TextView android:layout_alignParentLeft="true"
 			android:layout_marginTop="2dip" android:gravity="left|center_vertical" 
 			android:textColor="#000000" android:id="@+id/btn_info" android:text="About"
-			android:layout_marginRight="10dip" android:background="@drawable/btn_list_info_unselected"
+			android:layout_marginRight="10dip" android:background="@drawable/info_selector"
 			android:textSize="18sp" android:layout_marginLeft="10dip" android:paddingLeft="10dip"
 			android:layout_height="wrap_content"
 			android:layout_width="wrap_content"></TextView>
 		<TextView android:layout_alignParentLeft="true"
 			android:textColor="#000000" android:id="@+id/btn_feature_req" android:paddingLeft="10dip"
 			android:text="Feature Request" android:layout_marginRight="10dip" 
-			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/btn_list_info_unselected"
+			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/info_selector"
 			android:layout_marginLeft="10dip" android:layout_gravity="center"
 			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
 		<TextView android:layout_alignParentLeft="true" 
 
 			android:textColor="#000000" android:id="@+id/btn_query"
 			android:text="Advertising Query" android:layout_marginRight="10dip" android:paddingLeft="10dip"
-			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/btn_list_info_unselected"
+			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/info_selector"
 			android:layout_marginLeft="10dip" android:layout_gravity="center"
 			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
 		<TextView android:layout_alignParentLeft="true" 
 			android:textColor="#000000" android:id="@+id/btn_app_review"
 			android:text="Application Review" android:layout_marginRight="10dip" android:paddingLeft="10dip"
-			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/btn_list_info_unselected"
+			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/info_selector"
 			android:layout_marginLeft="10dip" android:layout_gravity="center"
 			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
 		<TextView android:layout_alignParentLeft="true" android:textStyle="bold"
@@ -56,28 +56,20 @@
 		<TextView android:layout_alignParentLeft="true" 
 			 android:textColor="#000000" android:id="@+id/btn_facebook" android:paddingLeft="10dip"
 			android:text="Facebook" android:layout_marginRight="10dip" android:layout_marginTop="2dip"
-			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/btn_list_info_unselected"
+			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/info_selector"
 			android:layout_marginLeft="10dip" android:layout_gravity="center"
 			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
 		<TextView android:layout_alignParentLeft="true" 
 			android:textColor="#000000" android:id="@+id/btn_twitter"
 			android:text="Twitter" android:layout_marginRight="10dip" android:paddingLeft="10dip"
-			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/btn_list_info_unselected"
+			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/info_selector"
 			android:layout_marginLeft="10dip" 			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
 		<TextView android:layout_alignParentLeft="true" 
 			android:textColor="#000000" android:id="@+id/btn_email"
 			android:text="Email" android:layout_marginRight="10dip" android:paddingLeft="10dip"
-			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/btn_list_info_unselected"
+			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/info_selector"
 			android:layout_marginLeft="10dip" android:layout_gravity="center"
 			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
 
 	</LinearLayout>
-
-
-
-
-
-
-
-
 </RelativeLayout>

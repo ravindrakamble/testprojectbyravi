@@ -39,13 +39,13 @@
 			android:layout_height="wrap_content">
 
 			<Button android:layout_width="wrap_content" android:id="@+id/btn_submit"
-				android:background="@drawable/btn_done_off"
+				android:background="@drawable/btn_done_selector"
 				android:layout_alignParentLeft="true" android:layout_marginLeft="30dip"
 				android:layout_height="wrap_content" android:layout_below="@+id/etComments"></Button>
 
 			<Button android:layout_width="wrap_content" android:id="@+id/btn_cancel"
 				android:layout_alignParentRight="true" android:layout_height="wrap_content"
-				android:layout_marginRight="30dip" android:background="@drawable/btn_cancel_off"
+				android:layout_marginRight="30dip" android:background="@drawable/btn_cancel_selector"
 				android:layout_toLeftOf="@+id/btn_cancel"></Button>
 		</RelativeLayout>
 	</LinearLayout>
