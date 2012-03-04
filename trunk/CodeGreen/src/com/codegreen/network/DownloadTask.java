@@ -46,31 +46,35 @@ public class DownloadTask extends Task{
 					//filePath = downloadYouTubeURL(downloadURL);
 					handler.handleCallback(downloadURL, callID, (byte)0);
 				}else{
-					inputStream = url.openStream();
+					if(downloadInfo.getFileName() == null || downloadInfo.getFileName().trim().equalsIgnoreCase("")){
+						handler.handleCallback(downloadInfo.getUrlToDownload(), callID, (byte)0);
+					}else{
+						inputStream = url.openStream();
 
-					File downloadDir = new File("/sdcard/codegreen/" + downloadInfo.getType() );
-					if(!downloadDir.exists()){
-						downloadDir.mkdirs();
+						File downloadDir = new File("/sdcard/codegreen/" + downloadInfo.getType() );
+						if(!downloadDir.exists()){
+							downloadDir.mkdirs();
+						}
+
+						File downloadFile = new File("/sdcard/codegreen/" + downloadInfo.getType()+ "/" + downloadInfo.getFileName() );
+
+						if(downloadFile.exists()){
+							downloadFile.delete();
+						}
+						downloadFile = new File("/sdcard/codegreen/" + downloadInfo.getType()+ "/" + downloadInfo.getFileName() );
+						downloadFile.createNewFile();
+
+						FileOutputStream fileOutputStream = new FileOutputStream(downloadFile);
+						byte[] fileData = new byte[200];
+						while(inputStream.read(fileData) != -1){
+							fileOutputStream.write(fileData);
+						}
+						fileOutputStream.flush();
+						fileOutputStream.close();
+						inputStream.close();
+
+						handler.handleCallback(downloadFile.getAbsolutePath(), callID, (byte)0);
 					}
-
-					File downloadFile = new File("/sdcard/codegreen/" + downloadInfo.getType()+ "/" + downloadInfo.getFileName() );
-					
-					if(downloadFile.exists()){
-						downloadFile.delete();
-					}
-					downloadFile = new File("/sdcard/codegreen/" + downloadInfo.getType()+ "/" + downloadInfo.getFileName() );
-					downloadFile.createNewFile();
-
-					FileOutputStream fileOutputStream = new FileOutputStream(downloadFile);
-					byte[] fileData = new byte[200];
-					while(inputStream.read(fileData) != -1){
-						fileOutputStream.write(fileData);
-					}
-					fileOutputStream.flush();
-					fileOutputStream.close();
-					inputStream.close();
-
-					handler.handleCallback(downloadFile.getAbsolutePath(), callID, (byte)0);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

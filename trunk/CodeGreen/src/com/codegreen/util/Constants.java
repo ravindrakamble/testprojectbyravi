@@ -74,6 +74,7 @@ public class Constants {
 	public static final String C_SUBMITREVIEW = "SRV";
 	public static final String C_DOWNLOADED_ARTICLE = "DA";
 	public static final String C_SAVED_ARTICLE = "SVDA";
+	public static final String C_SAVED_ARTICLES = "SVDAS";
 	public static final String C_ADVERTISMENTS = "ADVERTISMENTS";
 	public static final String C_ALL_ARTICLES = "ALL_ARTICLES"; // storing data
 

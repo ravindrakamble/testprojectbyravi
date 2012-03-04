@@ -42,7 +42,7 @@ public class DownloadHandler implements Handler{
 	 * @see com.codegreen.businessprocess.handler.Handler#handleEvent(java.lang.Object, byte, com.codegreen.listener.Updatable)
 	 */
 	@Override
-	public byte handleEvent(Object eventObject, byte callID, Updatable updatable) {
+	public byte handleEvent(Object eventObject, byte callID, final Updatable updatable) {
 		downloadedArticle = null;
 		articleDAO = null;
 		this.updatable = updatable;
@@ -98,6 +98,16 @@ public class DownloadHandler implements Handler{
 			}
 			//	}
 
+			if(!requestForData && !requestForImage){
+				new Thread(){
+					public void run() {
+						CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, (byte)0);
+					};
+					
+				}.start();
+				
+			}
 			break;
 		}
 		return 0;
