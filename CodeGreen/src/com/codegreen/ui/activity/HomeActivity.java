@@ -105,7 +105,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 						getArticleData("",lastDate); // add last article date
 				}
 			}
-		});
+		});	
 		initWidgets();
 		CURRENT_SELECTED_CATEGORY = 0;
 		CURRENT_SELECTED_MEDIA = "ALL";
@@ -540,7 +540,11 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 								sizeOfData =  CacheManager.getInstance().getAllArticledetailsSize();
 							if(sizeOfData == 0)
 								mNoItems.setVisibility(View.VISIBLE);
-
+							if(sizeOfData > 10){
+								footerView.setVisibility(View.VISIBLE);
+							}else{
+								footerView.setVisibility(View.GONE);
+							}
 							mAdapter = new HomeScreenAdapter(HomeActivity.this);
 							mAdapter.setRequestID(reqID);
 							setListAdapter(mAdapter); 
@@ -556,6 +560,13 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 							int sizeOfData = 0;
 							if(reqID == Constants.REQ_GETARTICLESBYTYPE)
 								sizeOfData =  CacheManager.getInstance().getAllArticledetailsSize();
+
+							if(sizeOfData > 10){
+								footerView.setVisibility(View.VISIBLE);
+							}else{
+								footerView.setVisibility(View.GONE);
+							}
+
 							mNoItems.setVisibility(View.VISIBLE);
 							mAdapter.setRequestID(reqID);
 							mAdapter.notifyDataSetChanged();
