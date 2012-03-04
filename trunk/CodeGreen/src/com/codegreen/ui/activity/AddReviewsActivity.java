@@ -97,7 +97,6 @@ public class AddReviewsActivity extends Activity implements OnClickListener,Upda
 				charremaining.setText(Integer.toString(remaingChars)
 						+ " characters remaining");
 			}
-				
 		}
 	}
 

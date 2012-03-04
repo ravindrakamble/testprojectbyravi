@@ -4,9 +4,12 @@ import java.util.List;
 
 import com.codegreen.R;
 import com.codegreen.businessprocess.handler.HttpHandler;
+import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.businessprocess.objects.ReviewDAO;
 import com.codegreen.common.CacheManager;
 import com.codegreen.listener.Updatable;
+import com.codegreen.ui.dialog.ReviewDialog;
+import com.codegreen.ui.dialog.ShareDialog;
 import com.codegreen.util.Constants;
 import com.codegreen.util.Utils;
 import com.codegreen.util.Constants.ENUM_PARSERRESPONSE;
@@ -16,10 +19,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnKeyListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -52,12 +57,7 @@ public class ReviewsActivity extends  Activity implements Updatable {
 			@Override
 			public void onClick(View v) {
 				try{
-					Intent intent = new Intent(ReviewsActivity.this, AddReviewsActivity.class);     		
-					intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-					intent.putExtra("SelectedType", selectedType);
-					intent.putExtra("selectedID", strSelectedID);
-					intent.putExtra("ArticleName", strArticleName);
-					startActivityForResult(intent, CREATE_REVIEW_CODE); 
+					showDialog(Constants.DIALOG_REVIEW);	
 				}catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -71,6 +71,8 @@ public class ReviewsActivity extends  Activity implements Updatable {
 		}
 		getReviews();
 	}
+
+
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -145,12 +147,14 @@ public class ReviewsActivity extends  Activity implements Updatable {
 								view.setLayoutParams(params);
 								TextView txt_name = (TextView) view.findViewById(R.id.txt_name);
 								TextView txt_review = (TextView) view.findViewById(R.id.txt_review);
+								TextView txt_date = (TextView)view.findViewById(R.id.txt_date);
 								if(reviewDAO.getUserName() != null && !reviewDAO.getUserName().equalsIgnoreCase(""))
-									txt_name.setText("Submitted by " + reviewDAO.getUserName());
+									txt_name.setText(reviewDAO.getUserName());
 								else
 									txt_name.setText(getString(R.string.submitted_by_anonymous));
 
 								txt_review.setText(reviewDAO.getReviewComments());
+								txt_date.setText(reviewDAO.getReviewDate());
 
 								lay_container.addView(view);
 							}
@@ -160,6 +164,26 @@ public class ReviewsActivity extends  Activity implements Updatable {
 					}
 				});
 
+			}else if(callID == Constants.REQ_SUBMITREVIEW){
+				if(updateData == Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS){
+					runOnUiThread(new Runnable() {
+
+						@Override
+						public void run() {
+							Utils.displayMessage(getApplicationContext(), getString(R.string.review_submitted));
+							//update the reviews
+							getReviews();
+						}
+					});
+				}else{
+					runOnUiThread(new Runnable() {
+
+						@Override
+						public void run() {
+							Utils.displayMessage(getApplicationContext(), "Review Submit failed, Please try again.");
+						}
+					});
+				}
 			}
 		}
 		Message msg = new Message();
@@ -175,6 +199,12 @@ public class ReviewsActivity extends  Activity implements Updatable {
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
+		case Constants.DIALOG_REVIEW:
+			ArticleDAO articledata = new ArticleDAO();
+			articledata.setArticleID(strSelectedID);
+			articledata.setType(selectedType);
+			ReviewDialog reviewDialog = new ReviewDialog(this,articledata);
+			return reviewDialog;
 		case Constants.DIALOG_REVIEW_PROGRESS:
 			showReviewProgressBar();
 			return reviewProgressDialog;

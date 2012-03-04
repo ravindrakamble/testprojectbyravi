@@ -100,6 +100,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	TimerTask adTask;
 	private ProgressDialog reviewProgressDialog = null;
 	String progres_text = "Downloading article data,Please wait...";
+	RelativeLayout lay_imageView = null;
+	ImageView play_img = null;
 
 	private boolean playerScreenOpened;
 	@SuppressWarnings("unchecked")
@@ -146,7 +148,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 			//progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
 			imageView = (ImageView)findViewById(R.id.webview);
-
+			
+			play_img = (ImageView)findViewById(R.id.btn_play);
+			play_img.setVisibility(View.GONE);
+			
+			lay_imageView = (RelativeLayout)findViewById(R.id.image_layout);
+			
 			progress_text = (TextView) findViewById(R.id.progress_text_color);
 
 			if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
@@ -201,6 +208,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			txtAuther.setOnTouchListener(gestureListener);
 			scrollLinearlayout.setOnTouchListener(gestureListener);
 			lay_main_scroll.setOnTouchListener(gestureListener);
+			lay_imageView.setOnTouchListener(gestureListener);
 			//imageView.setOnTouchListener(gestureListener);
 			imageView.setOnClickListener(new OnClickListener() {
 				@Override
@@ -319,9 +327,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							}
 							/////////////////////// For Image ///////////////////////////////////////////
 							// If text/image then check for url it should not be null
-							// Display by default
-							imageView.setVisibility(View.VISIBLE);
 
+						
 							txtTitle.setText(articleDetails.getTitle());
 							txtDate.setText(articleDetails.getPublishedDate());
 							txtTitle.setVisibility(View.VISIBLE);
@@ -349,7 +356,13 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 								if(articleDetails.getUrl()== null || articleDetails.getUrl().equals("")){
 									imageView.setVisibility(View.GONE);
+									lay_imageView.setVisibility(View.GONE);
+									play_img.setVisibility(View.GONE);
 								}else{
+									
+									// Display by default
+									imageView.setVisibility(View.VISIBLE);
+									lay_imageView.setVisibility(View.VISIBLE);
 									// then download image with thumbnail url
 									downloadImage(articleDetails.getUrl());
 								}
@@ -358,7 +371,10 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							}else if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO) || articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
 								if(articleDetails.getThumbUrl() == null || articleDetails.getThumbUrl().equals("")){
 									imageView.setImageResource(R.drawable.bg_images_sample);
+									lay_imageView.setVisibility(View.VISIBLE);
+									play_img.setVisibility(View.VISIBLE);
 								}else{
+									play_img.setVisibility(View.GONE);
 									// then download image with thumbnail url
 									downloadImage(articleDetails.getThumbUrl());
 								}
@@ -403,6 +419,13 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 						imageViewProgressBar.setVisibility(View.GONE);
 						if(CacheManager.getInstance().getLatestArticleBitmap() != null){
+							// Play image should display on 
+							if(!articleDetails.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_IMAGE) && !articleDetails.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_TEXT)){
+								play_img.setVisibility(View.VISIBLE);
+							}else{
+								play_img.setVisibility(View.GONE);
+							}
+						
 							if(imageView.getDrawable() != null){
 								imageView.getDrawable().setCallback(null);
 							}
@@ -412,8 +435,14 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						}else{
 							if(articleDetails.getType().equals(Constants.ARTCLETYPE_AUDIO) || articleDetails.getType().equals(Constants.ARTCLETYPE_VIDEO)){
 								imageView.setImageResource(R.drawable.bg_images_sample);
-							}else
+								imageView.setVisibility(View.VISIBLE);
+								play_img.setVisibility(View.VISIBLE);
+								lay_imageView.setVisibility(View.VISIBLE);
+							}else{
+								lay_imageView.setVisibility(View.GONE);
 								imageView.setVisibility(View.GONE);
+								play_img.setVisibility(View.GONE);
+							}
 							Toast.makeText(getApplicationContext(),"Image download failed.", Toast.LENGTH_SHORT).show();
 						}
 					}else if(callId == Constants.REQ_DOWNLOADARTICLE){
@@ -748,7 +777,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					txtDetails.setTextColor(Color.BLACK);
 					txt_reviews.setTextColor(Color.BLACK);
 					progress_text.setTextColor(Color.BLACK);
-
 				}else{
 					lay_main.setBackgroundColor(Color.BLACK);
 					txtTitle.setTextColor(Color.WHITE);
@@ -758,6 +786,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					txt_reviews.setTextColor(Color.WHITE);
 					progress_text.setTextColor(Color.WHITE);
 				}
+				play_img.setVisibility(View.GONE);
 				strSelectedArticleID = articleDetails.getArticleID();
 				strSelectedArticleType = articleDetails.getType();
 				txtDetails.setVisibility(View.INVISIBLE);

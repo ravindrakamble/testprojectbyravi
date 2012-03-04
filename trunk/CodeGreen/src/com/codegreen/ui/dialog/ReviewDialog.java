@@ -8,10 +8,13 @@ import com.codegreen.businessprocess.objects.ReviewDAO;
 import com.codegreen.listener.Updatable;
 import com.codegreen.util.Constants;
 import com.codegreen.util.Utils;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -59,7 +62,8 @@ public class ReviewDialog extends AlertDialog implements OnClickListener{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		initDialogLayout();
 	}
-
+	TextView charremaining = null;
+	private static final int MAX_CHARS = 100;
 
 	/**
 	 * To initialize Custom Dialog's view.
@@ -73,12 +77,17 @@ public class ReviewDialog extends AlertDialog implements OnClickListener{
 		setTitle(R.string.add_review);
 
 		//Assign the controls
-		txtView = (TextView)findViewById(R.id.txtTitle);
+	/*	txtView = (TextView)findViewById(R.id.txtTitle);
 		//Set text
 		txtView.setText(articleDAO.getTitle());
-
+*/
 		edt_name = (EditText)findViewById(R.id.etName);
 		edt_Review = (EditText)findViewById(R.id.etComments);
+		edt_Review.setFilters(new InputFilter[] {mSearchTextFilter,mSearchTextLengthFilter});
+		edt_Review.addTextChangedListener(new MyTextWatcher());
+		
+		charremaining = (TextView) findViewById(R.id.charRemaining);
+		charremaining.setText(MAX_CHARS + " characters remaining");
 
 		//Assign the buttons
 		submit = (Button)findViewById(R.id.btn_submit);
@@ -86,10 +95,57 @@ public class ReviewDialog extends AlertDialog implements OnClickListener{
 		cancel = (Button)findViewById(R.id.btn_cancel);
 		cancel.setOnClickListener(this);
 	}
+	
+	int charcount = 0;
+
+	private class MyTextWatcher implements TextWatcher {
+
+		public void afterTextChanged(Editable arg0) {
+
+		}
+
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+
+		}
+
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+
+			charcount = s.toString().length();
+
+			int remaingChars = MAX_CHARS - charcount;
+			if(remaingChars >= 0){
+				charremaining.setText(Integer.toString(remaingChars)
+						+ " characters remaining");
+			}
+				
+		}
+	}
+
+
+	/**
+	 * Filter
+	 */
+	private InputFilter mSearchTextFilter = new InputFilter(){
+
+		@Override
+		public CharSequence filter(CharSequence source, int start, int end,
+				Spanned dest, int dstart, int dend) {
+
+			for(int i = start; i < end; i++){
+				if(source.charAt(i) == '\n')
+					return "";
+			}
+			return source;
+		}
+
+	};
 
 
 
-
+	private InputFilter mSearchTextLengthFilter = new InputFilter.LengthFilter(100);
+	
 
 	@Override
 	public void dismiss() {
@@ -118,7 +174,7 @@ public class ReviewDialog extends AlertDialog implements OnClickListener{
 
 					submitReviews(name, review);
 
-					Toast.makeText(mContext, "Your review will be submitted.", Toast.LENGTH_LONG).show();
+				//	Toast.makeText(mContext, "Your review will be submitted.", Toast.LENGTH_LONG).show();
 					this.cancel();
 					this.dismiss();
 
