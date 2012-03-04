@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" android:background="#FFFFFF">
+	android:layout_height="fill_parent" android:background="#9AB158">
 
 	<RelativeLayout android:id="@+id/codegreenTitle"
 		android:background="@drawable/bg_topbar" android:layout_width="fill_parent"
@@ -9,65 +9,65 @@
 	</RelativeLayout>
 
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_marginTop="20dip" android:layout_width="fill_parent"
+		android:layout_marginTop="15dip" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:layout_below="@+id/codegreenTitle"
-		android:orientation="vertical" android:background="#FFFFFF">
+		android:orientation="vertical" >
 		<TextView android:layout_alignParentLeft="true"
-			android:layout_margin="5dip" android:textStyle="bold"
+			android:textStyle="bold"
 			android:textColor="#000000"  android:text="Information"
 			android:layout_marginRight="10dip" android:gravity="center"
 			android:textSize="18sp" android:layout_marginLeft="10dip"
 			android:layout_gravity="center" android:layout_height="wrap_content"
-			android:layout_width="wrap_content"></TextView>
+			android:layout_width="wrap_content" android:background="@drawable/bg_subbar"></TextView>
 
 		<TextView android:layout_alignParentLeft="true"
-			android:layout_margin="5dip" android:textStyle="bold"
-			android:textColor="#000000" android:id="@+id/btn_info" android:text="About > "
-			android:layout_marginRight="10dip" android:gravity="center"
-			android:textSize="18sp" android:layout_marginLeft="10dip"
-			android:layout_gravity="center" android:layout_height="wrap_content"
+			android:layout_marginTop="2dip" android:gravity="left|center_vertical" 
+			android:textColor="#000000" android:id="@+id/btn_info" android:text="About"
+			android:layout_marginRight="10dip" android:background="@drawable/btn_list_info_unselected"
+			android:textSize="18sp" android:layout_marginLeft="10dip" android:paddingLeft="10dip"
+			android:layout_height="wrap_content"
 			android:layout_width="wrap_content"></TextView>
 		<TextView android:layout_alignParentLeft="true"
-			android:layout_margin="5dip" android:textColor="#000000" android:id="@+id/btn_feature_req"
-			android:text="Feature Request > " android:layout_marginRight="10dip" android:textStyle="bold"
-			android:gravity="center" android:textSize="18sp"
+			android:textColor="#000000" android:id="@+id/btn_feature_req" android:paddingLeft="10dip"
+			android:text="Feature Request" android:layout_marginRight="10dip" 
+			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/btn_list_info_unselected"
+			android:layout_marginLeft="10dip" android:layout_gravity="center"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
+		<TextView android:layout_alignParentLeft="true" 
+
+			android:textColor="#000000" android:id="@+id/btn_query"
+			android:text="Advertising Query" android:layout_marginRight="10dip" android:paddingLeft="10dip"
+			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/btn_list_info_unselected"
+			android:layout_marginLeft="10dip" android:layout_gravity="center"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
+		<TextView android:layout_alignParentLeft="true" 
+			android:textColor="#000000" android:id="@+id/btn_app_review"
+			android:text="Application Review" android:layout_marginRight="10dip" android:paddingLeft="10dip"
+			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/btn_list_info_unselected"
 			android:layout_marginLeft="10dip" android:layout_gravity="center"
 			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
 		<TextView android:layout_alignParentLeft="true" android:textStyle="bold"
-			android:layout_margin="5dip" android:textColor="#000000" android:id="@+id/btn_query"
-			android:text="Advertising Query >" android:layout_marginRight="10dip"
-			android:gravity="center" android:textSize="18sp"
-			android:layout_marginLeft="10dip" android:layout_gravity="center"
-			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
-		<TextView android:layout_alignParentLeft="true" android:textStyle="bold"
-			android:layout_margin="5dip" android:textColor="#000000" android:id="@+id/btn_app_review"
-			android:text="Application Review >" android:layout_marginRight="10dip"
-			android:gravity="center" android:textSize="18sp"
-			android:layout_marginLeft="10dip" android:layout_gravity="center"
-			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
-		<TextView android:layout_alignParentLeft="true" android:textStyle="bold"
-			android:layout_margin="5dip" android:textColor="#000000"
+			android:textColor="#000000" android:layout_marginTop="15dip"
 			android:text="Sharing Application" android:layout_marginRight="10dip"
 			android:gravity="center" android:textSize="18sp"
-			android:layout_marginLeft="10dip" 
+			android:layout_marginLeft="10dip" android:background="@drawable/bg_subbar"
 			android:layout_gravity="center" android:layout_height="wrap_content"
 			android:layout_width="wrap_content"></TextView>
-		<TextView android:layout_alignParentLeft="true" android:textStyle="bold"
-			android:layout_margin="5dip" android:textColor="#000000" android:id="@+id/btn_facebook"
-			android:text="Facebook > " android:layout_marginRight="10dip"
-			android:gravity="center" android:textSize="18sp"
+		<TextView android:layout_alignParentLeft="true" 
+			 android:textColor="#000000" android:id="@+id/btn_facebook" android:paddingLeft="10dip"
+			android:text="Facebook" android:layout_marginRight="10dip" android:layout_marginTop="2dip"
+			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/btn_list_info_unselected"
 			android:layout_marginLeft="10dip" android:layout_gravity="center"
 			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
-		<TextView android:layout_alignParentLeft="true" android:textStyle="bold"
-			android:layout_margin="5dip" android:textColor="#000000" android:id="@+id/btn_twitter"
-			android:text="Twitter > " android:layout_marginRight="10dip"
-			android:gravity="center" android:textSize="18sp"
-			android:layout_marginLeft="10dip" android:layout_gravity="center"
-			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
-		<TextView android:layout_alignParentLeft="true" android:textStyle="bold"
-			android:layout_margin="5dip" android:textColor="#000000" android:id="@+id/btn_email"
-			android:text="Email > " android:layout_marginRight="10dip"
-			android:gravity="center" android:textSize="18sp"
+		<TextView android:layout_alignParentLeft="true" 
+			android:textColor="#000000" android:id="@+id/btn_twitter"
+			android:text="Twitter" android:layout_marginRight="10dip" android:paddingLeft="10dip"
+			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/btn_list_info_unselected"
+			android:layout_marginLeft="10dip" 			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
+		<TextView android:layout_alignParentLeft="true" 
+			android:textColor="#000000" android:id="@+id/btn_email"
+			android:text="Email" android:layout_marginRight="10dip" android:paddingLeft="10dip"
+			android:gravity="left|center_vertical" android:textSize="18sp" android:background="@drawable/btn_list_info_unselected"
 			android:layout_marginLeft="10dip" android:layout_gravity="center"
 			android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
 

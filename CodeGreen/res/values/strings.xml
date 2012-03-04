@@ -10,7 +10,7 @@
 	<string name="record_saved">Article saved successfully.</string>
 	<string name="no_reviews">No Reviews submitted yet.</string>
 	<string name="submitted_by">Submitted by:</string>
-	<string name="submitted_by_anonymous">Submitted by anonymous</string>
+	<string name="submitted_by_anonymous">Anonymous</string>
 	<string name="reviews">Reviews:</string>
 	<string name="saved_already">Article already saved</string>
 	<string name="str_design_arech">DESIGN &amp; ARCHI</string>
