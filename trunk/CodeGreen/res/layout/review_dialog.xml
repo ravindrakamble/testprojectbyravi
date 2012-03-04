@@ -1,54 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:orientation="vertical" android:background="#ffffff">
+	android:layout_width="fill_parent" android:layout_height="350dip"
+	android:orientation="vertical" android:background="@drawable/bg_popup_gray">
 
-	<RelativeLayout android:id="@+id/codegreenTitle"
-		android:background="@drawable/bg_topbar" android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
-	</RelativeLayout>
+	<LinearLayout android:layout_width="fill_parent" android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
+		android:orientation="vertical" android:layout_height="fill_parent">
 
-	<RelativeLayout android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
+		<TextView android:layout_marginTop="20dip" android:paddingLeft="10dip"
+			android:layout_height="wrap_content" android:text="Name"
+			android:textColor="#9AB158" android:textStyle="bold"
+			android:layout_width="fill_parent" android:textSize="18dip"
+			></TextView>
 
-		<TextView android:id="@+id/txtTitle"
-			android:layout_marginTop="15dip" android:layout_height="wrap_content"
-			android:textColor="#000000" android:textStyle="bold" android:text="Title"
-			android:layout_width="250dip" android:layout_centerHorizontal="true"
-			android:textSize="25dip" android:layout_marginBottom="15dip"></TextView>
+		<EditText android:id="@+id/etName" android:layout_height="wrap_content" android:paddingLeft="10dip"
+			android:background="@drawable/bg_box_name" android:layout_width="fill_parent"
+			android:layout_centerHorizontal="true" android:hint="Enter Name[Optional]"></EditText>
 
-		<EditText android:id="@+id/etName" android:layout_height="wrap_content"
-			android:background="@android:drawable/editbox_background_normal" 
-			android:layout_width="fill_parent" android:layout_centerHorizontal="true"
-			android:hint="Enter Name[Optional]" android:layout_below="@+id/txtTitle"></EditText>
+		<TextView android:layout_marginTop="10dip" android:paddingLeft="10dip"
+			android:layout_height="wrap_content" android:text="Comments"
+			android:textColor="#9AB158" android:textStyle="bold"
+			android:layout_width="fill_parent" android:textSize="18dip"
+			></TextView>
 
 		<EditText android:id="@+id/etComments" android:layout_height="150dip"
-			android:background="@android:drawable/editbox_background_normal"
-			android:gravity="top" android:layout_width="fill_parent" 
-			android:layout_centerHorizontal="true" android:hint="Enter Review..."
-			android:layout_below="@+id/etName" android:maxLines="700"></EditText>
-			
+			android:background="@drawable/bg_box_comments" android:paddingLeft="10dip"
+			android:gravity="top" android:layout_width="fill_parent"
+			android:layout_centerHorizontal="true" android:hint="Enter Comments..."
+			android:maxLines="700"></EditText>
+
 		<TextView android:id="@+id/charRemaining" android:textColor="#000000"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:gravity="right" android:paddingRight="10dip" android:height="25dip"
-			android:layout_below="@+id/etComments" android:layout_marginBottom="6dip" />
+			android:layout_marginBottom="6dip" />
 
 
 		<RelativeLayout android:layout_width="wrap_content"
 			android:layout_centerHorizontal="true" android:orientation="horizontal"
-			android:layout_height="wrap_content" android:layout_below="@+id/charRemaining">
+			android:layout_height="wrap_content">
 
-			<Button android:id="@+id/btn_cancel" android:layout_width="wrap_content"
-				android:background="@android:drawable/btn_default"
+			<Button android:layout_width="wrap_content" android:id="@+id/btn_submit"
+				android:background="@drawable/btn_done_off"
 				android:layout_alignParentLeft="true" android:layout_marginLeft="30dip"
-				android:layout_height="wrap_content" android:text="Cancel"
-				android:layout_below="@+id/etComments"></Button>
+				android:layout_height="wrap_content" android:layout_below="@+id/etComments"></Button>
 
-			<Button android:id="@+id/btn_submit" android:layout_width="wrap_content"
+			<Button android:layout_width="wrap_content" android:id="@+id/btn_cancel"
 				android:layout_alignParentRight="true" android:layout_height="wrap_content"
-				android:layout_marginRight="30dip" android:background="@android:drawable/btn_default"
-				android:text="Submit" android:layout_toLeftOf="@+id/btn_cancel"></Button>
+				android:layout_marginRight="30dip" android:background="@drawable/btn_cancel_off"
+				android:layout_toLeftOf="@+id/btn_cancel"></Button>
 		</RelativeLayout>
-	</RelativeLayout>
+	</LinearLayout>
 
 </LinearLayout>

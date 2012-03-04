@@ -25,14 +25,28 @@
 					android:id="@+id/lay_main_scroll" android:orientation="vertical"
 					android:layout_height="fill_parent">
 
-					<ImageView android:layout_width="fill_parent"
-						android:visibility="gone" android:adjustViewBounds="true"
-						android:scaleType="centerCrop" android:layout_gravity="center"
-						android:layout_marginLeft="15dip" android:layout_marginRight="15dip"
-						android:layout_height="220dip" android:id="@+id/webview"
-						android:src="@drawable/default_bg_text" android:gravity="center_horizontal"
-						android:textSize="20dip" android:minHeight="0dip"
-						android:layout_marginTop="10dip" />
+					<RelativeLayout android:layout_width="fill_parent"
+						android:id="@+id/image_layout" android:layout_marginLeft="15dip"
+						android:layout_marginRight="15dip" android:layout_height="220dip"
+						android:layout_marginTop="10dip">
+
+						<ImageView android:layout_width="wrap_content" 
+							android:layout_height="wrap_content" 
+							android:id="@+id/webview" android:src="@drawable/default_bg_text"
+							android:layout_centerInParent="true" />
+
+						<ImageView android:layout_width="wrap_content"
+							 android:id="@+id/btn_play"
+							android:layout_centerInParent="true" android:layout_height="wrap_content"
+							android:src="@drawable/btn_play" />
+
+						<ProgressBar android:layout_width="wrap_content"
+							android:id="@+id/progress_imageView" android:layout_centerInParent="true"
+							android:layout_height="wrap_content"
+							style="?android:attr/progressBarStyleInverse"
+							 />
+
+					</RelativeLayout>
 
 					<RelativeLayout android:layout_width="fill_parent"
 						android:id="@+id/scrollLinearlayout" android:orientation="vertical"
@@ -67,7 +81,7 @@
 							android:layout_marginTop="15dip" android:layout_height="wrap_content"
 							android:id="@+id/article_details_view" android:textColor="#FFFFFF"
 							android:textSize="17dip" />
-							
+
 						<TextView android:id="@+id/txt_reviews"
 							android:layout_below="@+id/article_details_view"
 							android:visibility="gone" android:layout_marginTop="15dip"
@@ -93,16 +107,12 @@
 			android:textSize="15dip" android:text="Loading..." android:textStyle="bold" />
 	</LinearLayout>
 
-	<ProgressBar android:layout_width="wrap_content"
-		android:id="@+id/progress_imageView" android:layout_centerHorizontal="true"
-		android:layout_height="wrap_content" android:visibility="gone"
-		style="?android:attr/progressBarStyleInverse"
-		android:layout_marginTop="140dip" />
 
 	<RelativeLayout android:layout_width="fill_parent"
 		android:id="@+id/relativeLayout1" android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true">
-		<ImageView android:id="@+id/admarveldetailsscreen" android:layout_marginLeft="15dip" android:layout_marginRight="15dip"
+		<ImageView android:id="@+id/admarveldetailsscreen"
+			android:layout_marginLeft="15dip" android:layout_marginRight="15dip"
 			android:src="@drawable/bg_ads_sample" android:layout_width="fill_parent"
 			android:layout_height="50dip"></ImageView>
 	</RelativeLayout>

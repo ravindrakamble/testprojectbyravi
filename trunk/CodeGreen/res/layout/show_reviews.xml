@@ -2,15 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:id="@+id/lay_details_main" android:layout_height="fill_parent"
-	android:background="#ffffff">
-
+	android:background="#9AB158">
 
 	<RelativeLayout android:id="@+id/codegreenTitle"
 		android:background="@drawable/bg_topbar" android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
 		<ImageView android:id="@+id/btn_submit" 
 			android:layout_centerVertical="true" android:layout_height="wrap_content"
-			android:layout_width="wrap_content" android:src="@drawable/norgi_selector"
+			android:layout_width="wrap_content" android:src="@drawable/sumbit_btn_selector"
 			android:layout_alignParentRight="true" android:layout_marginRight="5dip" />
 	</RelativeLayout>
 
