@@ -1,7 +1,5 @@
 package com.codegreen.businessprocess.handler;
 
-import android.content.Context;
-
 import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.businessprocess.objects.DownloadInfoDAO;
 import com.codegreen.common.CacheManager;
