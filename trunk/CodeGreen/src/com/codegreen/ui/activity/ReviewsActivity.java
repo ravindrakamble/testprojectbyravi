@@ -136,14 +136,12 @@ public class ReviewsActivity extends  Activity implements Updatable {
 						List<ReviewDAO> reviewList = (List<ReviewDAO>) CacheManager.getInstance().get(Constants.C_REVIEWS);
 						ReviewDAO reviewDAO = null;
 
-						//	StringBuilder reviews = new StringBuilder();
 						if(reviewList != null && reviewList.size() > 0){
-							//	reviews.append("<b>" + getString(R.string.reviews) +"</b><br>");
 							for(int i = 0; i < reviewList.size(); i++){
 								reviewDAO = reviewList.get(i);
 								View view = ((LayoutInflater)ReviewsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.review_layout, null, false);
 								LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-								params.setMargins(10, 10, 10, 10);
+								params.setMargins(5, 5, 5, 5);
 								view.setLayoutParams(params);
 								TextView txt_name = (TextView) view.findViewById(R.id.txt_name);
 								TextView txt_review = (TextView) view.findViewById(R.id.txt_review);
