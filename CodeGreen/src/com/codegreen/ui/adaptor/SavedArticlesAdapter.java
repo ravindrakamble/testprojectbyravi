@@ -42,6 +42,7 @@ public class SavedArticlesAdapter extends BaseAdapter{
 			dbAdapter.close();
 			if(mArticleList != null){
 				Constants.TOTAL_ARTICLES = mArticleList.size();
+				CacheManager.getInstance().store(Constants.C_SAVED_ARTICLES, mArticleList);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -180,7 +181,12 @@ public class SavedArticlesAdapter extends BaseAdapter{
 						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
 					}
 				}else{
-					holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
+					if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
+						holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_audio);
+					}else if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_VEDIO)){
+						holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_video);
+					}else
+						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
 				}
 			}
 		}
@@ -197,6 +203,7 @@ public class SavedArticlesAdapter extends BaseAdapter{
 			dbAdapter.close();
 
 			if(mArticleList != null){
+				CacheManager.getInstance().store(Constants.C_SAVED_ARTICLES, mArticleList);
 				Constants.TOTAL_ARTICLES = mArticleList.size();
 			}
 		} catch (Exception e) {

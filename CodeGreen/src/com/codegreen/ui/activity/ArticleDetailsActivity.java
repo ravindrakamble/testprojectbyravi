@@ -224,6 +224,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			if(!savedArticle){
 				getArticleDetails();
 			}else{
+				listOfArticles = (ArrayList<ArticleDAO>)CacheManager.getInstance().get(Constants.C_SAVED_ARTICLES);
 				update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,Constants.REQ_GETARTICLEDETAILS,(byte)0);
 			}
 		}
@@ -373,6 +374,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 									imageView.setImageResource(R.drawable.bg_images_sample);
 									lay_imageView.setVisibility(View.VISIBLE);
 									play_img.setVisibility(View.VISIBLE);
+									imageViewProgressBar.setVisibility(View.GONE);
 								}else{
 									play_img.setVisibility(View.GONE);
 									// then download image with thumbnail url
@@ -751,6 +753,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	}
 
 	private void showNextArticle(){
+		if(listOfArticles != null){
+		Constants.TOTAL_ARTICLES = listOfArticles.size();
+		}
 		Log.i("Current index:" + Constants.CURRENT_INDEX, "Total articles:"  + Constants.TOTAL_ARTICLES);
 		if(Constants.CURRENT_INDEX < (Constants.TOTAL_ARTICLES - 1)){
 			mFlipper.clearAnimation();
@@ -802,6 +807,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 	}
 	private void showPreviousArticle(){
+		if(listOfArticles != null){
+			Constants.TOTAL_ARTICLES = listOfArticles.size();
+			}
 		Log.i("Current index:" + Constants.CURRENT_INDEX, "Total articles:"  + Constants.TOTAL_ARTICLES);
 		if(Constants.CURRENT_INDEX > 0){
 			mFlipper.clearAnimation();
