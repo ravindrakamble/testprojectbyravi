@@ -60,6 +60,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 	String strSelectedArticleType = Constants.ARTCLETYPE_TEXT;
 	String strSelectedArticleID = "";
+	private boolean search = false;
 	String TAG = "ArticleDetailsActivity";
 	ProgressBar imageViewProgressBar = null;
 	ImageView imageView = null;
@@ -118,9 +119,14 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			savedArticle =  getIntent().getBooleanExtra("savedarticle", false);
 			shortDesc = getIntent().getStringExtra("desc");
 			thumbUrl = getIntent().getStringExtra("thumburl");
+			search = getIntent().getBooleanExtra("search", false);
 		}
 
+		if(search){
+			listOfArticles = (List<ArticleDAO>)CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);
+		}else{
 		listOfArticles = (List<ArticleDAO>)CacheManager.getInstance().get(Constants.C_ARTICLES);
+		}
 		if(listOfArticles != null){
 			Constants.TOTAL_ARTICLES = listOfArticles.size();
 		}
@@ -756,6 +762,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		if(listOfArticles != null){
 		Constants.TOTAL_ARTICLES = listOfArticles.size();
 		}
+		if(Constants.TOTAL_ARTICLES > 1){
 		Log.i("Current index:" + Constants.CURRENT_INDEX, "Total articles:"  + Constants.TOTAL_ARTICLES);
 		if(Constants.CURRENT_INDEX < (Constants.TOTAL_ARTICLES - 1)){
 			mFlipper.clearAnimation();
@@ -766,6 +773,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			getArticle();
 		}else{
 			Toast.makeText(this, "This is last article.", Toast.LENGTH_SHORT).show();
+		}
 		}
 	}
 
@@ -810,6 +818,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		if(listOfArticles != null){
 			Constants.TOTAL_ARTICLES = listOfArticles.size();
 			}
+		if(Constants.TOTAL_ARTICLES > 1){
 		Log.i("Current index:" + Constants.CURRENT_INDEX, "Total articles:"  + Constants.TOTAL_ARTICLES);
 		if(Constants.CURRENT_INDEX > 0){
 			mFlipper.clearAnimation();
@@ -820,6 +829,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			getArticle();
 		}else{
 			Toast.makeText(this, "This is first article.", Toast.LENGTH_SHORT).show();
+		}
 		}
 	}
 

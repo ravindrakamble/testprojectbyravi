@@ -335,10 +335,15 @@ public class SearchActivity extends ListActivity implements Updatable{
 
 		if(Utils.isNetworkAvail(getApplicationContext())){
 			ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
+			Constants.CURRENT_INDEX = position;
 			Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
 			intent.putExtra("ArticleID", articleEntry.getArticleID());
+			intent.putExtra("desc", articleEntry.getShortDescription());
+			intent.putExtra("thumburl", articleEntry.getThumbUrl());
+
+			intent.putExtra("search", true);
 			startActivity(intent);
 		}else{
 			Toast.makeText(getApplicationContext(),"No Network Available", Toast.LENGTH_SHORT).show();
