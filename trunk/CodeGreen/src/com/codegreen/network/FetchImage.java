@@ -37,7 +37,7 @@ public class FetchImage
 			url = url.replaceAll(" ", "%20");
 			InputStream is=new URL(url).openStream(); 
 			BufferedInputStream bis = new BufferedInputStream(is);  
-			Log.e("Image downloaded:", "" + url);
+			//Log.e("Image downloaded:", "" + url);
 			return bitmap = BitmapFactory.decodeStream(bis);
 		}
 		catch (Exception ex)
@@ -77,7 +77,7 @@ public class FetchImage
 
 	private void queuePhoto(ArticleDAO vo, Context activity, ImageView sponserImg)
 	{ 
-		Log.e("Image queued:", "" + vo.getThumbUrl());
+		//Log.e("Image queued:", "" + vo.getThumbUrl());
 		vo.setImagedrawable(sponserImg);
 
 		synchronized(photosQueue.imageDowload)

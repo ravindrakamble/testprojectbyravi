@@ -9,6 +9,7 @@ import java.net.URL;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.codegreen.businessprocess.handler.Handler;
 import com.codegreen.common.Task;
@@ -29,6 +30,7 @@ public class DownloadImageTask extends Task {
 		FileInputStream fileInputStream = null;
 		try {
 			if(imageUrl != null){
+				Log.i("Downloading image:", "" + imageUrl);
 				if(imageUrl.startsWith("http")){
 					imageUrl = imageUrl.replaceAll(" ", "%20");
 					is = new URL(imageUrl).openStream();

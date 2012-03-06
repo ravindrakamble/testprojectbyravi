@@ -47,6 +47,7 @@ public class SavedArticlesActivity extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
 		CacheManager.getInstance().store(Constants.C_ARTICLE_DETAILS, articleEntry);
+		Constants.CURRENT_INDEX = position;
 		Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
