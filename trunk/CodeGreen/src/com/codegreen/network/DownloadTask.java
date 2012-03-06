@@ -59,7 +59,7 @@ public class DownloadTask extends Task{
 						File downloadFile = new File("/sdcard/codegreen/" + downloadInfo.getType()+ "/" + downloadInfo.getFileName() );
 
 						if(downloadFile.exists()){
-							downloadFile.delete();
+							handler.handleCallback(downloadFile.getAbsolutePath(), callID, (byte)0);
 						}
 						downloadFile = new File("/sdcard/codegreen/" + downloadInfo.getType()+ "/" + downloadInfo.getFileName() );
 						downloadFile.createNewFile();
@@ -67,7 +67,7 @@ public class DownloadTask extends Task{
 						FileOutputStream fileOutputStream = new FileOutputStream(downloadFile);
 						byte[] fileData = new byte[200];
 						while(inputStream.read(fileData) != -1){
-							fileOutputStream.write(fileData);
+							fileOutputStream.write(new String(fileData).trim().getBytes());
 						}
 						fileOutputStream.flush();
 						fileOutputStream.close();
