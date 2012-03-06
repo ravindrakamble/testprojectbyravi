@@ -509,6 +509,19 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		}
 		return null;
 	}
+	
+	
+	private void addFooterView(){
+		if(getListView().getFooterViewsCount() == 0)
+			getListView().addFooterView(footerView);
+	}
+	
+	private void RemoveFooterView(){
+		if(footerView !=null){
+			footerView.getLayoutParams().height = 0;
+		}
+		
+	}
 
 	@Override
 	public void update(Constants.ENUM_PARSERRESPONSE updateData, final byte reqID, byte errorCode) {
@@ -517,19 +530,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			Log.e(TAG, "--------Response Received-------PARSERRESPONSE_SUCCESS");
 
 			if(reqID == Constants.REQ_GETARTICLESBYTYPE){
-				/*if(errorCode == Constants.NO_MORE_ARTICLES){
-					runOnUiThread(new Runnable() {
-
-						@Override
-						public void run() {
-							if(footerView != null){
-								getListView().removeFooterView(footerView);
-								footerView = null;
-							}
-						}
-					});
-				}*/
-
 				if(mAdapter == null){
 					runOnUiThread(new Runnable() { 
 						@SuppressWarnings("unchecked")
@@ -540,11 +540,11 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 								sizeOfData =  CacheManager.getInstance().getAllArticledetailsSize();
 							if(sizeOfData == 0)
 								mNoItems.setVisibility(View.VISIBLE);
-							if(sizeOfData > 10){
-								footerView.setVisibility(View.VISIBLE);
+							/*if(sizeOfData > 10){
+								addFooterView();
 							}else{
-								footerView.setVisibility(View.GONE);
-							}
+								RemoveFooterView();
+							}*/
 							mAdapter = new HomeScreenAdapter(HomeActivity.this);
 							mAdapter.setRequestID(reqID);
 							setListAdapter(mAdapter); 
@@ -561,13 +561,12 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 							if(reqID == Constants.REQ_GETARTICLESBYTYPE)
 								sizeOfData =  CacheManager.getInstance().getAllArticledetailsSize();
 
-							if(sizeOfData > 10){
-								footerView.setVisibility(View.VISIBLE);
+						/*	if(sizeOfData > 10){
+								addFooterView();
 							}else{
-								footerView.setVisibility(View.GONE);
+								RemoveFooterView();
 							}
-
-							mNoItems.setVisibility(View.VISIBLE);
+						*/	mNoItems.setVisibility(View.VISIBLE);
 							mAdapter.setRequestID(reqID);
 							mAdapter.notifyDataSetChanged();
 							mAdapter.notifyDataSetInvalidated();
