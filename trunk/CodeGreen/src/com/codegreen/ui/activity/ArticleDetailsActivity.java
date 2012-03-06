@@ -100,7 +100,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	Timer adTimer;
 	TimerTask adTask;
 	private ProgressDialog reviewProgressDialog = null;
-	String progres_text = "Downloading article data,Please wait...";
+	String progres_text = "Loading article data,Please wait...";
 	RelativeLayout lay_imageView = null;
 	ImageView play_img = null;
 
@@ -125,7 +125,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		if(search){
 			listOfArticles = (List<ArticleDAO>)CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);
 		}else{
-		listOfArticles = (List<ArticleDAO>)CacheManager.getInstance().get(Constants.C_ARTICLES);
+			listOfArticles = (List<ArticleDAO>)CacheManager.getInstance().get(Constants.C_ARTICLES);
 		}
 		if(listOfArticles != null){
 			Constants.TOTAL_ARTICLES = listOfArticles.size();
@@ -148,18 +148,18 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 			txtDate = (TextView) findViewById(R.id.article_date_view);
 			txtDate.setTypeface(_tfSmallNormal);
-			
+
 			txtAuther = (TextView)findViewById(R.id.article_auther_view);
 			txtAuther.setTypeface(_tfSmallNormal);
 
 			//progress_Lay = (LinearLayout)findViewById(R.id.progress_lay);
 			imageView = (ImageView)findViewById(R.id.webview);
-			
+
 			play_img = (ImageView)findViewById(R.id.btn_play);
 			play_img.setVisibility(View.GONE);
-			
+
 			lay_imageView = (RelativeLayout)findViewById(R.id.image_layout);
-			
+
 			progress_text = (TextView) findViewById(R.id.progress_text_color);
 
 			if(strSelectedArticleType.equalsIgnoreCase(Constants.ARTCLETYPE_TEXT)){
@@ -268,7 +268,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
@@ -279,7 +279,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 	}
 
-	
+
 
 	/**
 	 * WS call to get article details
@@ -334,8 +334,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							}
 							/////////////////////// For Image ///////////////////////////////////////////
 							// If text/image then check for url it should not be null
-
-						
 							txtTitle.setText(articleDetails.getTitle());
 							txtDate.setText(articleDetails.getPublishedDate());
 							txtTitle.setVisibility(View.VISIBLE);
@@ -366,7 +364,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 									lay_imageView.setVisibility(View.GONE);
 									play_img.setVisibility(View.GONE);
 								}else{
-									
+
 									// Display by default
 									imageView.setVisibility(View.VISIBLE);
 									lay_imageView.setVisibility(View.VISIBLE);
@@ -433,7 +431,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 							}else{
 								play_img.setVisibility(View.GONE);
 							}
-						
+
 							if(imageView.getDrawable() != null){
 								imageView.getDrawable().setCallback(null);
 							}
@@ -467,7 +465,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				@Override
 				public void run() {
 					if(callId == Constants.REQ_DOWNLOADARTICLE){
-						Toast.makeText(ArticleDetailsActivity.this, "Article cannot be downloaded. Please try later.", Toast.LENGTH_LONG).show();
+						Toast.makeText(ArticleDetailsActivity.this, "Article cannot be saved at this time. Please try later.", Toast.LENGTH_LONG).show();
 					}else{
 						Toast.makeText(ArticleDetailsActivity.this, "No Network Available.", Toast.LENGTH_LONG).show();
 					}
@@ -532,13 +530,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			if(count > 0){
 				Toast.makeText(getApplicationContext(),getString(R.string.saved_already), Toast.LENGTH_LONG).show();
 			}
-
-
 			if(count == 0){
 				DownloadHandler downloadHandler = DownloadHandler.getInstance();
 				downloadHandler.cleardata();
 				downloadHandler.handleEvent(articleDetails, Constants.REQ_DOWNLOADARTICLE, this);
 
+				progres_text = "Saving article Please wait...";
 				Message msg = new Message();
 				msg.what = SHOW_PROGRESS;
 				handler.sendMessage(msg);
@@ -566,7 +563,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		}
 		dbAdapter.close();
 		Toast.makeText(getApplicationContext(),toastMessage, Toast.LENGTH_LONG).show();
-
 		CacheManager.getInstance().removeFromCache(Constants.C_DOWNLOADED_ARTICLE);
 	}
 	@Override
@@ -579,7 +575,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			ShareDialog shareDialog = new ShareDialog(this, articleDetails,prefs);
 			return shareDialog; 
-
 		case Constants.DIALOG_PROGRESS:
 			showProgressBar();
 			return progressDialog;
@@ -590,7 +585,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			break;
 		}
 		return null;
-
 	}
 
 	private void getReviews(ArticleDAO articleDAO){
@@ -649,10 +643,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				}
 				break;
 			case REMOVE_PROGRESS:
-				if(progressDialog != null){
-					progressDialog.dismiss();
-					progressDialog.cancel();
-				}
+				// remove progress dialog
+				removeDialog(Constants.DIALOG_PROGRESS);
 				if(msg.arg1 == 5){
 					ArticleDAO dao = (ArticleDAO)CacheManager.getInstance().get(Constants.C_DOWNLOADED_ARTICLE);
 					if(dao != null){
@@ -660,7 +652,6 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 						CacheManager.getInstance().removeFromCache(Constants.C_DOWNLOADED_ARTICLE);
 					}
 				}
-
 				break;
 			}
 		};
@@ -723,20 +714,16 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		super.onResume();
 	}
 	private void showProgressBar(){
-		if(progressDialog == null){
-			progressDialog = new ProgressDialog(this);
-			progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			progressDialog.setMessage(progres_text);
-			progressDialog.setIcon(android.R.id.icon);
-			progressDialog.setCancelable(false);
-			progressDialog.setOnKeyListener(new OnKeyListener() {
-				public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-					return true;
-				}
-			});
-		}else{
-			progressDialog.setMessage(progres_text);
-		}
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		progressDialog.setMessage(progres_text);
+		progressDialog.setIcon(android.R.id.icon);
+		progressDialog.setCancelable(false);
+		progressDialog.setOnKeyListener(new OnKeyListener() {
+			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+				return true;
+			}
+		});
 	}
 
 	/**
@@ -760,20 +747,20 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 	private void showNextArticle(){
 		if(listOfArticles != null){
-		Constants.TOTAL_ARTICLES = listOfArticles.size();
+			Constants.TOTAL_ARTICLES = listOfArticles.size();
 		}
 		if(Constants.TOTAL_ARTICLES > 1){
-		Log.i("Current index:" + Constants.CURRENT_INDEX, "Total articles:"  + Constants.TOTAL_ARTICLES);
-		if(Constants.CURRENT_INDEX < (Constants.TOTAL_ARTICLES - 1)){
-			mFlipper.clearAnimation();
-			mFlipper.setInAnimation(getApplicationContext(),R.anim.push_left_in);
-			mFlipper.setOutAnimation(getApplicationContext(),R.anim.push_left_out); 
-			mFlipper.showNext();
-			Constants.CURRENT_INDEX++;
-			getArticle();
-		}else{
-			Toast.makeText(this, "This is last article.", Toast.LENGTH_SHORT).show();
-		}
+			Log.i("Current index:" + Constants.CURRENT_INDEX, "Total articles:"  + Constants.TOTAL_ARTICLES);
+			if(Constants.CURRENT_INDEX < (Constants.TOTAL_ARTICLES - 1)){
+				mFlipper.clearAnimation();
+				mFlipper.setInAnimation(getApplicationContext(),R.anim.push_left_in);
+				mFlipper.setOutAnimation(getApplicationContext(),R.anim.push_left_out); 
+				mFlipper.showNext();
+				Constants.CURRENT_INDEX++;
+				getArticle();
+			}else{
+				Toast.makeText(this, "This is last article.", Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 
@@ -817,19 +804,19 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	private void showPreviousArticle(){
 		if(listOfArticles != null){
 			Constants.TOTAL_ARTICLES = listOfArticles.size();
-			}
-		if(Constants.TOTAL_ARTICLES > 1){
-		Log.i("Current index:" + Constants.CURRENT_INDEX, "Total articles:"  + Constants.TOTAL_ARTICLES);
-		if(Constants.CURRENT_INDEX > 0){
-			mFlipper.clearAnimation();
-			mFlipper.setOutAnimation(getApplicationContext(),R.anim.push_right_out);
-			mFlipper.setInAnimation(getApplicationContext(),R.anim.push_right_in);
-			mFlipper.showPrevious();
-			Constants.CURRENT_INDEX--;
-			getArticle();
-		}else{
-			Toast.makeText(this, "This is first article.", Toast.LENGTH_SHORT).show();
 		}
+		if(Constants.TOTAL_ARTICLES > 1){
+			Log.i("Current index:" + Constants.CURRENT_INDEX, "Total articles:"  + Constants.TOTAL_ARTICLES);
+			if(Constants.CURRENT_INDEX > 0){
+				mFlipper.clearAnimation();
+				mFlipper.setOutAnimation(getApplicationContext(),R.anim.push_right_out);
+				mFlipper.setInAnimation(getApplicationContext(),R.anim.push_right_in);
+				mFlipper.showPrevious();
+				Constants.CURRENT_INDEX--;
+				getArticle();
+			}else{
+				Toast.makeText(this, "This is first article.", Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 

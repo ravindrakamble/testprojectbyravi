@@ -28,6 +28,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -85,6 +87,101 @@ public class ReviewsActivity extends  Activity implements Updatable {
 			} 
 		}
 	}
+	
+	private static final int MENU_OPTION_HOME = 0x02;
+	private static final int MENU_OPTION_SAVED = 0x03;
+	private static final int MENU_OPTION_INFO = 0x04;
+	private static final int MENU_OPTION_SEARCH = 0x05;
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		try{
+			menu.removeGroup(0);
+			menu.add(0, MENU_OPTION_HOME,0 , "Home").setIcon(android.R.drawable.ic_menu_gallery);
+			menu.add(0, MENU_OPTION_SAVED,0 , "Saved Items").setIcon(R.drawable.btn_save_unselected);
+			menu.add(0, MENU_OPTION_SEARCH,0 , "Search").setIcon(R.drawable.btn_search_unselected);
+			menu.add(0, MENU_OPTION_INFO,0 , "Info").setIcon(R.drawable.btn_info_unselected);
+			return true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	private void launchHomeActivity(){
+		try{
+			Context cxt = getApplicationContext();
+			Intent intent = new Intent(cxt, HomeActivity.class);     		
+			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			startActivity(intent);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	/**
+	 *  Launch SearchCallhistoryActivity 
+	 * @param filterStr
+	 */
+	private void launchSavedActivity(){
+		try{
+			Context cxt = getApplicationContext();
+			Intent intent = new Intent(cxt, SavedArticlesActivity.class);     		
+			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			startActivity(intent);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case MENU_OPTION_HOME:
+			launchHomeActivity();
+			break; 
+		case MENU_OPTION_SAVED:
+			launchSavedActivity();
+			break;
+		case MENU_OPTION_INFO:
+			try{
+				Context cxt = getApplicationContext();
+				Intent intent = new Intent(cxt, About.class);     		
+				intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+				startActivity(intent);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
+		case MENU_OPTION_SEARCH:
+			launchSearchActivity();
+			break;
+		default:
+			break;
+		}
+		return false;
+	}
+	
+	
+	/**
+	 *  Launch SearchCallhistoryActivity 
+	 * @param filterStr
+	 */
+	private void launchSearchActivity(){
+		try{
+			Context cxt = getApplicationContext();
+			Intent intent = new Intent(cxt, SearchActivity.class);     		
+			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			intent.putExtra("Selected_Category", 0);
+			intent.putExtra("Selected_Media", "ALL");
+			startActivity(intent);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	private void getReviews(){
 		try {
@@ -137,6 +234,7 @@ public class ReviewsActivity extends  Activity implements Updatable {
 						ReviewDAO reviewDAO = null;
 
 						if(reviewList != null && reviewList.size() > 0){
+							mNoItems.setVisibility(View.GONE);
 							for(int i = 0; i < reviewList.size(); i++){
 								reviewDAO = reviewList.get(i);
 								View view = ((LayoutInflater)ReviewsActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.review_layout, null, false);
