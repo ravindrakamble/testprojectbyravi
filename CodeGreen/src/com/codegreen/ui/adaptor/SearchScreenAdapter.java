@@ -68,6 +68,9 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 	 */
 	private int filterEntries(String filterStr){
 		try{
+			if(mArticleList == null){
+				return 0;
+			}
 			mArticleList.clear();
 			if(filterStr != null)
 				filterStr = filterStr.toLowerCase();
@@ -93,6 +96,9 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 				 */}
 		}catch (Exception e) {
 			e.printStackTrace();
+		}
+		if(mArticleList == null){
+			return 0;
 		}
 		return mArticleList.size();
 	}

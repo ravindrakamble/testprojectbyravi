@@ -259,7 +259,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			menu.removeGroup(0);
 			menu.add(0, MENU_OPTION_SEARCH,0 , "Comments").setIcon(android.R.drawable.ic_menu_gallery);
 			menu.add(0, MENU_OPTION_SHARE,0 , "Share").setIcon(android.R.drawable.ic_menu_share);
+			if(!savedArticle){
 			menu.add(0, MENU_OPTION_SAVE,0 , "Save").setIcon(android.R.drawable.ic_menu_add);
+			}
 
 			return true;
 		}
@@ -285,19 +287,23 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	 * WS call to get article details
 	 */
 	private void getArticleDetails(){
-		if(Utils.isNetworkAvail(getApplicationContext())){
-			//progress_Lay.setVisibility(View.VISIBLE);
-			Message msg = new Message();
+		if(savedArticle){
+			update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS,Constants.REQ_GETARTICLEDETAILS,(byte)0);
+		}else{
+			if(Utils.isNetworkAvail(getApplicationContext())){
+				//progress_Lay.setVisibility(View.VISIBLE);
+				Message msg = new Message();
 			msg.what = SHOW_PROGRESS;
 			handler.sendMessage(msg);
-			HttpHandler httpHandler =  HttpHandler.getInstance();
-			ArticleDAO articleDAO = new ArticleDAO();
-			articleDAO.setArticleID(strSelectedArticleID);
-			articleDAO.setType(strSelectedArticleType);
-			articleDAO.setCategoryID(Constants.CURRENT_CATEGORY_TYPE);
-			httpHandler.handleEvent(articleDAO, Constants.REQ_GETARTICLEDETAILS, this);
-		}else{
-			Toast.makeText(getApplicationContext(), "No Network Available.", Toast.LENGTH_SHORT).show();
+				HttpHandler httpHandler =  HttpHandler.getInstance();
+				ArticleDAO articleDAO = new ArticleDAO();
+				articleDAO.setArticleID(strSelectedArticleID);
+				articleDAO.setType(strSelectedArticleType);
+				articleDAO.setCategoryID(Constants.CURRENT_CATEGORY_TYPE);
+				httpHandler.handleEvent(articleDAO, Constants.REQ_GETARTICLEDETAILS, this);
+			}else{
+				Toast.makeText(getApplicationContext(), "No Network Available.", Toast.LENGTH_SHORT).show();
+			}
 		}
 	}
 
@@ -320,10 +326,16 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				public void run() {
 					if(callId == Constants.REQ_GETARTICLEDETAILS){
 						String strDetails = "";
-						articleDetails = (ArticleDAO) CacheManager.getInstance().get(Constants.C_ARTICLE_DETAILS);
+						if(savedArticle){
+							articleDetails = listOfArticles.get(Constants.CURRENT_INDEX);
+						}else{
+							articleDetails = (ArticleDAO) CacheManager.getInstance().get(Constants.C_ARTICLE_DETAILS);
+						}
 						if(articleDetails != null){
-							articleDetails.setThumbUrl(thumbUrl);
-							articleDetails.setShortDescription(shortDesc);
+							if(!savedArticle){
+								articleDetails.setThumbUrl(thumbUrl);
+								articleDetails.setShortDescription(shortDesc);
+							}
 							// Set the flags in case of audio 
 							if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
 								PlayerActivity.streamUrl = articleDetails.getUrl();
@@ -794,6 +806,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				txtDate.setVisibility(View.INVISIBLE);
 				txt_reviews.setVisibility(View.INVISIBLE);
 				txtAuther.setVisibility(View.INVISIBLE);
+				imageView.setVisibility(View.VISIBLE);
 				imageView.setImageResource(R.drawable.default_bg_text);
 				getArticleDetails();
 			}
