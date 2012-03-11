@@ -1,5 +1,9 @@
 package com.codegreen.network;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -34,15 +38,29 @@ public class FetchImage
 
 		try 
 		{ 
-			url = url.replaceAll(" ", "%20");
-			InputStream is=new URL(url).openStream(); 
-			BufferedInputStream bis = new BufferedInputStream(is);  
-			//Log.e("Image downloaded:", "" + url);
-			return bitmap = BitmapFactory.decodeStream(bis);
+			FileInputStream fileInputStream = null;
+			if(url.startsWith("http")){
+				url = url.replaceAll(" ", "%20");
+				InputStream is=new URL(url).openStream(); 
+				BufferedInputStream bis = new BufferedInputStream(is); 
+				bitmap = BitmapFactory.decodeStream(bis);
+				//Log.e("Image downloaded:", "" + url);
+			}else{
+				File file = new File(url);
+				//ByteArrayInputStream byteArrayInputStream = null;
+				if(file.exists()){
+					byte[]  fileData = new byte[(int)file.length()];
+					fileInputStream = new FileInputStream(file);
+					//byteArrayInputStream = new ByteArrayInputStream(fileData);
+					fileInputStream.read(fileData);
+					bitmap = BitmapFactory.decodeByteArray(fileData, 0, fileData.length);
+				}
+			}
+			return bitmap;
 		}
 		catch (Exception ex)
 		{
-			return null;
+			return bitmap;
 		}
 	}
 
@@ -62,7 +80,7 @@ public class FetchImage
 	}   
 
 	static int stub_id = R.drawable.default_thumb;
-	
+
 	public void DisplayImage(ArticleDAO vo, Context activity, ImageView sponserImg)
 	{ 
 		queuePhoto(vo,activity,sponserImg); 
@@ -104,7 +122,7 @@ public class FetchImage
 							photosQueue.imageDowload.wait();
 						}
 					if(photosQueue.imageDowload.size()!=0 && currentIndex < photosQueue.imageDowload.size())
-						{
+					{
 						Bitmap bmp = getBitmap(photosQueue.imageDowload.get(currentIndex).getThumbUrl()); 
 						if(bmp != null)
 						{
@@ -136,7 +154,7 @@ public class FetchImage
 		public BitmapDisplayer(Bitmap b, ImageView i){
 			bitmap=b;
 			imageView=i;
-			}
+		}
 		public void run()
 		{
 			if(bitmap!=null)
