@@ -31,6 +31,7 @@ public class SavedArticlesAdapter extends BaseAdapter{
 	private LayoutInflater mLayoutInflator = null;
 	private ArrayList<ArticleDAO> mArticleList;
 	private DBAdapter dbAdapter;
+	private FetchImage imageLoader;
 
 	public SavedArticlesAdapter(Context context) {
 		try {
@@ -44,6 +45,7 @@ public class SavedArticlesAdapter extends BaseAdapter{
 				Constants.TOTAL_ARTICLES = mArticleList.size();
 				CacheManager.getInstance().store(Constants.C_SAVED_ARTICLES, mArticleList);
 			}
+			imageLoader = new FetchImage(mContext);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -161,18 +163,14 @@ public class SavedArticlesAdapter extends BaseAdapter{
 		ArticleDAO data = mArticleList.get(position);
 		Log.e(" Position:" +position , "Title" +data.getTitle());
 		if(data!= null){  
-			
+
 			holder.img_thumbnail.setVisibility(View.VISIBLE);
 			holder.txt_articleName.setText(data.getTitle());
 			holder.txt_articleDesc.setText(data.getShortDescription());
 			holder.img_thumbnail.setVisibility(View.VISIBLE);
-			if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
-				holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_audio);
-			}else if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_VEDIO)){
-				holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_video);
-			}else{
-				Resources res = mContext.getResources(); 
-				if(data.getThumbUrl() != null){
+
+			Resources res = mContext.getResources(); 
+			/*if(data.getThumbUrl() != null){
 					Bitmap bitmap = BitmapFactory.decodeFile(data.getThumbUrl()); 
 					if(bitmap != null){
 						BitmapDrawable bd = new BitmapDrawable(res, bitmap); 
@@ -187,7 +185,22 @@ public class SavedArticlesAdapter extends BaseAdapter{
 						holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_video);
 					}else
 						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
+				}*/
+
+			if(data.getThumbUrl() != null && !data.getThumbUrl().equals("")){
+				if(data.getDownloadedImage() == null){
+					imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
+					mArticleList.get(position).setDownloadedImage(holder.img_thumbnail.getDrawingCache());
+				}else {
+					holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
 				}
+			}else{
+				if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
+					holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_audio);
+				}else if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_VEDIO)){
+					holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_video);
+				}else
+					holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
 			}
 		}
 		return convertView;

@@ -1,5 +1,7 @@
 package com.codegreen.businessprocess.handler;
 
+import android.util.Log;
+
 import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.businessprocess.objects.DownloadInfoDAO;
 import com.codegreen.common.CacheManager;
@@ -45,6 +47,10 @@ public class DownloadHandler implements Handler{
 	public byte handleEvent(Object eventObject, byte callID, final Updatable updatable) {
 		downloadedArticle = null;
 		articleDAO = null;
+		requestForImage = false;	
+		requestForData = false;
+		dataDownloaded = false;
+		imageDownloaded = false;
 		this.updatable = updatable;
 		this.articleDAO = (ArticleDAO)eventObject;
 		if(downloadedArticle == null){
@@ -78,6 +84,7 @@ public class DownloadHandler implements Handler{
 			if(articleDAO.getThumbUrl() != null && !articleDAO.getThumbUrl().trim().equalsIgnoreCase("")){
 				
 				dao.setUrlToDownload(articleDAO.getThumbUrl());
+				dao.setType("thumb");
 				//Download article image first
 				downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_IMAGE);
 				taskExecutor.execute(downloadTask);
@@ -90,7 +97,11 @@ public class DownloadHandler implements Handler{
 				if(dao.getFileName() == null){
 					dao.setFileName(articleDAO.getArticleID() + ".mp4");
 				}
-				dao.setType(articleDAO.getType());
+				if(articleDAO.getType() != null){
+					dao.setType(articleDAO.getType());
+				}else{
+					dao.setType(articleDAO.getArticleID());
+				}
 				//Download article image first
 				requestForData = true;
 				downloadTask = new DownloadTask(dao, this, Constants.DOWNLOAD_ARTICLE_DATA);
@@ -127,6 +138,7 @@ public class DownloadHandler implements Handler{
 			}
 			updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_FAILURE, Constants.REQ_DOWNLOADARTICLE, errorCode);
 		}else{
+			Log.e("Downloaded", "" + callbackObject);
 			switch(callID){
 			case Constants.DOWNLOAD_ARTICLE_IMAGE:
 				imageDownloaded = true;

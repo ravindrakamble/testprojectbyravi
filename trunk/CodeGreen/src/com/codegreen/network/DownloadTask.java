@@ -55,9 +55,17 @@ public class DownloadTask extends Task{
 						if(!downloadDir.exists()){
 							downloadDir.mkdirs();
 						}
+						
+						if(downloadInfo.getType() != null && !downloadInfo.getType().equalsIgnoreCase("")){
+							filePath = "/sdcard/codegreen/" + downloadInfo.getType() + "/" + downloadInfo.getFileName();
+						}else{
+							filePath = "/sdcard/codegreen/" + downloadInfo.getFileName();
+						}
+							
 
-						File downloadFile = new File("/sdcard/codegreen/" + downloadInfo.getType()+ "/" + downloadInfo.getFileName() );
-
+						File downloadFile = new File(filePath );
+						int bytesRead = 0;
+						int totalBytesRead = 0;
 						if(downloadFile.exists()){
 							handler.handleCallback(downloadFile.getAbsolutePath(), callID, (byte)0);
 						}
@@ -66,8 +74,9 @@ public class DownloadTask extends Task{
 
 						FileOutputStream fileOutputStream = new FileOutputStream(downloadFile);
 						byte[] fileData = new byte[200];
-						while(inputStream.read(fileData) != -1){
-							fileOutputStream.write(new String(fileData).trim().getBytes());
+						while((bytesRead = inputStream.read(fileData)) != -1){
+							fileOutputStream.write(fileData,0,bytesRead);
+							totalBytesRead += bytesRead;
 						}
 						fileOutputStream.flush();
 						fileOutputStream.close();
