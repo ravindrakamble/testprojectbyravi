@@ -189,8 +189,15 @@ public class SavedArticlesAdapter extends BaseAdapter{
 
 			if(data.getThumbUrl() != null && !data.getThumbUrl().equals("")){
 				if(data.getDownloadedImage() == null){
-					imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
-					mArticleList.get(position).setDownloadedImage(holder.img_thumbnail.getDrawingCache());
+					/*imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
+					mArticleList.get(position).setDownloadedImage(holder.img_thumbnail.getDrawingCache());*/
+					Bitmap bitmap = BitmapFactory.decodeFile(data.getThumbUrl()); 
+					if(bitmap != null){
+						data.setDownloadedImage(bitmap);
+						holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
+					}else{
+						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
+					}
 				}else {
 					holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
 				}
