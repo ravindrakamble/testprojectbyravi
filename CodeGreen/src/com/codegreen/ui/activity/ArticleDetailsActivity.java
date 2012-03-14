@@ -256,10 +256,14 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		try{
+			DBAdapter dbAdapter = DBAdapter.getInstance(getApplicationContext());
+			dbAdapter.open();
+			int count =  dbAdapter.getArticles(articleDetails);
+			dbAdapter.close();
 			menu.removeGroup(0);
 			menu.add(0, MENU_OPTION_SEARCH,0 , "Comments").setIcon(android.R.drawable.ic_menu_gallery);
 			menu.add(0, MENU_OPTION_SHARE,0 , "Share").setIcon(android.R.drawable.ic_menu_share);
-			if(!savedArticle){
+			if(!savedArticle && count == 0){
 			menu.add(0, MENU_OPTION_SAVE,0 , "Save").setIcon(android.R.drawable.ic_menu_add);
 			}
 
