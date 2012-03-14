@@ -30,7 +30,7 @@
 
 		<EditText android:id="@+id/etComments" android:layout_height="150dip"
 			android:background="@drawable/bg_box_comments" android:paddingLeft="10dip"
-			android:gravity="top" android:layout_width="fill_parent"
+			android:gravity="top" android:layout_width="fill_parent" android:paddingTop="2dip"
 			android:layout_centerHorizontal="true" android:hint="Enter Comments..."
 			android:maxLines="700"></EditText>
 
