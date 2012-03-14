@@ -91,33 +91,19 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		Display display = wm.getDefaultDisplay();
 		Constants.SCREEN_WIDTH = display.getWidth();
 
-		footerView = ((LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.more_items, null, false);
-		getListView().addFooterView(footerView);
+		 initWidgets();
+		 CURRENT_SELECTED_CATEGORY = 0;
+		 CURRENT_SELECTED_MEDIA = "ALL";
 
-		footerView.setOnClickListener(new OnClickListener() {
+		 CacheManager.getInstance().resetAllArticles();
+		 getArticleData("",Utils.getCurrentDate());
+		 getListView().setCacheColorHint(0);
 
-			@Override
-			public void onClick(View v) {
-				ArrayList<ArticleDAO> tempdata = (ArrayList<ArticleDAO>) CacheManager.getInstance().getAllArticles();
-				if(tempdata != null){
-					String lastDate = tempdata.get(tempdata.size() - 1).getPublishedDate();
-					if(lastDate != null && !lastDate.equals(""))
-						getArticleData("",lastDate); // add last article date
-				}
-			}
-		});	
-		initWidgets();
-		CURRENT_SELECTED_CATEGORY = 0;
-		CURRENT_SELECTED_MEDIA = "ALL";
-
-		getArticleData("",Utils.getCurrentDate());
-		getListView().setCacheColorHint(0);
-
-		if(addDownloadListener != null){
-			IntentFilter filter = new IntentFilter();
-			filter.addAction(Constants.DOWNLOADED_ADDS);
-			registerReceiver(addDownloadListener, filter);
-		}   
+		 if(addDownloadListener != null){
+			 IntentFilter filter = new IntentFilter();
+			 filter.addAction(Constants.DOWNLOADED_ADDS);
+			 registerReceiver(addDownloadListener, filter);
+		 }   
 	}
 
 	private void showProgressBar(){
@@ -509,18 +495,18 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		}
 		return null;
 	}
-	
-	
+
+
 	private void addFooterView(){
 		if(getListView().getFooterViewsCount() == 0)
 			getListView().addFooterView(footerView);
 	}
-	
+
 	private void RemoveFooterView(){
 		if(footerView !=null){
 			footerView.getLayoutParams().height = 0;
 		}
-		
+
 	}
 
 	@Override
@@ -561,15 +547,15 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 							if(reqID == Constants.REQ_GETARTICLESBYTYPE)
 								sizeOfData =  CacheManager.getInstance().getAllArticledetailsSize();
 
-						/*	if(sizeOfData > 10){
+							/*	if(sizeOfData > 10){
 								addFooterView();
 							}else{
 								RemoveFooterView();
 							}
-						*/	mNoItems.setVisibility(View.VISIBLE);
-							mAdapter.setRequestID(reqID);
-							mAdapter.notifyDataSetChanged();
-							mAdapter.notifyDataSetInvalidated();
+							 */	mNoItems.setVisibility(View.VISIBLE);
+							 mAdapter.setRequestID(reqID);
+							 mAdapter.notifyDataSetChanged();
+							 mAdapter.notifyDataSetInvalidated();
 						}
 					});
 				}
@@ -620,19 +606,29 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			addsImage.setVisibility(View.VISIBLE);
 		}
 	}
+	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		if(Utils.isNetworkAvail(getApplicationContext())){
 			ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
-			Constants.CURRENT_INDEX = position;
-			// Launch details screen
-			Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
-			intent.putExtra("ArticleID", articleEntry.getArticleID());
-			intent.putExtra("desc", articleEntry.getShortDescription());
-			intent.putExtra("thumburl", articleEntry.getThumbUrl());
-			startActivity(intent);
+			if(!articleEntry.isLoadMore()){
+				Constants.CURRENT_INDEX = position;
+				// Launch details screen
+				Intent intent = new Intent(getApplicationContext(), ArticleDetailsActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				intent.putExtra(Constants.CURRENT_ARTICLE_TYPE, articleEntry.getType());
+				intent.putExtra("ArticleID", articleEntry.getArticleID());
+				intent.putExtra("desc", articleEntry.getShortDescription());
+				intent.putExtra("thumburl", articleEntry.getThumbUrl());
+				startActivity(intent);
+			}else{
+				ArrayList<ArticleDAO> tempdata = (ArrayList<ArticleDAO>) CacheManager.getInstance().getAllArticles();
+				if(tempdata != null){
+					String lastDate = tempdata.get(tempdata.size() - 1).getPublishedDate();
+					if(lastDate != null && !lastDate.equals(""))
+						getArticleData("",lastDate); // add last article date
+				}
+			}
 		}else{
 			Toast.makeText(getApplicationContext(),"No Network Available", Toast.LENGTH_SHORT).show();
 		}
