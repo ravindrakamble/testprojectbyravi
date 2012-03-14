@@ -1,23 +1,17 @@
 package com.codegreen.network;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.widget.ImageView;
 import com.codegreen.R;
 import com.codegreen.businessprocess.objects.ArticleDAO;
-import com.codegreen.util.Constants;
 
 
 public class FetchImage 
@@ -84,12 +78,7 @@ public class FetchImage
 	public void DisplayImage(ArticleDAO vo, Context activity, ImageView sponserImg)
 	{ 
 		queuePhoto(vo,activity,sponserImg); 
-		if(vo.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
-			stub_id = R.drawable.bg_thumb_audio;
-		}else if(vo.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_VEDIO)){
-			stub_id = R.drawable.bg_thumb_video;
-		}else
-			stub_id = R.drawable.default_thumb;
+		stub_id = R.drawable.default_thumb;
 		sponserImg.setImageResource(stub_id); 
 	} 
 
@@ -100,12 +89,15 @@ public class FetchImage
 
 		synchronized(photosQueue.imageDowload)
 		{
-			photosQueue.imageDowload.add(vo); 
+			if(!photosQueue.imageDowload.contains(vo) && !vo.isLoadMore()){
+				photosQueue.imageDowload.add(vo);
+				//start thread if it's not started yet
+				if(photoLoaderThread.getState()==Thread.State.NEW)
+					photoLoaderThread.start();
+			}
+			 
 		}
 
-		//start thread if it's not started yet
-		if(photoLoaderThread.getState()==Thread.State.NEW)
-			photoLoaderThread.start();
 	}
 
 	int currentIndex = 0;

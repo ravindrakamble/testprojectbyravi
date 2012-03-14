@@ -477,9 +477,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				@Override
 				public void run() {
 					if(callId == Constants.REQ_DOWNLOADARTICLE){
-						Toast.makeText(ArticleDetailsActivity.this, "Article cannot be saved at this time. Please try later.", Toast.LENGTH_LONG).show();
+						Toast.makeText(ArticleDetailsActivity.this, "Article cannot be saved at this time. Please try later.", Toast.LENGTH_SHORT).show();
 					}else{
-						Toast.makeText(ArticleDetailsActivity.this, "No Network Available.", Toast.LENGTH_LONG).show();
+						Toast.makeText(ArticleDetailsActivity.this, "No Network Available.", Toast.LENGTH_SHORT).show();
 					}
 					Message msg = new Message();
 					msg.what = REMOVE_PROGRESS;
@@ -546,8 +546,17 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				DownloadHandler downloadHandler = DownloadHandler.getInstance();
 				downloadHandler.cleardata();
 				downloadHandler.handleEvent(articleDetails, Constants.REQ_DOWNLOADARTICLE, this);
-
-				progres_text = "Saving article Please wait...";
+				if(articleDetails != null){
+					if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
+						progres_text = "Saving audio Please wait...";
+					}else if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+						progres_text = "Saving video Please wait...";
+					}else if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)){
+						progres_text = "Saving image Please wait...";
+					}else {
+						progres_text = "Saving article Please wait...";
+					}
+				}
 				Message msg = new Message();
 				msg.what = SHOW_PROGRESS;
 				handler.sendMessage(msg);
@@ -569,10 +578,31 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		if(count == 0){
 			article.setShortDescription(shortDesc);
 			dbAdapter.insertArticle(article);
-			toastMessage = getString(R.string.record_saved);
+			if(article != null){
+				if(article.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
+					toastMessage = "Audio saved successfully.";
+				}else if(article.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+					toastMessage = "Video saved successfully.";
+				}else if(article.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)){
+					toastMessage = "Image saved successfully.";
+				}else{
+					toastMessage = "Article saved successfully.";
+				}
+			}
 		}else{
-			toastMessage =getString(R.string.saved_already);
+			if(article != null){
+				if(article.getType().equalsIgnoreCase(Constants.ARTCLETYPE_AUDIO)){
+					toastMessage = "Audio already saved.";
+				}else if(article.getType().equalsIgnoreCase(Constants.ARTCLETYPE_VIDEO)){
+					toastMessage = "Video already saved.";
+				}else if(article.getType().equalsIgnoreCase(Constants.ARTCLETYPE_IMAGE)){
+					toastMessage = "Image already saved";
+				}else{
+					toastMessage =getString(R.string.saved_already);
+				}
+			}
 		}
+		
 		dbAdapter.close();
 		Toast.makeText(getApplicationContext(),toastMessage, Toast.LENGTH_LONG).show();
 		CacheManager.getInstance().removeFromCache(Constants.C_DOWNLOADED_ARTICLE);

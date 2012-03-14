@@ -22,6 +22,13 @@ public class ArticleDAO {
 	private boolean dataAddedToQueue;
 	private Bitmap[]addsBitmap = null;
 	private String author = "";
+	public boolean isLoadMore() {
+		return loadMore;
+	}
+	public void setLoadMore(boolean loadMore) {
+		this.loadMore = loadMore;
+	}
+	private boolean loadMore = false;
 	
 	public String getAuthor() {
 		return author;

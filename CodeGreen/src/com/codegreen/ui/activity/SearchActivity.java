@@ -65,7 +65,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 		mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override 
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) { 
-				if (actionId == EditorInfo.IME_ACTION_SEARCH) {  
+				if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE || event.getKeyCode() == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_NULL) {  
 					searchView.setEnabled(false);
 					mNoItems.setVisibility(View.GONE);
 					progressLayout.setVisibility(View.VISIBLE);
@@ -75,6 +75,7 @@ public class SearchActivity extends ListActivity implements Updatable{
 				return false;   
 			} 
 		});
+		
 		mSearchText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {

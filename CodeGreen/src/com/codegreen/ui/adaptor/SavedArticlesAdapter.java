@@ -179,14 +179,14 @@ public class SavedArticlesAdapter extends BaseAdapter{
 						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
 					}
 				}else{
-					if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
+					/*if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
 						holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_audio);
 					}else if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_VEDIO)){
 						holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_video);
 					}else
-						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
-				}*/
-
+					holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
+				
+*/	
 			if(data.getThumbUrl() != null && !data.getThumbUrl().equals("")){
 				if(data.getDownloadedImage() == null){
 					/*imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
@@ -202,11 +202,11 @@ public class SavedArticlesAdapter extends BaseAdapter{
 					holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
 				}
 			}else{
-				if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
+				/*if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
 					holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_audio);
 				}else if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_VEDIO)){
 					holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_video);
-				}else
+				}else*/
 					holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
 			}
 		}

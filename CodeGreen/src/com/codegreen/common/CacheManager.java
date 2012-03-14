@@ -117,19 +117,29 @@ public class CacheManager {
 			allArticlesList.clear();
 		}
 	}
-	
+
 	public int getAllArticledetailsSize(){
 		if(allArticlesList != null){
 			return allArticlesList.size();
 		}
 		return 0;
 	}
-	
+
 	public ArrayList<ArticleDAO> getAllArticles(){
 		if(allArticlesList != null){
 			return allArticlesList;
 		}
 		return null;
+	}
+
+	public ArticleDAO getDataAt(int position){
+		ArticleDAO data = null;
+		if(allArticlesList != null){
+			if(position < allArticlesList.size()){
+				data = allArticlesList.get(position);
+			}
+		}
+		return data;
 	}
 
 }
