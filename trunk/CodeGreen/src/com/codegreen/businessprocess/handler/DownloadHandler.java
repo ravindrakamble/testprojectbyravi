@@ -24,6 +24,7 @@ public class DownloadHandler implements Handler{
 	boolean requestForImage;
 	boolean requestForData;
 	private ArticleDAO downloadedArticle;
+	boolean articleSaved;
 
 	private static DownloadHandler mSelf = null;
 
@@ -51,6 +52,7 @@ public class DownloadHandler implements Handler{
 		requestForData = false;
 		dataDownloaded = false;
 		imageDownloaded = false;
+		articleSaved = false;
 		this.updatable = updatable;
 		this.articleDAO = (ArticleDAO)eventObject;
 		if(downloadedArticle == null){
@@ -68,7 +70,7 @@ public class DownloadHandler implements Handler{
 			downloadedArticle.setUrl(articleDAO.getUrl());
 		}
 		switch(callID){
-		
+
 		case Constants.REQ_DOWNLOADARTICLE:
 			DownloadInfoDAO dao = new DownloadInfoDAO();
 
@@ -82,7 +84,7 @@ public class DownloadHandler implements Handler{
 			}else{
 			 */		
 			if(articleDAO.getThumbUrl() != null && !articleDAO.getThumbUrl().trim().equalsIgnoreCase("")){
-				
+
 				dao.setUrlToDownload(articleDAO.getThumbUrl());
 				dao.setType("thumb");
 				//Download article image first
@@ -115,9 +117,9 @@ public class DownloadHandler implements Handler{
 						CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
 						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, (byte)0);
 					};
-					
+
 				}.start();
-				
+
 			}
 			break;
 		}
@@ -136,7 +138,10 @@ public class DownloadHandler implements Handler{
 			}else{
 				requestForData = false;
 			}
-			updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_FAILURE, Constants.REQ_DOWNLOADARTICLE, errorCode);
+			if(!articleSaved){
+				updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_FAILURE, Constants.REQ_DOWNLOADARTICLE, errorCode);
+				articleSaved = true;
+			}
 		}else{
 			Log.e("Downloaded", "" + callbackObject);
 			switch(callID){
@@ -151,20 +156,29 @@ public class DownloadHandler implements Handler{
 				}
 				if(requestForData){
 					if(dataDownloaded){
-						CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
-						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
+						if(!articleSaved){
+							CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
+							updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
+							articleSaved = true;
+						}
 					}
 				}else{
-					CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
-					updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
+					if(!articleSaved){
+						CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
+						articleSaved = true;
+					}
 				}
 				break;
 			case Constants.DOWNLOAD_ARTICLE_DATA:
 				dataDownloaded = true;
 				downloadedArticle.setUrl((String)callbackObject);
 				if(requestForImage && imageDownloaded){
-					CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
-					updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
+					if(!articleSaved){
+						CacheManager.getInstance().store(Constants.C_DOWNLOADED_ARTICLE, downloadedArticle);
+						updatable.update(Constants.ENUM_PARSERRESPONSE.PARSERRESPONSE_SUCCESS, Constants.REQ_DOWNLOADARTICLE, errorCode);
+						articleSaved = true;
+					}
 				}
 				break;
 			}
