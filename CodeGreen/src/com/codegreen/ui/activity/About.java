@@ -24,7 +24,7 @@ public class About extends Activity {
 		txt_featute.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				onSelectEmail("Sending Feature Request.","","");
+				onSelectEmail("Feature Request","From Codegreen on Android","info@codegreenonline.com");
 			}
 		});
 		TextView btn_about  = (TextView)findViewById(R.id.btn_info);
@@ -47,7 +47,7 @@ public class About extends Activity {
 		btn_query.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				onSelectEmail("Sending Query...","","");
+				onSelectEmail("Advertising Query","From Codegreen on Android","info@codegreenonline.com");
 			}
 		});
 		
@@ -55,7 +55,7 @@ public class About extends Activity {
 		btn_app_review.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				onSelectEmail("Sending Application Review...","","");
+				onSelectEmail("Application Review","From Codegreen on Android","info@codegreenonline.com");
 			}
 		});
 		
@@ -100,7 +100,7 @@ public class About extends Activity {
 	 */
 	private void onSelectTwitter(){
 		Share testShare = new Share(About.this);
-		testShare.share("www.codegreenonline.com", Share.TYPE_TWITTER,null);
+		testShare.share("Check out Codegreen on Android at http://www.codegreenonline.com", Share.TYPE_TWITTER,null);
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class About extends Activity {
 		String subject = sub;
 		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 		emailIntent.setType("message/rfc822");
-		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "CodeGreen App Info");
+		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Check out Codegreen on Android");
 		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.str_about));
 		startActivity(Intent.createChooser(emailIntent, "Send Email.."));
 	}
