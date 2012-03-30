@@ -143,10 +143,6 @@ public class ShareDialog extends AlertDialog implements OnClickListener{
 		mContext.startActivity(Intent.createChooser(emailIntent, "Send Email.."));
 	}
 
-
-
-
-
 	Dialog outerDialog;
 
 	private void onSelectTwitter(){
