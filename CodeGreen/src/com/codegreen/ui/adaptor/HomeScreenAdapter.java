@@ -141,11 +141,6 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 						holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
 					}
 				}else{
-					/*if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
-						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
-					}else if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_VEDIO)){
-						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
-					}else*/
 						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
 				}
 			}
