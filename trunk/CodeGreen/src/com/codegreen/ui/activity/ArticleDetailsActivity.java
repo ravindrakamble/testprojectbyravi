@@ -12,12 +12,14 @@ import com.codegreen.businessprocess.objects.ReviewDAO;
 import com.codegreen.common.CacheManager;
 import com.codegreen.database.DBAdapter;
 import com.codegreen.listener.Updatable;
+import com.codegreen.share.Share;
 import com.codegreen.ui.dialog.ReviewDialog;
 import com.codegreen.ui.dialog.ShareDialog;
 import com.codegreen.util.Constants;
 import com.codegreen.util.Constants.ENUM_PARSERRESPONSE;
 import com.codegreen.util.Utils;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -35,6 +37,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -45,6 +48,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -465,7 +469,7 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 								imageView.setVisibility(View.GONE);
 								play_img.setVisibility(View.GONE);
 							}
-							Toast.makeText(getApplicationContext(),"Image download failed.", Toast.LENGTH_SHORT).show();
+							//Toast.makeText(getApplicationContext(),"Image download failed.", Toast.LENGTH_SHORT).show();
 						}
 					}else if(callId == Constants.REQ_DOWNLOADARTICLE){
 
@@ -526,7 +530,8 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 			//getReviews(articleDetails);
 			break;
 		case MENU_OPTION_SHARE:
-			showDialog(Constants.DIALOG_SHARE);
+			//showDialog(Constants.DIALOG_SHARE);
+			showShareDialog();
 			break;
 
 		case MENU_OPTION_ADD_REVIEW:
@@ -572,6 +577,64 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		return false;
 	}
 
+	
+	private void showShareDialog() {
+			final CharSequence[] items = {"Facebook", "Twitter", "Email"};
+			AlertDialog.Builder builder = new AlertDialog.Builder(ArticleDetailsActivity.this);
+			builder.setTitle("Share using...");
+			builder.setIcon(R.drawable.icon);
+			builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					CacheManager.getInstance().resetAllArticles();
+					if(item == 0){//Facebook
+						onSelectFacebook();
+					}
+					else if(item == 1){//Twiiter
+						onSelectTwitter();
+					}	
+					else if(item == 2){//Email
+						onSelectEmail();	
+					}
+					dialog.cancel();
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
+	}
+	
+	
+	String message = "";
+	
+	/**
+	 * On email selection
+	 */
+	private void onSelectEmail() {
+		Spanned message = Html.fromHtml(articleDetails.getTitle() + "<br/><br/>"+ articleDetails.getDetailedDescription());
+		String subject = "Sending Article details for " + articleDetails.getTitle();
+		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+		emailIntent.setType("message/rfc822");
+		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
+		if(articleDetails.getUrl() != null)
+			emailIntent.putExtra(Intent.EXTRA_STREAM, articleDetails.getUrl()); 
+		
+		startActivity(Intent.createChooser(emailIntent, "Send Email.."));
+	}
+	
+	private void onSelectTwitter(){
+		Share testShare = new Share(ArticleDetailsActivity.this);
+		if(articleDetails.getType().equalsIgnoreCase(Constants.ARTCLETYPE_TEXT))
+			message = articleDetails.getTitle()+ "\n www.codegreenonline.com"; // HeadLine + Website Link
+		else
+			message = articleDetails.getTitle() + "\n" + articleDetails.getUrl(); // for vedio/ audio/image = HeadeLine + URL
+		testShare.share(message, Share.TYPE_TWITTER,articleDetails);
+	}
+
+	
+	private void onSelectFacebook(){
+		Share testShare = new Share(ArticleDetailsActivity.this);
+		testShare.share(message, Share.TYPE_FACEBOOK,articleDetails);
+	}
 
 	private void saveArticle(ArticleDAO article){
 		DBAdapter dbAdapter = DBAdapter.getInstance(getApplicationContext());
