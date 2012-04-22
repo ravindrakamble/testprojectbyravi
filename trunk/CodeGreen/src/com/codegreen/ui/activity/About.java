@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 public class About extends Activity {
 
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

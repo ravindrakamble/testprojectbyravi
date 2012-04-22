@@ -175,12 +175,12 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 				progress_text.setTextColor(Color.BLACK);
 
 			}else{
-				lay_main.setBackgroundColor(Color.BLACK);
-				txtTitle.setTextColor(Color.WHITE);
+				lay_main.setBackgroundColor(Color.parseColor("#C0C0C0"));
+				/*txtTitle.setTextColor(Color.WHITE);
 				txtDate.setTextColor(Color.WHITE);
 				txtDetails.setTextColor(Color.WHITE);
 				txt_reviews.setTextColor(Color.WHITE);
-				progress_text.setTextColor(Color.WHITE);
+				progress_text.setTextColor(Color.WHITE);*/
 			}
 
 
@@ -887,14 +887,14 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 					txt_reviews.setTextColor(Color.BLACK);
 					progress_text.setTextColor(Color.BLACK);
 				}else{
-					lay_main.setBackgroundColor(Color.BLACK);
-					txtTitle.setTextColor(Color.WHITE);
+					lay_main.setBackgroundColor(Color.parseColor("#C0C0C0"));
+					/*txtTitle.setTextColor(Color.WHITE);
 					txtDate.setTextColor(Color.WHITE);
 					txtAuther.setTextColor(Color.WHITE);
 					txtDetails.setTextColor(Color.WHITE);
 					txt_reviews.setTextColor(Color.WHITE);
 					progress_text.setTextColor(Color.WHITE);
-				}
+*/				}
 				play_img.setVisibility(View.GONE);
 				strSelectedArticleID = articleDetails.getArticleID();
 				strSelectedArticleType = articleDetails.getType();

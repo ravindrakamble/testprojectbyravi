@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
@@ -18,6 +20,7 @@ import com.codegreen.R;
 import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.common.CacheManager;
 import com.codegreen.network.FetchImage;
+import com.codegreen.network.ImageManager;
 import com.codegreen.util.Constants;
 
 @SuppressWarnings("unchecked")
@@ -26,7 +29,7 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 	private Context mContext;
 	private ArrayList<ArticleDAO> mArticleList;
 	private LayoutInflater mLayoutInflator = null;
-	private FetchImage imageLoader;
+	private ImageManager imageLoader;
 	private Activity mycontext;
 	private URL myurl; 
 	private Hashtable<Integer,ImageView> viewholders;
@@ -60,13 +63,21 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 			if(mArticleList != null){
 				Constants.TOTAL_ARTICLES = mArticleList.size();
 			}
-			
-			imageLoader = new FetchImage(mContext);
-			
+
+			imageLoader = new ImageManager(mContext);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+
+	/*public void resetData(){
+		if(imageLoader != null){
+			imageLoader = null;
+		}
+		imageLoader = new ImageManager(mContext);
+	}*/
 
 	@Override
 	public int getCount() {
@@ -92,6 +103,8 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ListHolder holder;
+		// set Values 
+		ArticleDAO data = mArticleList.get(position);
 		if (convertView == null) {
 			convertView = mLayoutInflator.inflate(R.layout.listitemrow,null);
 			holder = new ListHolder();
@@ -100,17 +113,19 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 			holder.img_thumbnail  = (ImageView) convertView.findViewById(R.id.ImgThumbnail);
 			holder.txt_articleDesc = (TextView)convertView.findViewById(R.id.textArticledesc);
 			holder.img_arrow = (ImageView)convertView.findViewById(R.id.Imgarrow);
+			holder.img_thumbnail.setTag(data.getThumbUrl());
+			holder.progress = (ProgressBar) convertView.findViewById(R.id.progress_bar); //ADDED
 			convertView.setTag(holder);
 
 		} else {
 			holder = (ListHolder) convertView.getTag();
+			holder.img_thumbnail.setTag(data.getThumbUrl());
 		}
 
 		holder.layout_main.setBackgroundResource(R.drawable.listitem_selector);
 
-		// set Values 
-		ArticleDAO data = mArticleList.get(position);
 		
+
 		holder.txt_articleName.setPadding(5, 5, 5, 0);
 		if(data!= null){ 
 
@@ -120,6 +135,7 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 				holder.txt_articleDesc.setVisibility(View.GONE);
 				holder.txt_articleName.setText(data.getTitle());
 				holder.txt_articleName.setPadding(10, 20, 10, 20);
+				holder.progress.setVisibility(View.GONE);
 			}else{
 				int value = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float)4, mContext.getResources().getDisplayMetrics());
 				holder.txt_articleName.setPadding(value, value, value, 0);
@@ -128,20 +144,33 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 				holder.txt_articleDesc.setVisibility(View.VISIBLE);
 				holder.txt_articleName.setText(data.getTitle());
 				holder.txt_articleDesc.setText(data.getShortDescription());
-				//if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_TEXT) || data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_IMAGE)){
+				holder.img_thumbnail.setBackgroundDrawable(null);
+				holder.img_thumbnail.setImageBitmap(null);
+				holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
+				
 				if(data.getThumbUrl() != null && !data.getThumbUrl().equals("")){
-					if(data.getDownloadedImage() == null){
-						imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
-						mArticleList.get(position).setDownloadedImage(holder.img_thumbnail.getDrawingCache());
-						ArticleDAO dao = CacheManager.getInstance().getDataAt(position);
-						if(dao != null){
-							data.setDownloadedImage(holder.img_thumbnail.getDrawingCache());
-						}
-					}else {
+					//if(data.getDownloadedImage() == null){
+						//ArticleDAO dao = CacheManager.getInstance().getDataAt(position);
+						
+						imageLoader.displayImage(data.getThumbUrl(), (Activity)mContext, holder.img_thumbnail,holder.progress);
+						/*if(holder.img_thumbnail.getDrawingCache() != null){
+							mArticleList.get(position).setDownloadedImage(holder.img_thumbnail.getDrawingCache());
+							if(dao != null){
+								data.setDownloadedImage(holder.img_thumbnail.getDrawingCache());
+							}
+						}else{
+							holder.img_thumbnail.setImageBitmap(null);
+							holder.img_thumbnail.setBackgroundDrawable(null);
+							holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
+						}*/
+					/*}else {
+						holder.img_thumbnail.setImageBitmap(null);
 						holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
-					}
+					}*/
 				}else{
-						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
+					holder.img_thumbnail.setImageBitmap(null);
+					holder.img_thumbnail.setBackgroundDrawable(null);
+					holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
 				}
 			}
 		}
@@ -165,13 +194,13 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 				mArticleList = new ArrayList<ArticleDAO>();
 			}
 			ArrayList<ArticleDAO> tempdata =  CacheManager.getInstance().getAllArticles();
-			
+
 			if(tempdata != null && tempdata.size() > 0){
 				for(int i =0 ; i<tempdata.size();i++){
 					mArticleList.add(tempdata.get(i));
 				}
 			}
-			
+
 			// in case of 10 or more than 10 then display add more option
 			if(mArticleList != null && mArticleList.size() >= 10){
 				ArticleDAO data = new ArticleDAO();
@@ -200,6 +229,7 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 		ImageView img_thumbnail;
 		TextView txt_articleDesc;
 		ImageView img_arrow;
+		public ProgressBar progress; //ADDED
 	}
 
 	@Override
@@ -217,64 +247,5 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 		return null;
 	}
 
-
-
-	/*Hashtable<Integer,Bitmap> theimagehashmap = null;
-
-	public class Thethreadasynctask extends AsyncTask<Bundle, Void,Integer> 
-	{   
-
-		@Override  
-		protected Integer doInBackground(Bundle... mybundle) 
-		{      
-			String mylocalurl=mybundle[0].getString("thelocalurl");    
-			Integer theposition=mybundle[0].getInt("theposition");   
-			URL themainurl=null;    
-			if(theimagehashmap == null){
-				theimagehashmap=new Hashtable<Integer,Bitmap>();
-			}else if(theposition == 0){
-				theimagehashmap.clear();
-			}
-			try{       
-				mylocalurl = mylocalurl.replaceAll("%20", "");
-				themainurl=new URL(mylocalurl); 
-			}catch (MalformedURLException es){  
-				es.printStackTrace();         }  
-			try{         
-				HttpURLConnection myurlconnection=(HttpURLConnection)themainurl.openConnection();  
-					myurlconnection.setDoInput(true);        
-					myurlconnection.connect();     
-					InputStream is=myurlconnection.getInputStream();      
-					Bitmap bmImg=BitmapFactory.decodeStream(is);  
-				if(themainurl != null && !themainurl.equals("")){
-					InputStream is = (InputStream) themainurl.getContent();
-					Drawable d = Drawable.createFromStream(is, "src name");
-					Bundle mylocalbundle=new Bundle();  
-					Bitmap bmImg = ((BitmapDrawable)d).getBitmap();
-					mylocalbundle.putParcelable("theimage",bmImg);      
-					mylocalbundle.putInt("thepos",theposition);      
-					theimagehashmap.put(theposition,bmImg);  
-				}
-			}catch(IOException e){        
-				Log.e("alice","ioexception");   
-
-			}      
-			return theposition;    
-		} 
-		protected void onPostExecute(Integer myposition){ 
-			try{
-				Bitmap myimage = theimagehashmap.get(myposition);  
-				ImageView thegreatview = viewholders.get(myposition);
-				if(myimage != null && myposition < mArticleList.size() && thegreatview != null){
-					mArticleList.get(myposition).setDownloadedImage(myimage); // save the image in the arraylist
-					thegreatview.setImageBitmap(myimage); }else{
-						if(thegreatview !=null)
-							thegreatview.setBackgroundResource(R.drawable.default_thumb);
-					}
-			}catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	 */} 
+} 
 

@@ -22,6 +22,7 @@ public class ArticleDAO {
 	private boolean dataAddedToQueue;
 	private Bitmap[]addsBitmap = null;
 	private String author = "";
+	private int index ;
 	public boolean isLoadMore() {
 		return loadMore;
 	}
@@ -132,7 +133,11 @@ public class ArticleDAO {
 	public void setDataAddedToQueue(boolean dataAddedToQueue) {
 		this.dataAddedToQueue = dataAddedToQueue;
 	}
-	
-	
+	public int getIndex() {
+		return index;
+	}
+	public void setIndex(int index) {
+		this.index = index;
+	}
 	
 }
