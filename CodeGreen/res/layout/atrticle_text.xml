@@ -11,7 +11,8 @@
 	</RelativeLayout>
 
 	<LinearLayout android:layout_width="fill_parent"
-		android:layout_above="@+id/relativeLayout1" android:layout_below="@+id/codegreenTitle"
+		android:layout_below="@+id/codegreenTitle"
+		android:layout_above="@+id/relativeLayout1"
 		android:layout_height="fill_parent" android:layout_weight="1"
 		android:gravity="center" android:orientation="vertical" android:id="@+id/content_container">
 		<ViewFlipper android:id="@+id/tutorial_flipper"
@@ -27,11 +28,11 @@
 
 					<RelativeLayout android:layout_width="fill_parent"
 						android:id="@+id/image_layout" android:layout_marginLeft="15dip"
-						android:layout_marginRight="15dip" android:layout_height="220dip"
+						android:layout_marginRight="15dip" android:layout_height="200dip"
 						android:layout_marginTop="10dip">
 
-						<ImageView android:layout_width="wrap_content" 
-							android:layout_height="wrap_content" 
+						<ImageView android:layout_width="300dip" android:adjustViewBounds="true"
+							android:layout_height="200dip" android:scaleType="fitXY"
 							android:id="@+id/webview" android:src="@drawable/default_bg_text"
 							android:layout_centerInParent="true" />
 
@@ -56,14 +57,14 @@
 							android:layout_below="@+id/webview" android:layout_marginLeft="10dip"
 							android:layout_marginRight="10dip" android:layout_marginTop="15dip"
 							android:layout_height="wrap_content" android:id="@+id/article_title_view"
-							android:textColor="#FFFFFF" android:textSize="19dip" />
+							android:textColor="#000000" android:textSize="19dip" />
 
 
 						<TextView android:layout_width="fill_parent"
 							android:layout_below="@+id/article_title_view"
 							android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
 							android:layout_marginTop="15dip" android:layout_height="wrap_content"
-							android:id="@+id/article_auther_view" android:textColor="#FFFFFF"
+							android:id="@+id/article_auther_view" android:textColor="#000000"
 							android:textSize="14dip" />
 
 
@@ -71,7 +72,7 @@
 							android:layout_below="@+id/article_auther_view"
 							android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
 							android:layout_marginTop="15dip" android:layout_height="wrap_content"
-							android:id="@+id/article_date_view" android:textColor="#FFFFFF"
+							android:id="@+id/article_date_view" android:textColor="#000000"
 							android:textSize="14dip" />
 
 
@@ -79,7 +80,7 @@
 							android:layout_below="@+id/article_date_view"
 							android:layout_marginLeft="10dip" android:layout_marginRight="10dip"
 							android:layout_marginTop="15dip" android:layout_height="wrap_content"
-							android:id="@+id/article_details_view" android:textColor="#FFFFFF"
+							android:id="@+id/article_details_view" android:textColor="#000000"
 							android:textSize="17dip" />
 
 						<TextView android:id="@+id/txt_reviews"
@@ -103,7 +104,7 @@
 			android:layout_height="wrap_content" style="?android:attr/progressBarStyleInverse"
 			android:layout_marginRight="5dp" />
 		<TextView android:layout_width="wrap_content" android:id="@+id/progress_text_color"
-			android:textColor="#ffffff" android:layout_height="wrap_content"
+			android:textColor="#000000" android:layout_height="wrap_content"
 			android:textSize="15dip" android:text="Loading..." android:textStyle="bold" />
 	</LinearLayout>
 
@@ -112,7 +113,6 @@
 		android:id="@+id/relativeLayout1" android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true">
 		<ImageView android:id="@+id/admarveldetailsscreen"
-			android:layout_marginLeft="15dip" android:layout_marginRight="15dip"
 			android:src="@drawable/bg_ads_sample" android:layout_width="fill_parent"
 			android:layout_height="50dip"></ImageView>
 	</RelativeLayout>

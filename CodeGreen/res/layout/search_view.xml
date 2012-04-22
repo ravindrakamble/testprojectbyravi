@@ -3,32 +3,39 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:orientation="vertical" android:background="#FFFFFF">
-	
-	<RelativeLayout android:id="@+id/codegreenTitle"  android:background="@drawable/bg_topbar"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		>
+
+	<RelativeLayout android:id="@+id/codegreenTitle"
+		android:background="@drawable/bg_topbar" android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
 	</RelativeLayout>
-	
-	<include android:id="@+id/search_view1" layout="@layout/search_layout" android:layout_below="@+id/codegreenTitle"/>
-	
-	<ListView android:layout_width="wrap_content" android:layout_below="@+id/search_view1"
-		android:layout_height="fill_parent" android:layout_alignParentLeft="true"
-		android:clickable="true" android:layout_weight="1"  android:footerDividersEnabled="true"
+	<LinearLayout android:layout_width="fill_parent" android:id="@+id/search_lay" android:layout_below="@+id/codegreenTitle"
+		android:layout_height="wrap_content">
+		<include android:id="@+id/search_view1" layout="@layout/search_layout"
+			 />
+	</LinearLayout>
+	<ListView android:layout_width="wrap_content"
+		android:layout_below="@+id/search_lay" android:layout_height="fill_parent"
+		android:layout_alignParentLeft="true" android:clickable="true"
+		android:layout_weight="1" android:footerDividersEnabled="true"
 		android:scrollbarDefaultDelayBeforeFade="100" android:fadeScrollbars="true"
 		android:id="@android:id/list"></ListView>
-		
+
 	<TextView android:id="@+id/android:empty" android:gravity="center"
 		android:layout_gravity="center_horizontal|center_vertical"
-		android:textStyle="bold" android:layout_width="fill_parent" android:visibility="gone"
-		android:layout_height="fill_parent" />
-		
-	
-	<LinearLayout  android:id="@+id/progreeView" android:visibility="gone" android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerInParent="true">
+		android:textStyle="bold" android:layout_width="fill_parent"
+		android:visibility="gone" android:layout_height="fill_parent" />
+
+
+	<LinearLayout android:id="@+id/progreeView"
+		android:visibility="gone" android:orientation="horizontal"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_centerInParent="true">
 		<ProgressBar android:layout_width="wrap_content"
 			android:layout_height="wrap_content" style="?android:attr/progressBarStyleInverse"
 			android:layout_marginRight="5dp" />
-		<TextView android:layout_width="wrap_content" android:textStyle="bold" android:textSize="18dip"
+		<TextView android:layout_width="wrap_content"
+			android:textStyle="bold" android:textSize="18dip"
 			android:layout_height="wrap_content" android:text="Loading..." />
 	</LinearLayout>
-	
+
 </RelativeLayout>

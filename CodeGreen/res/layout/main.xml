@@ -85,15 +85,18 @@
 			></ImageView>
 
 	</RelativeLayout>
-	<ListView android:layout_width="wrap_content"
+	
+	<ListView android:layout_width="wrap_content" android:layout_above="@+id/relativeLayout1"
 		android:layout_height="wrap_content" android:layout_alignParentLeft="true"
 		android:layout_below="@+id/LinearLayout01" android:clickable="true" 
 		android:scrollbarDefaultDelayBeforeFade="100" android:fadeScrollbars="true"
-		android:layout_above="@+id/relativeLayout1" android:id="@android:id/list"></ListView>
+		android:id="@android:id/list"></ListView>
+	
+	
 	<RelativeLayout android:layout_width="fill_parent"
 		android:id="@+id/relativeLayout1" android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true">
-		<ImageView android:id="@+id/admarvel" android:src="@drawable/bg_ads_sample" android:layout_marginLeft="15dip" android:layout_marginRight="15dip"
+		<ImageView android:id="@+id/admarvel" android:src="@drawable/bg_ads_sample" 
 			android:layout_width="fill_parent" android:layout_height="50dip"></ImageView>
 	</RelativeLayout>
 
