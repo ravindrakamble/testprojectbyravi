@@ -1,4 +1,5 @@
 package com.codegreen.network;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,13 +19,25 @@ public class FetchImage
 { 
 
 	Context _context = null;
-
+	
 	public FetchImage(Context context)
 	{
 		_context = context;
 		//Make the background thead low priority. This way it will not affect the UI performance
 		photoLoaderThread.setPriority(Thread.NORM_PRIORITY-1); 
+
+		if(photosQueue != null){
+			if(photosQueue.imageDowload != null){
+				photosQueue.imageDowload.clear();
+			}
+		}else{
+			photosQueue = new PhotosQueue();
+		}
 	} 
+
+	PhotosQueue photosQueue = null; 
+	PhotosLoader photoLoaderThread=new PhotosLoader(); 
+
 
 	private Bitmap getBitmap(String url) 
 	{  
@@ -74,30 +87,39 @@ public class FetchImage
 	}   
 
 	static int stub_id = R.drawable.default_thumb;
-
+	
+	
 	public void DisplayImage(ArticleDAO vo, Context activity, ImageView sponserImg)
 	{ 
-		queuePhoto(vo,activity,sponserImg); 
+		queuePhoto(vo,activity,sponserImg);
 		stub_id = R.drawable.default_thumb;
 		sponserImg.setImageResource(stub_id); 
 	} 
 
 	private void queuePhoto(ArticleDAO vo, Context activity, ImageView sponserImg)
 	{ 
-		//Log.e("Image queued:", "" + vo.getThumbUrl());
-		vo.setImagedrawable(sponserImg);
-
+		boolean isvoFound = false;
 		synchronized(photosQueue.imageDowload)
 		{
-			if(!photosQueue.imageDowload.contains(vo) && !vo.isLoadMore()){
-				photosQueue.imageDowload.add(vo);
-				//start thread if it's not started yet
-				if(photoLoaderThread.getState()==Thread.State.NEW)
-					photoLoaderThread.start();
+			
+			for(int i = 0 ; i< photosQueue.imageDowload.size();i++){
+				ArticleDAO dao = photosQueue.imageDowload.get(i);
+				if(dao.getArticleID() == vo.getArticleID() && dao.getType().equalsIgnoreCase(vo.getType())){
+					isvoFound = true;
+					break;
+				}
 			}
-			 
-		}
 
+			if(!photosQueue.imageDowload.contains(vo) && !vo.isLoadMore()){
+				if(!isvoFound){
+					vo.setImagedrawable(sponserImg);
+					photosQueue.imageDowload.add(vo);
+					//start thread if it's not started yet
+					if(photoLoaderThread.getState()==Thread.State.NEW)
+						photoLoaderThread.start();
+				}
+			}
+		}
 	}
 
 	int currentIndex = 0;
@@ -134,8 +156,15 @@ public class FetchImage
 			}
 		}
 	}
-	PhotosQueue photosQueue = new PhotosQueue(); 
-	PhotosLoader photoLoaderThread=new PhotosLoader(); 
+
+	public void clear(){
+		if(photosQueue != null){
+			if(photosQueue.imageDowload != null){
+				photosQueue.imageDowload.clear();
+				currentIndex = 0;
+			}
+		}
+	}
 
 
 	//Used to display bitmap in the UI thread
@@ -151,8 +180,11 @@ public class FetchImage
 		{
 			if(bitmap!=null)
 				imageView.setImageBitmap(bitmap);
-			else
+			else{
+				imageView.setBackgroundDrawable(null);
+				imageView.setImageBitmap(null);
 				imageView.setImageResource(stub_id);
+			}
 		}
 	}
 

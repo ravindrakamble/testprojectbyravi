@@ -148,6 +148,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
+				currentSelectedIndex = 0;
 				btn_left_arrow.setBackgroundResource(R.drawable.left_arrow_on);
 				refreshViews();
 				mBtnGreenBasic.setBackgroundResource(R.drawable.scrollbutton_off);
@@ -161,6 +162,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
+				currentSelectedIndex = 0;
 				refreshViews();
 				mBtnDesignArcht.setBackgroundResource(R.drawable.scrollbutton_off);
 				CURRENT_SELECTED_MEDIA = "ALL";
@@ -173,6 +175,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
+				currentSelectedIndex = 0;
 				refreshViews();
 				mBtnScience.setBackgroundResource(R.drawable.scrollbutton_off);
 				CURRENT_SELECTED_MEDIA = "ALL";
@@ -185,8 +188,9 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
+				currentSelectedIndex = 0;
 				refreshViews();
-				mBtnTransport.setBackgroundResource(R.drawable.scrollbutton_off);
+				mBtnTransport.setBackgroundResource(R.drawable.scrollbutton_long);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 4;
 				CacheManager.getInstance().resetAllArticles();
@@ -197,8 +201,9 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
+				currentSelectedIndex = 0;
 				refreshViews();
-				mBtnBusiness.setBackgroundResource(R.drawable.scrollbutton_off);
+				mBtnBusiness.setBackgroundResource(R.drawable.scrollbutton_long);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 5;
 				CacheManager.getInstance().resetAllArticles();
@@ -209,10 +214,10 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
-
+				currentSelectedIndex = 0;
 				btn_right_arrow.setBackgroundResource(R.drawable.right_arrow_on);
 				refreshViews();
-				mBtnPolitics.setBackgroundResource(R.drawable.scrollbutton_off);
+				mBtnPolitics.setBackgroundResource(R.drawable.scrollbutton_long);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 6;
 				CacheManager.getInstance().resetAllArticles();
@@ -223,9 +228,10 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
+				currentSelectedIndex = 0;
 				btn_right_arrow.setBackgroundResource(R.drawable.right_arrow_off);
 				refreshViews();
-				mBtnFood.setBackgroundResource(R.drawable.scrollbutton_off);
+				mBtnFood.setBackgroundResource(R.drawable.scrollbutton_long);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 7;
 				CacheManager.getInstance().resetAllArticles();
@@ -248,6 +254,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 			@Override
 			public void onClick(View v) {
+				currentSelectedIndex = 0;
 				btn_left_arrow.setBackgroundResource(R.drawable.left_arrow_off);
 				CURRENT_SELECTED_CATEGORY = 0;
 				CURRENT_SELECTED_MEDIA = "ALL";
@@ -317,6 +324,11 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		}
 		if(adTimer != null){
 			adTimer.cancel();
+		}
+		
+		if(addDownloadListener !=null){
+			unregisterReceiver(addDownloadListener);
+			addDownloadListener = null;
 		}
 		super.onDestroy();
 	}
@@ -422,7 +434,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			menu.add(0, MENU_OPTION_SAVED,0 , "Saved Items").setIcon(R.drawable.btn_save_unselected);
 			menu.add(0, MENU_OPTION_SEARCH,0 , "Search").setIcon(R.drawable.btn_search_unselected);
 			menu.add(0, MENU_OPTION_INFO,0 , "Info").setIcon(R.drawable.btn_info_unselected);
-			menu.add(0, MENU_OPTION_REFRESH,0 , "Refresh").setIcon(android.R.drawable.ic_menu_help);
+			menu.add(0, MENU_OPTION_REFRESH,0 , "Refresh").setIcon(R.drawable.btn_info_unselected);
 			return true;
 		}
 		catch (Exception e) {
@@ -526,11 +538,6 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 								sizeOfData =  CacheManager.getInstance().getAllArticledetailsSize();
 							if(sizeOfData == 0)
 								mNoItems.setVisibility(View.VISIBLE);
-							/*if(sizeOfData > 10){
-								addFooterView();
-							}else{
-								RemoveFooterView();
-							}*/
 							mAdapter = new HomeScreenAdapter(HomeActivity.this);
 							mAdapter.setRequestID(reqID);
 							setListAdapter(mAdapter); 
@@ -546,16 +553,11 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 							int sizeOfData = 0;
 							if(reqID == Constants.REQ_GETARTICLESBYTYPE)
 								sizeOfData =  CacheManager.getInstance().getAllArticledetailsSize();
-
-							/*	if(sizeOfData > 10){
-								addFooterView();
-							}else{
-								RemoveFooterView();
-							}
-							 */	mNoItems.setVisibility(View.VISIBLE);
+							 //mAdapter.resetData();
 							 mAdapter.setRequestID(reqID);
 							 mAdapter.notifyDataSetChanged();
 							 mAdapter.notifyDataSetInvalidated();
+							getListView().setSelection(currentSelectedIndex);
 						}
 					});
 				}
@@ -607,10 +609,14 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		}
 	}
 	
+	
+	int currentSelectedIndex = 0;
+	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		if(Utils.isNetworkAvail(getApplicationContext())){
 			ArticleDAO articleEntry = ((ArticleDAO)getListAdapter().getItem(position));
+			currentSelectedIndex = position;
 			if(!articleEntry.isLoadMore()){
 				Constants.CURRENT_INDEX = position;
 				// Launch details screen

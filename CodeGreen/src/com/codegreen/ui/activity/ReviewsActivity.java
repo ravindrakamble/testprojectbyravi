@@ -97,7 +97,7 @@ public class ReviewsActivity extends  Activity implements Updatable {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		try{
 			menu.removeGroup(0);
-			menu.add(0, MENU_OPTION_HOME,0 , "Home").setIcon(android.R.drawable.ic_menu_gallery);
+			menu.add(0, MENU_OPTION_HOME,0 , "Home").setIcon(R.drawable.btn_home_unselected);
 			menu.add(0, MENU_OPTION_SAVED,0 , "Saved Items").setIcon(R.drawable.btn_save_unselected);
 			menu.add(0, MENU_OPTION_SEARCH,0 , "Search").setIcon(R.drawable.btn_search_unselected);
 			menu.add(0, MENU_OPTION_INFO,0 , "Info").setIcon(R.drawable.btn_info_unselected);

@@ -31,6 +31,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 	private String reviewMessage;
 	private Constants.PARSING parseMessage;
 	private StringBuilder respString = new StringBuilder();
+	int index = 0;
 
 	public XmlParser(byte reqID){
 		this.requestID = reqID;
@@ -60,6 +61,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 			break;
 		}
 		parseMessage = Constants.PARSING.STARTED;
+		index = 0;
 	}
 
 	/**
@@ -126,6 +128,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 		case Constants.REQ_GETARTICLESBYTYPE:
 		case Constants.REQ_GETARTICLEDETAILS:
 		case Constants.REQ_SEARCHARTICLES:
+			
 			if(endTagName.equalsIgnoreCase(IMAGEARTICLEID)){
 				articleDAO.setArticleID(parsedData);
 			}else if(endTagName.equalsIgnoreCase(TEXTARTICLEID)){
@@ -161,6 +164,7 @@ public class XmlParser extends DefaultHandler implements ParserConstants{
 			else if(endTagName.equalsIgnoreCase(ARTICLE)){
 				if(requestID != Constants.REQ_GETARTICLEDETAILS)
 					articles.add(articleDAO); 
+				articleDAO.setIndex(index++);
 			}
 			break;
 		

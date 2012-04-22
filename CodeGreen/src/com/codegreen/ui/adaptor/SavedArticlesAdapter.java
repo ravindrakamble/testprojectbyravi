@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
@@ -149,6 +150,7 @@ public class SavedArticlesAdapter extends BaseAdapter{
 			holder.txt_articleName = (TextView) convertView.findViewById(R.id.textArticle);
 			holder.img_thumbnail = (ImageView) convertView.findViewById(R.id.ImgThumbnail);
 			holder.txt_articleDesc = (TextView)convertView.findViewById(R.id.textArticledesc);
+			holder.progress = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			convertView.setTag(holder);
 
 		} else {
@@ -156,7 +158,7 @@ public class SavedArticlesAdapter extends BaseAdapter{
 			holder = (ListHolder) convertView.getTag();
 		}
 
-
+		holder.progress.setVisibility(View.INVISIBLE); //ADDED
 		holder.layout_main.setBackgroundResource(R.drawable.listitem_selector);
 
 		// set Values 
@@ -170,27 +172,9 @@ public class SavedArticlesAdapter extends BaseAdapter{
 			holder.img_thumbnail.setVisibility(View.VISIBLE);
 
 			Resources res = mContext.getResources(); 
-			/*if(data.getThumbUrl() != null){
-					Bitmap bitmap = BitmapFactory.decodeFile(data.getThumbUrl()); 
-					if(bitmap != null){
-						BitmapDrawable bd = new BitmapDrawable(res, bitmap); 
-						holder.img_thumbnail.setImageDrawable(bd);
-					}else{
-						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
-					}
-				}else{
-					/*if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
-						holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_audio);
-					}else if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_VEDIO)){
-						holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_video);
-					}else
-					holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
-				
-*/	
+			
 			if(data.getThumbUrl() != null && !data.getThumbUrl().equals("")){
 				if(data.getDownloadedImage() == null){
-					/*imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
-					mArticleList.get(position).setDownloadedImage(holder.img_thumbnail.getDrawingCache());*/
 					Bitmap bitmap = BitmapFactory.decodeFile(data.getThumbUrl()); 
 					if(bitmap != null){
 						data.setDownloadedImage(bitmap);
@@ -202,12 +186,7 @@ public class SavedArticlesAdapter extends BaseAdapter{
 					holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
 				}
 			}else{
-				/*if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_AUDIO)){
-					holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_audio);
-				}else if(data.getType().equalsIgnoreCase(Constants.ARTICAL_TYPE_VEDIO)){
-					holder.img_thumbnail.setImageResource(R.drawable.bg_thumb_video);
-				}else*/
-					holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
+				holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
 			}
 		}
 		return convertView;
@@ -236,6 +215,7 @@ public class SavedArticlesAdapter extends BaseAdapter{
 		TextView txt_articleName;
 		ImageView img_thumbnail;
 		TextView txt_articleDesc;
+		public ProgressBar progress; //ADDED
 	}
 
 }
