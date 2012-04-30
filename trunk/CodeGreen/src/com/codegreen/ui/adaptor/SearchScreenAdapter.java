@@ -3,12 +3,14 @@ package com.codegreen.ui.adaptor;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import com.codegreen.R;
 import com.codegreen.businessprocess.objects.ArticleDAO;
 import com.codegreen.common.CacheManager;
 import com.codegreen.network.FetchImage;
+import com.codegreen.network.ImageManager;
 import com.codegreen.util.Constants;
 
 public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
@@ -23,7 +26,7 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 	private Context mContext;
 	private ArrayList<ArticleDAO> mAllArticleList;
 	private LayoutInflater mLayoutInflator = null;
-	private FetchImage imageLoader;
+	private ImageManager imageLoader;
 	private ArrayList<ArticleDAO> mArticleList;
 
 	public SearchScreenAdapter(Context context, String filterStr) {
@@ -31,7 +34,8 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 			mContext = context;
 			mLayoutInflator  =  LayoutInflater.from(mContext); 
 			mAllArticleList = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_SEARCH_ARTICLES);
-			imageLoader=new FetchImage(mContext);
+			//imageLoader=new FetchImage(mContext);
+			imageLoader = new ImageManager(mContext);
 			filterEntries(filterStr);
 
 		} catch (Exception e) {
@@ -135,6 +139,7 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 			holder.txt_articleName = (TextView) convertView.findViewById(R.id.textArticle);
 			holder.img_thumbnail = (ImageView) convertView.findViewById(R.id.ImgThumbnail);
 			holder.txt_articleDesc = (TextView)convertView.findViewById(R.id.textArticledesc);
+			holder.progress = (ProgressBar) convertView.findViewById(R.id.progress_bar); //ADDED
 			convertView.setTag(holder);
 
 		} else {
@@ -152,10 +157,12 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 			holder.txt_articleName.setText(data.getTitle());
 			holder.txt_articleDesc.setText(data.getShortDescription());
 			holder.img_thumbnail.setVisibility(View.VISIBLE);
-			if(data.getDownloadedImage() == null){ 
-				imageLoader.DisplayImage(data, mContext, holder.img_thumbnail);
+			if(data.getThumbUrl() != null && !data.getThumbUrl().equals("")){
+				imageLoader.displayImage(data.getThumbUrl(), (Activity)mContext, holder.img_thumbnail,holder.progress);
 			}else {
-				holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
+				holder.img_thumbnail.setImageBitmap(null);
+				holder.img_thumbnail.setBackgroundDrawable(null);
+				holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
 			}
 		}
 
@@ -178,6 +185,7 @@ public class SearchScreenAdapter extends BaseAdapter implements SectionIndexer {
 		TextView txt_articleName;
 		ImageView img_thumbnail;
 		TextView txt_articleDesc;
+		public ProgressBar progress; //ADDED
 	}
 
 

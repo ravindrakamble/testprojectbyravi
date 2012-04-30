@@ -25,6 +25,7 @@ import com.codegreen.database.DBAdapter;
 import com.codegreen.network.FetchImage;
 import com.codegreen.ui.adaptor.HomeScreenAdapter.ListHolder;
 import com.codegreen.util.Constants;
+import com.codegreen.util.Utils;
 
 public class SavedArticlesAdapter extends BaseAdapter{
 
@@ -175,7 +176,10 @@ public class SavedArticlesAdapter extends BaseAdapter{
 			
 			if(data.getThumbUrl() != null && !data.getThumbUrl().equals("")){
 				if(data.getDownloadedImage() == null){
-					Bitmap bitmap = BitmapFactory.decodeFile(data.getThumbUrl()); 
+					BitmapFactory.Options opt = new BitmapFactory.Options();
+					opt.inSampleSize = 4;
+					Bitmap bitmap = BitmapFactory.decodeFile(data.getThumbUrl(),opt); 
+					bitmap = Utils.getRoundedCornerBitmap(bitmap);
 					if(bitmap != null){
 						data.setDownloadedImage(bitmap);
 						holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
@@ -183,7 +187,8 @@ public class SavedArticlesAdapter extends BaseAdapter{
 						holder.img_thumbnail.setImageResource(R.drawable.default_thumb);
 					}
 				}else {
-					holder.img_thumbnail.setImageBitmap(data.getDownloadedImage());
+					Bitmap bmp = Utils.getRoundedCornerBitmap(data.getDownloadedImage());
+					holder.img_thumbnail.setImageBitmap(bmp);
 				}
 			}else{
 				holder.img_thumbnail.setImageResource(R.drawable.default_thumb);

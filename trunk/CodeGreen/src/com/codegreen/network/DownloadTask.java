@@ -12,6 +12,8 @@ import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.codegreen.businessprocess.handler.Handler;
@@ -81,7 +83,6 @@ public class DownloadTask extends Task{
 						fileOutputStream.flush();
 						fileOutputStream.close();
 						inputStream.close();
-
 						handler.handleCallback(downloadFile.getAbsolutePath(), callID, (byte)0);
 					}
 				}

@@ -3,7 +3,6 @@ package com.codegreen.ui.activity;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -23,7 +22,6 @@ import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,6 +70,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 	private static int CURRENT_SELECTED_CATEGORY = 0;
 	private static String CURRENT_SELECTED_MEDIA = "ALL";
+	private static int CURRENT_SELECTED_ARTICLE = 0;
 	private TextView mNoItems = null;
 	private ProgressDialog progressDialog;
 	ArrayList<ArticleDAO> advertiseData = null;
@@ -94,6 +93,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		 initWidgets();
 		 CURRENT_SELECTED_CATEGORY = 0;
 		 CURRENT_SELECTED_MEDIA = "ALL";
+		 CURRENT_SELECTED_ARTICLE = 0;
 
 		 CacheManager.getInstance().resetAllArticles();
 		 getArticleData("",Utils.getCurrentDate());
@@ -104,6 +104,13 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			 filter.addAction(Constants.DOWNLOADED_ADDS);
 			 registerReceiver(addDownloadListener, filter);
 		 }   
+		 
+		 // Hide ads on landscape 
+		 if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+				addsImage.setVisibility(View.GONE);
+		 }else{
+				addsImage.setVisibility(View.VISIBLE);
+		 }
 	}
 
 	private void showProgressBar(){
@@ -154,6 +161,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnGreenBasic.setBackgroundResource(R.drawable.scrollbutton_off);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 1;
+				CURRENT_SELECTED_ARTICLE = 0;
 				CacheManager.getInstance().resetAllArticles();
 				getArticleData("",Utils.getCurrentDate());
 			}
@@ -167,6 +175,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnDesignArcht.setBackgroundResource(R.drawable.scrollbutton_off);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 2;
+				CURRENT_SELECTED_ARTICLE = 0;
 				CacheManager.getInstance().resetAllArticles();
 				getArticleData("",Utils.getCurrentDate());
 			}
@@ -180,6 +189,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnScience.setBackgroundResource(R.drawable.scrollbutton_off);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 3;
+				CURRENT_SELECTED_ARTICLE = 0;
 				CacheManager.getInstance().resetAllArticles();
 				getArticleData("",Utils.getCurrentDate());
 			}
@@ -193,6 +203,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnTransport.setBackgroundResource(R.drawable.scrollbutton_long);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 4;
+				CURRENT_SELECTED_ARTICLE = 0;
 				CacheManager.getInstance().resetAllArticles();
 				getArticleData("",Utils.getCurrentDate());
 			}
@@ -206,6 +217,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnBusiness.setBackgroundResource(R.drawable.scrollbutton_long);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 5;
+				CURRENT_SELECTED_ARTICLE = 0;
 				CacheManager.getInstance().resetAllArticles();
 				getArticleData("",Utils.getCurrentDate());
 			}
@@ -220,6 +232,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnPolitics.setBackgroundResource(R.drawable.scrollbutton_long);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 6;
+				CURRENT_SELECTED_ARTICLE = 0;
 				CacheManager.getInstance().resetAllArticles();
 				getArticleData("",Utils.getCurrentDate());
 			}
@@ -234,6 +247,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				mBtnFood.setBackgroundResource(R.drawable.scrollbutton_long);
 				CURRENT_SELECTED_MEDIA = "ALL";
 				CURRENT_SELECTED_CATEGORY = 7;
+				CURRENT_SELECTED_ARTICLE = 0;
 				CacheManager.getInstance().resetAllArticles();
 				getArticleData("",Utils.getCurrentDate());
 			}
@@ -258,6 +272,7 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 				btn_left_arrow.setBackgroundResource(R.drawable.left_arrow_off);
 				CURRENT_SELECTED_CATEGORY = 0;
 				CURRENT_SELECTED_MEDIA = "ALL";
+				CURRENT_SELECTED_ARTICLE = 0;
 				refreshViews();
 				mBtnLatest.setBackgroundResource(R.drawable.scrollbutton_off);
 				CacheManager.getInstance().resetAllArticles();
@@ -277,8 +292,46 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 		});
 	}
 
-	private void showDialog() { 
+	private void showDialog() {
+		
+		final AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this); 
+		builder.setTitle("Article Types");
+		builder.setIcon(R.drawable.icon);
 		final CharSequence[] items = {"All", "Multimedia", "Articles"};
+	
+    builder.setSingleChoiceItems(items, CURRENT_SELECTED_ARTICLE, new DialogInterface.OnClickListener(){
+    	
+		public void onClick(DialogInterface dialog, int mitems) {
+			CacheManager.getInstance().resetAllArticles();
+			switch(mitems){
+				case 0:{
+					CURRENT_SELECTED_MEDIA = "ALL";
+					CURRENT_SELECTED_ARTICLE = 0;
+				}
+				break;
+				case 1:{
+					CURRENT_SELECTED_MEDIA =  "multimedia";
+					CURRENT_SELECTED_ARTICLE =  1;
+				}
+				break;
+				case 2:
+					CURRENT_SELECTED_MEDIA = Constants.ARTICAL_TYPE_TEXT;
+					CURRENT_SELECTED_ARTICLE = 2;
+					break;
+					
+				default:
+					break;
+			}
+			getArticleData(CURRENT_SELECTED_MEDIA,Utils.getCurrentDate());
+			mPresenceDlg = dialog;
+			Handler myHandler = new Handler();
+			myHandler.postDelayed(mPresenceDlgRunnable, 10);
+		}  
+		
+    });
+    AlertDialog View  = builder.create();
+    View.show();
+	/*	final CharSequence[] items = {"All", "Multimedia", "Articles"};
 		AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
 		builder.setTitle("Article Types");
 		builder.setIcon(R.drawable.icon);
@@ -299,9 +352,27 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			}
 		});
 		AlertDialog alert = builder.create();
-		alert.show();
+		alert.show();*/
 	} 
 
+	private DialogInterface mPresenceDlg = null;
+	/**
+	 *  Presence Dialog Runnable
+	 */
+	private Runnable mPresenceDlgRunnable = new Runnable(){
+         @Override
+         public void run(){
+        	 try{
+	            //Change state here
+	        	 if(mPresenceDlg != null)
+	        		 mPresenceDlg.cancel();
+	        	 mPresenceDlg = null;
+        	 }catch (Exception e) {
+				e.printStackTrace();
+			}
+ 	     }
+    };
+   
 
 	private void showadDetails(){
 		ArrayList<ArticleDAO> advertiseData = (ArrayList<ArticleDAO>) CacheManager.getInstance().get(Constants.C_ADVERTISMENTS);
@@ -455,6 +526,9 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 			launchSearchActivity();
 			break;
 		case MENU_OPTION_REFRESH:
+			// clear the old data
+			currentSelectedIndex = 0;
+			CacheManager.getInstance().resetAllArticles();
 			getArticleData("",Utils.getCurrentDate());
 			break;
 		case MENU_OPTION_INFO:
@@ -538,6 +612,9 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 								sizeOfData =  CacheManager.getInstance().getAllArticledetailsSize();
 							if(sizeOfData == 0)
 								mNoItems.setVisibility(View.VISIBLE);
+							else
+								mNoItems.setVisibility(View.GONE);
+							
 							mAdapter = new HomeScreenAdapter(HomeActivity.this);
 							mAdapter.setRequestID(reqID);
 							setListAdapter(mAdapter); 
@@ -554,10 +631,15 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 							if(reqID == Constants.REQ_GETARTICLESBYTYPE)
 								sizeOfData =  CacheManager.getInstance().getAllArticledetailsSize();
 							 //mAdapter.resetData();
+							if(sizeOfData == 0)
+								mNoItems.setVisibility(View.VISIBLE);
+							else
+								mNoItems.setVisibility(View.GONE);
+							
 							 mAdapter.setRequestID(reqID);
 							 mAdapter.notifyDataSetChanged();
 							 mAdapter.notifyDataSetInvalidated();
-							getListView().setSelection(currentSelectedIndex);
+							getListView().setSelection(0);
 						}
 					});
 				}
@@ -588,12 +670,12 @@ public class HomeActivity extends ListActivity implements Updatable, MediaDialog
 
 	private void getAdvertisements() {
 		if(Utils.isNetworkAvail(getApplicationContext())){
+			ArticleDAO articleDAO = new ArticleDAO();
+			articleDAO.setArticleID("mdpi");
 			HttpHandler httpHandler =  HttpHandler.getInstance();
 			//Cancel previous request;
 			httpHandler.cancelRequest();
 			httpHandler.setApplicationContext(getApplicationContext());
-			ArticleDAO articleDAO = new ArticleDAO();
-			articleDAO.setArticleID("mdpi");
 			httpHandler.handleEvent(articleDAO, Constants.REQ_GETADVERTISMENTS, this);
 		}
 	}

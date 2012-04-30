@@ -186,7 +186,7 @@ public class RequestBuilder {
 		sb.append(header);
 		sb.append("<soap:Body>");
 		sb.append("<GetAdvertisements xmlns=\"http://tempuri.org/\">");
-		sb.append("<OS>"+ "Android" + "</OS>");
+		sb.append("<deviceType>"+ "Android" + "</deviceType>");
 		sb.append("<resolution>" + reviewDAO.getArticleID() + "</resolution>");
 		sb.append("</GetAdvertisements>");
 		sb.append("</soap:Body>");
