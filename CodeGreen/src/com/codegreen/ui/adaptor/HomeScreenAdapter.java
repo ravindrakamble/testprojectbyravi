@@ -53,13 +53,13 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 			}
 
 			// in case of 10 or more than 10 then display add more option
-			if(mArticleList != null && mArticleList.size() >= 10){
+			/*if(mArticleList != null && mArticleList.size() >= 10){
 				ArticleDAO data = new ArticleDAO();
 				data.setTitle("Load more articles");
 				data.setLoadMore(true);
 				mArticleList.add(data);
 			}
-
+*/
 			if(mArticleList != null){
 				Constants.TOTAL_ARTICLES = mArticleList.size();
 			}
@@ -202,12 +202,12 @@ public class HomeScreenAdapter extends BaseAdapter implements SectionIndexer {
 			}
 
 			// in case of 10 or more than 10 then display add more option
-			if(mArticleList != null && mArticleList.size() >= 10){
+		/*	if(mArticleList != null && mArticleList.size() >= 10){
 				ArticleDAO data = new ArticleDAO();
 				data.setTitle("Load more articles");
 				data.setLoadMore(true);
 				mArticleList.add(data);
-			}
+			}*/
 
 			if(mArticleList != null){
 				Constants.TOTAL_ARTICLES = mArticleList.size();

@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Stack;
 
 import com.codegreen.R;
+import com.codegreen.util.Utils;
+import com.facebook.android.Util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -181,6 +183,7 @@ public class ImageManager {
 						}
 
 						Bitmap bmp = getBitmap(imageToLoad.url);
+						bmp = Utils.getRoundedCornerBitmap(bmp);
 						imageMap.put(imageToLoad.url, bmp);
 						Object tag = imageToLoad.imageView.getTag();
 
@@ -219,7 +222,6 @@ public class ImageManager {
 		public void run() {
 			progressBar.setVisibility(View.GONE); //ADDED
 			if(bitmap != null){
-				
 				imageView.setImageBitmap(bitmap);
 			}
 			else{

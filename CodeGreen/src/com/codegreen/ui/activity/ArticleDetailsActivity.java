@@ -579,28 +579,61 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 
 	
 	private void showShareDialog() {
-			final CharSequence[] items = {"Facebook", "Twitter", "Email"};
-			AlertDialog.Builder builder = new AlertDialog.Builder(ArticleDetailsActivity.this);
+			
+			final AlertDialog.Builder builder = new AlertDialog.Builder(ArticleDetailsActivity.this); 
 			builder.setTitle("Share using...");
 			builder.setIcon(R.drawable.icon);
-			builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int item) {
-					CacheManager.getInstance().resetAllArticles();
-					if(item == 0){//Facebook
+			final CharSequence[] items = {"Facebook", "Twitter", "Email"};
+		
+	    builder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener(){
+	    	
+			public void onClick(DialogInterface dialog, int mitems) {
+				CacheManager.getInstance().resetAllArticles();
+				switch(mitems){
+					case 0:{
 						onSelectFacebook();
 					}
-					else if(item == 1){//Twiiter
+					break;
+					case 1:{
 						onSelectTwitter();
-					}	
-					else if(item == 2){//Email
-						onSelectEmail();	
-					}
-					dialog.cancel();
+						}
+					break;
+					case 2:
+						onSelectEmail();
+					break;
+						
+					default:
+						break;
 				}
-			});
-			AlertDialog alert = builder.create();
-			alert.show();
+				mPresenceDlg = dialog;
+				Handler myHandler = new Handler();
+				myHandler.postDelayed(mPresenceDlgRunnable, 10);
+			}  
+			
+	    });
+	    AlertDialog View  = builder.create();
+	    View.show();
 	}
+	
+	private DialogInterface mPresenceDlg = null;
+	
+	/**
+	 *  Presence Dialog Runnable
+	 */
+	private Runnable mPresenceDlgRunnable = new Runnable(){
+         @Override
+         public void run(){
+        	 try{
+	            //Change state here
+	        	 if(mPresenceDlg != null)
+	        		 mPresenceDlg.cancel();
+	        	 mPresenceDlg = null;
+        	 }catch (Exception e) {
+				e.printStackTrace();
+			}
+ 	     }
+    };
+   
 	
 	
 	String message = "";
@@ -615,9 +648,9 @@ public class ArticleDetailsActivity extends Activity implements Updatable{
 		emailIntent.setType("message/rfc822");
 		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
 		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
-		if(articleDetails.getUrl() != null)
+	/*	if(articleDetails.getUrl() != null)
 			emailIntent.putExtra(Intent.EXTRA_STREAM, articleDetails.getUrl()); 
-		
+	*/	
 		startActivity(Intent.createChooser(emailIntent, "Send Email.."));
 	}
 	

@@ -5,10 +5,11 @@
 	android:layout_height="80dip" android:background="@drawable/listitem_selector">
 <!-- android:background="@drawable/list_unselected_back" -->
 
-	<ImageView android:id="@+id/ImgThumbnail"
-		android:layout_alignParentLeft="true" android:layout_width="64dip"
+	<ImageView android:id="@+id/ImgThumbnail" android:adjustViewBounds="true"
+	android:scaleType="fitXY"
+		android:layout_alignParentLeft="true" android:layout_width="70dip"
 		android:layout_marginLeft="5dip" android:layout_marginRight="5dip"
-		android:layout_centerInParent="true" android:layout_height="64dip"></ImageView>
+		android:layout_centerInParent="true" android:layout_height="60dip"></ImageView>
 		
     <ProgressBar
     android:layout_centerInParent="true"

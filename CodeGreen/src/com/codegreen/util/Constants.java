@@ -37,9 +37,9 @@ public class Constants {
 
 	public static final String DOWNLOADED_ADDS ="DOWNLOADED_ADDS";
 	//Web service url
-      public static final String URL = "http://3embed.com.iis2003.shared-servers.com/CodeGreen/CodeGreenService.asmx";
+    //  public static final String URL = "http://3embed.com.iis2003.shared-servers.com/CodeGreen/CodeGreenService.asmx";
 	//public static final String URL = "http://3embed.com.iis2003.shared-servers.com/CodeGreenService/CodeGreenService.asmx";
-	//public static final String URL = "http://www.ipadapps.com.asp1-1.dfw1-2.websitetestlink.com/CodeGreenService.asmx";
+	public static final String URL = "http://www.ipadapps.com.asp1-1.dfw1-2.websitetestlink.com/CodeGreenService.asmx";
 	public static final String NAMESPACE = "http://tempuri.org/";
 	public static final String SOAP_ACTION_URL = "http://tempuri.org/";
 
