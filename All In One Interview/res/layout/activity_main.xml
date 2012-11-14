@@ -1,0 +1,48 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+   <Button
+       android:id="@+id/btn_java"
+       android:layout_width="100dp"
+       android:layout_height="50dp"
+       android:layout_marginLeft="@dimen/btnMargin"
+       android:layout_marginTop="@dimen/btnMargin"
+       android:background="@drawable/java_icon"
+       android:paddingLeft="10dp" >
+
+   </Button>   
+
+   <Button
+       android:id="@+id/btn_dotnet"
+       android:layout_width="100dp"
+       android:layout_height="50dp"
+       android:layout_centerHorizontal="true"
+       android:layout_marginLeft="@dimen/btnMargin"
+       android:layout_marginTop="@dimen/btnMargin"
+       android:layout_toRightOf="@id/btn_java"
+       android:background="@drawable/framework_icon"
+       android:paddingTop="10dp" >
+
+   </Button>   
+
+    <!-- <Button
+       android:id="@+id/btn_hiber"
+       android:layout_width="100dp"
+       android:layout_height="50dp"
+       android:layout_below="@id/btn_java"
+       android:background="@drawable/hibernate_icon" >
+
+   </Button>
+
+   <Button
+       android:id="@+id/btn_oracle"
+       android:layout_width="100dp"
+       android:layout_height="50dp"
+       android:layout_alignBaseline="@+id/btn_hiber"
+       android:layout_alignBottom="@+id/btn_hiber"
+       android:layout_toRightOf="@+id/btn_hiber"
+       android:background="@drawable/oracle_icon" />
+ -->    
+</RelativeLayout>
