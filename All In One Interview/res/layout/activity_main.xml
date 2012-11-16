@@ -1,48 +1,71 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-   <Button
-       android:id="@+id/btn_java"
-       android:layout_width="100dp"
-       android:layout_height="50dp"
-       android:layout_marginLeft="@dimen/btnMargin"
-       android:layout_marginTop="@dimen/btnMargin"
-       android:background="@drawable/java_icon"
-       android:paddingLeft="10dp" >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="43dp"
+        android:background="@drawable/bar"
+        android:orientation="vertical" >
 
-   </Button>   
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/select_option" />
+    </LinearLayout>
 
-   <Button
-       android:id="@+id/btn_dotnet"
-       android:layout_width="100dp"
-       android:layout_height="50dp"
-       android:layout_centerHorizontal="true"
-       android:layout_marginLeft="@dimen/btnMargin"
-       android:layout_marginTop="@dimen/btnMargin"
-       android:layout_toRightOf="@id/btn_java"
-       android:background="@drawable/framework_icon"
-       android:paddingTop="10dp" >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="120dp"
+        android:orientation="horizontal" >
 
-   </Button>   
+        <Button
+            android:id="@+id/btn_java"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/margin_10"
+            android:layout_weight="1.0"
+            android:background="@drawable/java_icon" >
+        </Button>
 
-    <!-- <Button
-       android:id="@+id/btn_hiber"
-       android:layout_width="100dp"
-       android:layout_height="50dp"
-       android:layout_below="@id/btn_java"
-       android:background="@drawable/hibernate_icon" >
+        <Button
+            android:id="@+id/btn_hibernate"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/margin_10"
+            android:layout_weight="1.0"
+            android:background="@drawable/hibernate_icon" >
+        </Button>
+    </LinearLayout>
 
-   </Button>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="120dp"
+        android:orientation="horizontal" >
+        <Button
+        android:id="@+id/btn_oracle"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="@dimen/margin_10"
+        android:layout_weight="1.0"
+         android:layout_gravity="center_horizontal"
+        android:background="@drawable/oracle_icon" >
+    </Button>
 
-   <Button
-       android:id="@+id/btn_oracle"
-       android:layout_width="100dp"
-       android:layout_height="50dp"
-       android:layout_alignBaseline="@+id/btn_hiber"
-       android:layout_alignBottom="@+id/btn_hiber"
-       android:layout_toRightOf="@+id/btn_hiber"
-       android:background="@drawable/oracle_icon" />
- -->    
-</RelativeLayout>
+    <Button
+        android:id="@+id/btn_framework"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="@dimen/margin_10"
+         android:layout_gravity="center_horizontal"
+         android:layout_weight="1.0"
+        android:background="@drawable/framework_icon" >
+    </Button>
+    </LinearLayout>
+
+</LinearLayout>
